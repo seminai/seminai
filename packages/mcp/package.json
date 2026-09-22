@@ -1,6 +1,6 @@
 {
   "name": "@seminai/mcp-connector",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "MCP connector exposing Seminai REST API and QDC Image Line APIs as tools for Claude and ChatGPT",
   "type": "module",
   "main": "./dist/server.js",
