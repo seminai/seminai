@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+data/
+coverage/
+playwright-report/
+test-results/
+.promptfoo/
+*.log
+*.sql
+backend/dataset/user/
+backend/dataset/bdf/
+backend/dataset/dataset_trattamenti/
