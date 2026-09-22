@@ -18,8 +18,21 @@ npm run test:integration:public
 ```
 
 PostgreSQL and Redis are required for integration tests. The test commands start isolated
-Docker services automatically. Runtime installation and setup instructions will be finalized
-in Phases 5-6 of [`ROADMAP.md`](./ROADMAP.md).
+Docker services automatically.
+
+## One-command install
+
+See [`docs/install.md`](docs/install.md). Compose default: `app` + `postgres` + `redis`.
+
+## Docs
+
+- [`docs/install.md`](docs/install.md)
+- [`docs/access.md`](docs/access.md)
+- [`docs/backup.md`](docs/backup.md)
+- [`docs/providers.md`](docs/providers.md)
+- [`docs/architecture.md`](docs/architecture.md)
+- [`docs/environment.md`](docs/environment.md)
+- [`docs/troubleshooting.md`](docs/troubleshooting.md)
 
 ## Repository layout
 
@@ -29,6 +42,7 @@ in Phases 5-6 of [`ROADMAP.md`](./ROADMAP.md).
 - `packages/telegram-bot`: optional Telegram connector.
 - `evals`: deterministic evaluation harness.
 - `loadtest`: k6 scenarios.
+- `e2e`: Playwright specs for the public setup surface.
 
 ## Data boundary
 
@@ -42,3 +56,6 @@ not emit fixture names, identifiers, paths, or contents.
 Seminai is offered under AGPL-3.0-or-later or separately negotiated commercial terms. See
 [`LICENSE`](./LICENSE), [`COMMERCIAL-LICENSE.md`](./COMMERCIAL-LICENSE.md),
 [`DCO.md`](./DCO.md), and [`SECURITY.md`](./SECURITY.md).
+
+GitHub Actions workflows exist under `.github/workflows/` and remain **unverified** on the
+hosted runners until a green run is recorded.

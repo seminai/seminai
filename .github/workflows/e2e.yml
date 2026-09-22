@@ -1,0 +1,29 @@
+name: e2e
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/local-first-monorepo]
+
+jobs:
+  playwright:
+    name: playwright-public
+    runs-on: ubuntu-latest
+    env:
+      LLM_GATEWAY: ollama
+      E2E_BASE_URL: http://127.0.0.1:8081
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: docker/setup-buildx-action@v3
+      - run: docker compose -f compose.yaml up -d postgres redis
+      - run: docker compose -f compose.yaml build app
+      - run: docker compose -f compose.yaml up -d app
+      - run: npx --yes playwright@1.55.1 install --with-deps chromium
+      - run: npx --yes playwright@1.55.1 test --config=playwright.config.ts
+      - if: always()
+        run: docker compose -f compose.yaml logs --no-color | tail -n 200
+      - run: echo "Hosted e2e is unverified until a green GitHub Actions run is recorded."
