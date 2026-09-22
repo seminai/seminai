@@ -13,3 +13,6 @@ test-results/
 backend/dataset/user/
 backend/dataset/bdf/
 backend/dataset/dataset_trattamenti/
+**/private-fixtures/
+**/customer-fixtures/
+**/user-fixtures/

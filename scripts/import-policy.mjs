@@ -10,6 +10,7 @@ export const excludedPathPatterns = Object.freeze([
   /(^|\/)dist\//,
   /(^|\/)node_modules\//,
   /(^|\/)key_gcp\.json$/,
+  /(^|\/)(?:private|customer|user)-fixtures\//,
   /(^|\/)bun\.lock$/,
   /(^|\/)deploy-worker\.sh$/,
   /^docker-compose\.prod\.yml$/,
@@ -44,10 +45,9 @@ export const excludedPathPatterns = Object.freeze([
 ]);
 
 export const customerCoupledPathPatterns = Object.freeze([
-  /boscarato/i,
-  /truzzi/i,
-  /ivano/i,
   /user-dataset/i,
+  /^src\/integration-test\/.*(?:historical-benchmark|extraction-quality|extraction-accuracy)/,
+  /^src\/integration-test\/.*-product-extraction\.integration\.test\.ts$/,
   /^src\/integration-test\/(dosage-agent-historical-benchmark|ocr-benchmark)(?:\.|\/)/,
   /^src\/integration-test\/extraction-api-accuracy(?:\.|\/)/,
   /^src\/integration-test\/lombardia-format\.integration\.test\.ts$/,
@@ -57,7 +57,7 @@ export const customerCoupledPathPatterns = Object.freeze([
   /^llm-test\/datasets\/invoice-edits-.*\.ya?ml$/i,
   /^llm-test\/datasets\/multi-turn-flow-[e-h]\.ya?ml$/i,
   /^src\/test\/(veneto-pcg-zip-parser|preclassify-zip-inspector|pcg-geojson-parser|extract-brogliaccio|shapefile-parser|csv_agent_multirow_headers|header_detector)\.test\.ts$/,
-  /^jest\.integration\.(boscarato|quality|benchmark|ocr)\.config\.cjs$/,
+  /^jest\.integration\.(?:quality|benchmark|ocr|[^.]+-dosage)\.config\.cjs$/,
 ]);
 
 export const forbiddenContentFragments = Object.freeze([

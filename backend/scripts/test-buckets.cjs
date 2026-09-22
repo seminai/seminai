@@ -118,6 +118,7 @@ const PUBLIC = [
   'proforma',
   'sales-ddt',
   'sales-invoice',
+  'synthetic-fixtures',
 ];
 
 const toTestMatch = (names) =>

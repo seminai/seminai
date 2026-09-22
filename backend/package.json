@@ -32,6 +32,7 @@
     "test:int:all:env": "node scripts/test-env.mjs test-all",
     "test:int:public": "jest --config jest.integration.public.config.cjs --watchman=false --runInBand",
     "test:int:public:env": "node scripts/test-env.mjs test-public",
+    "test:int:private:env": "node scripts/test-env.mjs test-private",
     "test:int:fast": "jest --config jest.integration.fast.config.cjs --watchman=false --runInBand",
     "test:int:fast:env": "node scripts/test-env.mjs test-fast",
     "test:int:llm": "jest --config jest.integration.llm.config.cjs --watchman=false --runInBand",

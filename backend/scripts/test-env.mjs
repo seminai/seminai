@@ -167,6 +167,10 @@ async function runWithEnv(kind) {
     jest('jest.integration.public.config.cjs', publicEnv());
     return;
   }
+  if (kind === 'private') {
+    jest('jest.integration.private.config.cjs', publicEnv());
+    return;
+  }
   if (kind === 'all') {
     jest('jest.integration.config.cjs');
   }
@@ -203,6 +207,9 @@ switch (command) {
   case 'test-public':
     await runWithEnv('public');
     break;
+  case 'test-private':
+    await runWithEnv('private');
+    break;
   case 'status':
     compose(['ps']);
     break;
@@ -219,6 +226,7 @@ Commands:
   test-quality-live  Run quality tests including live OCR/LLM cases
   test-all           Run the full integration suite
   test-public        Run deterministic integration tests without private fixtures or live providers
+  test-private       Inspect optional fixtures from SEMINAI_FIXTURES_DIR without logging metadata
   status             Show compose service status
 
 Environment:

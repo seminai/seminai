@@ -30,6 +30,7 @@ const binaryExtensions = new Set([
 const forbiddenPaths = [
   /(^|\/)\.env(?:$|\.(?!example$))/,
   /(^|\/)key_gcp\.json$/,
+  /(^|\/)(?:private|customer|user)-fixtures\//,
   /(^|\/)dataset\/(user|bdf|dataset_trattamenti)\//,
   /(^|\/)backups\/.*\.sql$/i,
 ];

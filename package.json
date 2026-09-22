@@ -24,6 +24,7 @@
     "test": "npm run test:unit --workspace @seminai/backend && npm run test --workspace @seminai/frontend && npm run test:unit --workspace @seminai/mcp-connector",
     "test:integration:fast": "npm run test:int:fast:env --workspace @seminai/backend",
     "test:integration:public": "npm run test:int:public:env --workspace @seminai/backend",
+    "test:fixtures:private": "npm run test:int:private:env --workspace @seminai/backend",
     "privacy:scan": "node scripts/scan-private-data.mjs",
     "privacy:scan:full": "node scripts/scan-private-data.mjs --full",
     "clean": "npm run clean --workspaces --if-present"
