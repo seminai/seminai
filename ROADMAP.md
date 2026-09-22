@@ -30,7 +30,7 @@ its complete gate is green.
 | 2. Synthetic fixtures | DONE | 2026-09-22, code commit `f176b66`; complete gate green |
 | 3. Scrub and compliance | DONE | 2026-09-22, tested code commit `7e8e78d`; complete gate green |
 | 4. Self-contained backend | DONE | 2026-09-22, tested code commit `1768abb`; complete gate green |
-| 5. Runtime setup wizard | NOT STARTED | Blocked by Phase 4 |
+| 5. Runtime setup wizard | DONE | 2026-09-22, tested code commit `0f00db0`; complete gate green |
 | 6. One-command install | NOT STARTED | Requires real hardware verification |
 | 7. Remote access and invites | NOT STARTED | Requires a real tunnel account and mobile test |
 | 8. AI providers and models | NOT STARTED | Blocked by Phase 7 |
@@ -193,14 +193,34 @@ inline-worker process. Prisma migrations are now versioned; dumps stay ignored.
 
 ## Phase 5 — runtime settings and setup wizard
 
-- [ ] Add encrypted `InstanceSetting` storage with AES-256-GCM, invalidatable cache, and
+- [x] Add encrypted `InstanceSetting` storage with AES-256-GCM, invalidatable cache, and
   precedence `environment override > database > default`.
-- [ ] Validate the environment with Zod and generate persistent JWT/encryption secrets under
+- [x] Validate the environment with Zod and generate persistent JWT/encryption secrets under
   `DATA_DIR/secrets` on first boot.
-- [ ] Implement `/setup` for admin, Ollama or another AI provider, access, optional email, and
+- [x] Implement `/setup` for admin, Ollama or another AI provider, access, optional email, and
   review. Lock setup mutations after completion.
-- [ ] Detect Ollama and make it the local-first default; hide unconfigured features.
-- [ ] Gate: blank install to Ollama chat without file edits, persistent restart, and setup e2e.
+- [x] Detect Ollama and make it the local-first default; hide unconfigured features.
+- [x] Gate: blank install to Ollama chat without file edits, persistent restart, and setup e2e.
+
+Evidence (2026-09-22, tested code commit `0f00db0`):
+
+```text
+npm run codegen / build / type-check / lint
+                                             green; structural scan: 3,601 files
+npm test                                    BE 1,448 passed + 6 skipped; FE 88; MCP 82
+npm run test:integration:fast -- --silent --detectOpenHandles
+                                             71 suites, 214 tests, no open handles
+npm run test:integration:public -- --silent --detectOpenHandles
+                                             97 suites, 294 tests, no open handles
+npm run test:llm:smoke                      qwen3.5:4b tool call green; remote cost zero
+npm run privacy:scan:full                   passed
+```
+
+First-boot secrets persist under `DATA_DIR/secrets`. Instance settings are AES-256-GCM
+with `env > database > default`. `/setup` creates a GOD admin, defaults to Ollama, and
+locks further mutations. Unconfigured features stay hidden via `GET /config/public`.
+Environment checks follow the Zod contract without importing `zod` into the backend
+package, which would hoist Zod 4 into LangChain tool schemas.
 
 ## Phase 6 — one-command installation
 
