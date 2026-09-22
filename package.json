@@ -34,6 +34,8 @@
     "test:e2e": "node scripts/e2e-public.mjs",
     "test:k6": "sh scripts/k6-smoke.sh",
     "image:buildx": "sh scripts/ci/docker-buildx.sh",
+    "rc:scan": "node scripts/release/scan-rc.mjs",
+    "rc:bundle": "sh scripts/release/build-rc-bundle.sh",
     "clean": "npm run clean --workspaces --if-present",
     "compose:config": "docker compose -f compose.yaml config",
     "compose:smoke": "sh scripts/deploy/compose-smoke.sh",
