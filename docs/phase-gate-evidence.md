@@ -54,3 +54,9 @@ Cloud catalogs used injected mock HTTP only.
 Structural 3,634. BE 1,468 + 6 skipped; FE 88; MCP 82. Fast 71/214. Public 97/294.
 OpenAPI drift, privacy, SBOM (`artifacts/sbom.cdx.json`), e2e against Compose `:8081`, k6 health 1 VU, image `seminai:local` linux/arm64.
 GitHub Actions workflows added; no hosted green run recorded.
+
+## Phase 10 — `60cd4b1` (BLOCKED BY HARDWARE)
+
+Structural 3,635. BE 1,468 + 6 skipped; FE 88; MCP 82. Fast 71/214. Public 97/294.
+RC scan: privacy, git subjects, OCI `seminai:local` linux/arm64. Bundle `artifacts/rc/v0.1.0-rc.1` with SHA256SUMS and SBOM.
+No tag, no GitHub release, no visibility change. Third-party NAS install not executed.

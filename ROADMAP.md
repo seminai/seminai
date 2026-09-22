@@ -30,7 +30,7 @@ Command transcripts live in [`docs/phase-gate-evidence.md`](docs/phase-gate-evid
 | 7. Remote access and invites | BLOCKED BY ACCOUNT | Commit `633df16`; local LAN/invite green |
 | 8. AI providers and models | DONE | Commit `83f5fb0`; Ollama 4b/9b/8b + vision |
 | 9. CI, images, e2e, docs | DONE | Commit `b8fae5e`; hosted CI unverified |
-| 10. Private release candidate | NOT STARTED | Requires third-party NAS install |
+| 10. Private release candidate | BLOCKED BY HARDWARE | Commit `60cd4b1`; NAS install not run |
 | 11. Post-RC backlog | DEFERRED | Outside this release |
 
 ## Preliminary
@@ -94,8 +94,8 @@ Command transcripts live in [`docs/phase-gate-evidence.md`](docs/phase-gate-evid
 
 ## Phase 10 — private release candidate
 
-- [ ] Scan filesystem/history/OCI; installer bundle, checksums, SBOM, notes `v0.1.0-rc.1`.
-- [ ] No GitHub release, no tag push, no visibility change.
+- [x] Scan filesystem/history/OCI; installer bundle, checksums, SBOM, notes `v0.1.0-rc.1`.
+- [x] No GitHub release, no tag push, no visibility change.
 - [ ] Gate: **READY, NOT PUBLISHED** only after a third-party NAS install.
 
 ## Phase 11 — backlog
