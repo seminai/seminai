@@ -26,8 +26,8 @@ its complete gate is green.
 | --- | --- | --- |
 | Preliminary | DONE | 2026-09-22: 30/30 suites, 220/220 tests, no open handles |
 | 0. Safety bootstrap | DONE | Commit `20e292f`; privacy scan and syntax checks green |
-| 1. Monorepo import | IN PROGRESS | Awaiting clean root gate |
-| 2. Synthetic fixtures | NOT STARTED | Blocked by Phase 1 |
+| 1. Monorepo import | DONE | 2026-09-22, code commit `ec73481`; complete root gate green |
+| 2. Synthetic fixtures | IN PROGRESS | Phase 1 gate is green |
 | 3. Scrub and compliance | NOT STARTED | Blocked by Phase 2 |
 | 4. Self-contained backend | NOT STARTED | Blocked by Phase 3 |
 | 5. Runtime setup wizard | NOT STARTED | Blocked by Phase 4 |
@@ -43,7 +43,7 @@ its complete gate is green.
 - [x] Use isolated snapshots of current `origin/main`; do not modify source checkouts.
 - [x] Make current-year field availability tests date-independent.
 - [x] Run Jest with open-handle detection and close or identify every leaked handle.
-- [ ] Centralize the live-test model and remove cloud-model literals from live tests.
+- [x] Centralize the live-test model and remove cloud-model literals from live tests.
 - [x] Gate: 220/220 fast integration tests pass with no open handles.
 
 Evidence (2026-09-22):
@@ -73,15 +73,34 @@ an owner separately confirms that any historical credentials are invalid.
 
 ## Phase 1 — monorepo import
 
-- [ ] Import only Git blobs from verified `origin/main` snapshots into `backend/`,
+- [x] Import only Git blobs from verified `origin/main` snapshots into `backend/`,
   `frontend/`, `packages/mcp`, `packages/telegram-bot`, `evals/`, and `loadtest/`.
-- [ ] Exclude marketing, user/customer data, commercial BDF data, dumps, private documents,
+- [x] Exclude marketing, user/customer data, commercial BDF data, dumps, private documents,
   generated files, artifacts, and local permission settings.
-- [ ] Configure npm workspaces, one lockfile, root scripts, OpenAPI/Orval, Prisma generation,
+- [x] Configure npm workspaces, one lockfile, root scripts, OpenAPI/Orval, Prisma generation,
   and dataset synchronization.
-- [ ] Include the processed phytosanitary snapshot with source, licence, date, and checksum.
-- [ ] Gate: clean install, build, lint, type-check, unit tests, public integration tests,
+- [x] Include the processed phytosanitary snapshot with source, licence, date, and checksum.
+- [x] Gate: clean install, build, lint, type-check, unit tests, public integration tests,
   privacy scans, and repository size below 60 MB.
+
+Evidence (2026-09-22, tested code commit `ec73481`):
+
+```text
+npm ci                                      added 2,595 packages from the root lockfile
+npm run codegen / build / type-check / lint green; lint errors: 0
+npm test                                    BE 1,417 + FE 86 + MCP 82 passed
+npm run test:int:fast:env -- --silent --detectOpenHandles
+                                             29 suites, 210 tests, no open handles
+npm run test:int:public:env -- --silent --detectOpenHandles
+                                             47 suites, 286 tests, no open handles
+npm run privacy:scan                        passed
+tracked repository size                    37.74 MiB; one package-lock.json
+```
+
+The import used archived Git blobs from the two verified `origin/main` refs. Customer-derived
+OCR fixtures and evaluation flows were excluded before the first import commit; known customer
+identifiers in retained examples were replaced with synthetic values. Generated Prisma, Orval,
+TanStack, build, and coverage output remain untracked.
 
 ## Phase 2 — synthetic and local-only fixtures
 
