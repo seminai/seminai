@@ -2,6 +2,7 @@ import { DynamicStructuredTool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { expandUnitOfProductionWithCycles } from '../../dosage_agent/productionCycleExpander';
 import { getWorkingMemory, updateWorkingMemory } from '../working-memory';
+import type { RawUnitOfProduction } from '../../dosage_agent/types';
 
 /**
  * Tool: expand_production_cycles
@@ -25,7 +26,7 @@ Salva il risultato in working memory (expandedUnits).`,
         const wm = getWorkingMemory(threadId);
 
         // Resolve units from working memory or build from IDs
-        let units: any[] = wm.inputUnits ?? [];
+        let units = (wm.inputUnits ?? []) as RawUnitOfProduction[];
         if (unitIds && unitIds.length > 0) {
           units = unitIds.map((id: string) => ({ id }));
         }
@@ -41,14 +42,20 @@ Salva il risultato in working memory (expandedUnits).`,
         updateWorkingMemory(threadId, { expandedUnits: expanded });
 
         // Build summary for the agent
-        const summary = expanded.map((u: any) => ({
-          id: u.id,
-          name: u.name ?? u.cropName,
-          cropName: u.cropName,
-          startDate: u.startDate,
-          endDate: u.endDate,
-          hasCycles: !!(u as any).cycles?.length,
-        }));
+        const summary = expanded.map((unit) => {
+          const value = unit as RawUnitOfProduction & {
+            readonly cropName?: string;
+            readonly cycles?: unknown[];
+          };
+          return {
+            id: value.id,
+            name: value.name ?? value.cropName,
+            cropName: value.cropName,
+            startDate: value.startDate,
+            endDate: value.endDate,
+            hasCycles: Boolean(value.cycles?.length),
+          };
+        });
 
         return JSON.stringify({
           unitsExpanded: expanded.length,

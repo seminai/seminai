@@ -82,7 +82,7 @@ Salva il risultato in working memory (treatmentStrategy).`,
 
         return JSON.stringify({
           overallDescription: result.overallDescription,
-          strategies: result.strategies.map((s: any) => ({
+          strategies: result.strategies.map((s) => ({
             product: s.productName,
             regNumber: s.registrationNumber,
             role: s.role,

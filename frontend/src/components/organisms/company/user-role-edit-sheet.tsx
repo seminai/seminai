@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -47,9 +47,7 @@ const ROLE_LABELS: Record<PatchUserOnCompanyIdRoleBodyRole, string> = {
 };
 
 const normalizeRole = (raw: string | null): PatchUserOnCompanyIdRoleBodyRole => {
-  return (
-    VALID_ROLES.find((r) => r === raw) ?? PatchUserOnCompanyIdRoleBodyRole.VIEWER
-  );
+  return VALID_ROLES.find((r) => r === raw) ?? PatchUserOnCompanyIdRoleBodyRole.VIEWER;
 };
 
 interface FormValues {
@@ -69,6 +67,7 @@ export function UserRoleEditSheet({
   const form = useForm<FormValues>({
     defaultValues: { role: normalizeRole(currentRole) },
   });
+  const selectedRole = useWatch({ control: form.control, name: 'role' });
 
   useEffect(() => {
     if (open) {
@@ -110,10 +109,8 @@ export function UserRoleEditSheet({
           <div className="space-y-1.5">
             <Label htmlFor="edit-role">Ruolo</Label>
             <Select
-              value={form.watch('role')}
-              onValueChange={(v) =>
-                form.setValue('role', v as PatchUserOnCompanyIdRoleBodyRole)
-              }
+              value={selectedRole}
+              onValueChange={(v) => form.setValue('role', v as PatchUserOnCompanyIdRoleBodyRole)}
             >
               <SelectTrigger id="edit-role" className="w-full">
                 <SelectValue>

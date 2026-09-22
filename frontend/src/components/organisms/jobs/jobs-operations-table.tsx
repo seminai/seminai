@@ -4,87 +4,36 @@ import type {
   PaginationState,
   SortingState,
 } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
 import { DataTableSwitch } from "@/components/organisms/data-table-switch";
 import { SelectionActionBar } from "@/components/molecules/selection-action-bar";
-import { InfoTooltip } from "@/components/atoms/info-tooltip";
-import { VerificationStatusLegend } from "@/components/molecules/verification-status-legend";
 import { PrintOperationsButton } from "@/components/molecules/print-operations-button";
 import { exportCsv, exportExcel, exportPdf } from "@/lib/export";
 import { buildTableExportParams } from "@/lib/table-export";
 import { useExportFilename } from "@/hooks/use-export-filename";
 import { buildJobOperationsPrintExportParams } from "./job-operations-print-export";
 import { cn } from "@/lib/utils";
-import { formatDateForView } from "./mappers";
-import type {
-  JobDraftEditableField,
-  JobOperationRow,
-  JobRowDraft,
-} from "./types";
 import { shouldIgnoreDataTableRowClick } from "@/lib/data-table-row-click";
 import {
   buildJobOperationsTableRows,
   jobOperationsRowMatchesSearch,
 } from "./jobs-operations-table-build-rows";
+import { createJobOperationsColumns } from "./jobs-operations-table-columns";
 import {
-  createJobOperationsColumns,
+  isZeroQuantityRow,
   JOB_OPERATIONS_COLUMN_LABELS,
-} from "./jobs-operations-table-columns";
+  JOB_OPERATIONS_EXPORT_COLUMNS,
+} from "./jobs-operations-table-config";
 import type {
   JobOperationsTableRow,
+  JobsOperationsTableProps,
   MachineOption,
 } from "./jobs-operations-table-types";
+import {
+  OperationsSelectionFooter,
+  OperationsStatusHeader,
+} from "./jobs-operations-table-chrome";
 
 export type { MachineOption };
-
-const JOB_OPERATIONS_EXPORT_COLUMNS = [
-  { label: JOB_OPERATIONS_COLUMN_LABELS.stato, getValue: (row: JobOperationsTableRow) => row.statoLabel },
-  { label: JOB_OPERATIONS_COLUMN_LABELS.data, getValue: (row: JobOperationsTableRow) => row.dataLabel },
-  { label: JOB_OPERATIONS_COLUMN_LABELS.verifica, getValue: (row: JobOperationsTableRow) => row.verificaLabel },
-  { label: JOB_OPERATIONS_COLUMN_LABELS.tipo, getValue: (row: JobOperationsTableRow) => row.tipoLabel },
-  { label: JOB_OPERATIONS_COLUMN_LABELS.prodotto, getValue: (row: JobOperationsTableRow) => row.prodottoLabel },
-  { label: JOB_OPERATIONS_COLUMN_LABELS.up, getValue: (row: JobOperationsTableRow) => row.upLabel },
-  { label: JOB_OPERATIONS_COLUMN_LABELS.quantita, getValue: (row: JobOperationsTableRow) => row.quantitaLabel },
-  { label: JOB_OPERATIONS_COLUMN_LABELS.macchina, getValue: (row: JobOperationsTableRow) => row.macchinaLabel },
-] as const;
-
-interface JobsOperationsTableProps {
-  readonly operations: readonly JobOperationRow[];
-  readonly drafts: Readonly<Record<string, JobRowDraft>>;
-  readonly machineOptions: readonly MachineOption[];
-  readonly selectedOperationIds: readonly string[];
-  readonly hasUnsavedChanges: boolean;
-  readonly isSaving: boolean;
-  readonly saveMessage: string | null;
-  readonly onSelectOperation: (operationId: string, checked: boolean) => void;
-  readonly onDraftChange: (
-    operationId: string,
-    field: JobDraftEditableField,
-    value: string | boolean,
-  ) => void;
-  readonly onRemoveDraft: (draftId: string) => void;
-  readonly onSave: () => Promise<void>;
-  readonly onBulkVerifySelected: () => Promise<void>;
-}
-
-/** Numeric quantity for sort / zero-row styling: draft parse wins when valid. */
-function effectiveNumericQuantity(
-  operation: JobOperationRow,
-  draft: JobRowDraft | undefined,
-): number | null {
-  if (draft) {
-    const parsed = Number.parseFloat(draft.quantity);
-    if (!Number.isNaN(parsed)) return parsed;
-  }
-  return operation.quantity;
-}
-
-function isZeroQuantityRow(
-  operation: JobOperationRow,
-  draft: JobRowDraft | undefined,
-): boolean {
-  return effectiveNumericQuantity(operation, draft) === 0;
-}
 
 export function JobsOperationsTable({
   operations,
@@ -248,12 +197,7 @@ export function JobsOperationsTable({
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex items-center gap-1.5 border-b px-3 py-1.5 text-[0.7rem] text-muted-foreground sm:px-4 sm:text-xs">
-        <span>Stato verifica</span>
-        <InfoTooltip title="Legenda stato verifica">
-          <VerificationStatusLegend />
-        </InfoTooltip>
-      </div>
+      <OperationsStatusHeader />
       {saveMessage ? (
         <div className="border-b px-3 py-2 text-[0.7rem] text-muted-foreground sm:px-4 sm:text-xs">
           {saveMessage}
@@ -325,29 +269,13 @@ export function JobsOperationsTable({
           }
         }}
         secondaryFooter={
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-[0.7rem] text-muted-foreground sm:text-xs">
-              Selezionate: {selectedCount} — Ultimo aggiornamento tabella:{" "}
-              {formatDateForView(new Date().toISOString())}
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {selectedCount > 1 ? (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={onBulkVerifySelected}
-                  disabled={isSaving}
-                >
-                  Verifica selezionate
-                </Button>
-              ) : null}
-              {hasUnsavedChanges ? (
-                <Button size="sm" onClick={onSave} disabled={isSaving}>
-                  Salva
-                </Button>
-              ) : null}
-            </div>
-          </div>
+          <OperationsSelectionFooter
+            selectedCount={selectedCount}
+            hasUnsavedChanges={hasUnsavedChanges}
+            isSaving={isSaving}
+            onSave={onSave}
+            onBulkVerifySelected={onBulkVerifySelected}
+          />
         }
       />
       <SelectionActionBar

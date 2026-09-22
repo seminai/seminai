@@ -280,7 +280,6 @@ describe('fillTheJob product reuse', () => {
         ],
       };
     };
-
     const resultMissing = await fillTheJob({
       units: [buildUnit(undefined)],
       requestedProducts,
@@ -289,7 +288,6 @@ describe('fillTheJob product reuse', () => {
     const jobsMissing = resultMissing.jobsByUnit.get(productionUnitId) ?? [];
     expect(jobsMissing.length).toBe(0);
     expect(resultMissing.warnings.join(' ')).toContain('missing or non-positive areaHa');
-
     const resultZero = await fillTheJob({
       units: [buildUnit(0)],
       requestedProducts,

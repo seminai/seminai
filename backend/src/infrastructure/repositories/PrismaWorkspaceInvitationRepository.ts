@@ -88,7 +88,10 @@ export class PrismaWorkspaceInvitationRepository implements IWorkspaceInvitation
     return invitations.map(WorkspaceInvitation.fromPrisma);
   }
 
-  async update(id: string, data: Partial<WorkspaceInvitation>): Promise<WorkspaceInvitation> {
+  async update(
+    id: string,
+    data: { role?: WorkspaceInvitation['role']; expiresAt?: Date; acceptedAt?: Date | null },
+  ): Promise<WorkspaceInvitation> {
     const updated = await this.prisma.workspaceInvitation.update({
       where: { id },
       data: {

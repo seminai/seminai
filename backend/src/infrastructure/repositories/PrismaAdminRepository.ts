@@ -61,7 +61,6 @@ function countDistinctProductionUnits(
 
 export class PrismaAdminRepository implements IAdminRepository {
   constructor(private readonly prisma: PrismaClient) {}
-
   async getDashboardSummary(): Promise<AdminDashboardSummaryDTO> {
     const [users, companies, jobs] = await Promise.all([
       this.prisma.user.findMany({
@@ -139,10 +138,8 @@ export class PrismaAdminRepository implements IAdminRepository {
         },
       }),
     ]);
-
     const companyMetricsMap = new Map<string, CompanyMetrics>();
     const ownedCompanyIdsByUserId = new Map<string, string[]>();
-
     for (const company of companies) {
       companyMetricsMap.set(company.id, {
         companyId: company.id,
@@ -162,7 +159,6 @@ export class PrismaAdminRepository implements IAdminRepository {
         ownedCompanyIdsByUserId.set(company.ownerId, current);
       }
     }
-
     const jobsByCompanyId = new Map<
       string,
       Array<{
@@ -171,7 +167,6 @@ export class PrismaAdminRepository implements IAdminRepository {
         readonly isVerified: boolean;
       }>
     >();
-
     for (const job of jobs) {
       const companyIds = Array.from(
         new Set(
@@ -180,7 +175,6 @@ export class PrismaAdminRepository implements IAdminRepository {
             .filter((companyId): companyId is string => Boolean(companyId)),
         ),
       );
-
       for (const companyId of companyIds) {
         const companyJobs = jobsByCompanyId.get(companyId) ?? [];
         companyJobs.push({
@@ -191,9 +185,7 @@ export class PrismaAdminRepository implements IAdminRepository {
         jobsByCompanyId.set(companyId, companyJobs);
       }
     }
-
     const accessibleJobMetricsByUserId = new Map<string, AccessibleJobMetrics>();
-
     for (const user of users) {
       const membershipCompanyIds = Array.from(
         new Set(user.companyUsers.map((companyUser) => companyUser.companyId)),
@@ -221,7 +213,6 @@ export class PrismaAdminRepository implements IAdminRepository {
           )
           .values(),
       );
-
       accessibleJobMetricsByUserId.set(user.id, {
         jobsCount: accessibleJobs.length,
         jobGroupsCount: new Set(
@@ -230,7 +221,6 @@ export class PrismaAdminRepository implements IAdminRepository {
         unverifiedJobsCount: accessibleJobs.filter((job) => !job.isVerified).length,
       });
     }
-
     const userSummaries = users.map<AdminUserSummaryDTO>((user) => {
       const ownedCompanyIds = ownedCompanyIdsByUserId.get(user.id) ?? [];
       const memberRolesByCompanyId = new Map<string, CompanyRole>(
@@ -293,7 +283,6 @@ export class PrismaAdminRepository implements IAdminRepository {
         companies: companiesForUser,
       };
     });
-
     return {
       totals: {
         totalUsers: userSummaries.length,

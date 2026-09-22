@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import type {
   BdfCacheEntry,
   IBdfCacheRepository,
@@ -36,12 +36,12 @@ export class PrismaBdfCacheRepository implements IBdfCacheRepository {
       create: {
         endpoint,
         cacheKey,
-        data: data as any,
-        params: (params as any) ?? undefined,
+        data: data as Prisma.InputJsonValue,
+        params: (params as Prisma.InputJsonValue) ?? undefined,
       },
       update: {
-        data: data as any,
-        params: (params as any) ?? undefined,
+        data: data as Prisma.InputJsonValue,
+        params: (params as Prisma.InputJsonValue) ?? undefined,
       },
     });
   }

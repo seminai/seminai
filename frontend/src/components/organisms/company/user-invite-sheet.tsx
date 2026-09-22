@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQueryClient } from '@tanstack/react-query';
@@ -22,7 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { usePostUserOnCompany, getGetUserOnCompanyCompanyCompanyIdQueryKey } from '@/generated/api/user-on-company/user-on-company';
+import {
+  usePostUserOnCompany,
+  getGetUserOnCompanyCompanyCompanyIdQueryKey,
+} from '@/generated/api/user-on-company/user-on-company';
 import { PostUserOnCompanyBodyRole } from '@/generated/schemas/postUserOnCompanyBodyRole';
 
 const inviteSchema = z.object({
@@ -50,6 +53,7 @@ export function UserInviteSheet({ companyId, open, onOpenChange }: UserInviteShe
     resolver: zodResolver(inviteSchema),
     defaultValues: { name: '', email: '', role: PostUserOnCompanyBodyRole.VIEWER },
   });
+  const selectedRole = useWatch({ control: form.control, name: 'role' });
 
   useEffect(() => {
     if (!open) form.reset({ name: '', email: '', role: PostUserOnCompanyBodyRole.VIEWER });
@@ -78,7 +82,8 @@ export function UserInviteSheet({ companyId, open, onOpenChange }: UserInviteShe
         <SheetHeader>
           <SheetTitle>Invita utente</SheetTitle>
           <SheetDescription>
-            Aggiungi un utente all&apos;azienda. Se l&apos;email non esiste, sarà creato un nuovo account.
+            Aggiungi un utente all&apos;azienda. Se l&apos;email non esiste, sarà creato un nuovo
+            account.
           </SheetDescription>
         </SheetHeader>
 
@@ -102,7 +107,7 @@ export function UserInviteSheet({ companyId, open, onOpenChange }: UserInviteShe
           <div className="space-y-1.5">
             <Label htmlFor="invite-role">Ruolo</Label>
             <Select
-              value={form.watch('role')}
+              value={selectedRole}
               onValueChange={(v) => form.setValue('role', v as PostUserOnCompanyBodyRole)}
             >
               <SelectTrigger id="invite-role" className="w-full">

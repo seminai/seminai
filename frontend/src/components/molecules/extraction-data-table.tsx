@@ -1,38 +1,27 @@
-import {
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  type ReactNode,
-} from "react";
-import { SelectionActionBar } from "@/components/molecules/selection-action-bar";
-import { InvoiceProductTableToolbar } from "@/components/molecules/invoice-product-table-toolbar";
-import { InvoiceProductTableHeader } from "@/components/molecules/invoice-product-table-header";
+import { useState, useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react';
+import { SelectionActionBar } from '@/components/molecules/selection-action-bar';
+import { InvoiceProductTableToolbar } from '@/components/molecules/invoice-product-table-toolbar';
+import { InvoiceProductTableHeader } from '@/components/molecules/invoice-product-table-header';
 import {
   InvoiceProductTableRow,
   type InvoiceEditingCell,
   type InvoiceProductGridColumn,
-} from "@/components/molecules/invoice-product-table-row";
-import {
-  useSpreadsheet,
-  type PastePayload,
-  type SelectionBounds,
-} from "@/hooks/use-spreadsheet";
+} from '@/components/molecules/invoice-product-table-row';
+import { useSpreadsheet, type PastePayload, type SelectionBounds } from '@/hooks/use-spreadsheet';
 import {
   applyCellValue,
   createEmptyInvoiceEntry,
   getColumnsForCategory,
-} from "@/lib/ag-grid/invoice-columns";
-import { spreadsheetSelectionToInvoiceCells } from "@/lib/invoice-cell-operations";
-import { exportCsv, exportExcel, exportPdf } from "@/lib/export";
+} from '@/lib/ag-grid/invoice-columns';
+import { spreadsheetSelectionToInvoiceCells } from '@/lib/invoice-cell-operations';
+import { exportCsv, exportExcel, exportPdf } from '@/lib/export';
 import {
   buildInvoiceEntriesExportParams,
   getRowsSelectedBySpreadsheet,
-} from "@/lib/invoice-entry-export";
-import { useExportFilename } from "@/hooks/use-export-filename";
-import { useInvoiceOcrCellActions } from "@/hooks/use-invoice-ocr-cell-actions";
-import { useInvoiceOcrShortcuts } from "@/hooks/use-invoice-ocr-shortcuts";
+} from '@/lib/invoice-entry-export';
+import { useExportFilename } from '@/hooks/use-export-filename';
+import { useInvoiceOcrCellActions } from '@/hooks/use-invoice-ocr-cell-actions';
+import { useInvoiceOcrShortcuts } from '@/hooks/use-invoice-ocr-shortcuts';
 import { useCompanyProductCategoryOptions } from '@/hooks/use-company-product-category-options';
 import type { ConfirmableStockEntry, ResolvedCategory } from '@/types/extraction';
 
@@ -47,7 +36,7 @@ interface ExtractionDataTableProps {
 }
 
 export function ExtractionDataTable({
-  category = "invoice",
+  category = 'invoice',
   companyId,
   data,
   isEditable,
@@ -64,28 +53,22 @@ export function ExtractionDataTable({
     () =>
       columns.map((col) => ({
         ...col,
-        width:
-          col.key === "productName" ? "minmax(180px, 1fr)" : `${col.minWidth}px`,
+        width: col.key === 'productName' ? 'minmax(180px, 1fr)' : `${col.minWidth}px`,
       })),
     [columns],
   );
   const tableRef = useRef<HTMLDivElement>(null);
-  const [rows, setRows] = useState<ConfirmableStockEntry[]>(() =>
-    data.map((row) => ({ ...row })),
-  );
+  const [rows, setRows] = useState<ConfirmableStockEntry[]>(() => data.map((row) => ({ ...row })));
   const [editing, setEditing] = useState<InvoiceEditingCell | null>(null);
 
   useEffect(() => {
     // Keep the editable draft aligned when the extraction payload changes.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     setRows(data.map((row) => ({ ...row })));
     setEditing(null);
   }, [data]);
 
-  const hasChanges = useMemo(
-    () => JSON.stringify(rows) !== JSON.stringify(data),
-    [rows, data],
-  );
+  const hasChanges = useMemo(() => JSON.stringify(rows) !== JSON.stringify(data), [rows, data]);
 
   const updateRows = useCallback((updated: ConfirmableStockEntry[]) => {
     setRows(updated);
@@ -96,25 +79,21 @@ export function ExtractionDataTable({
       const lines: string[] = [];
       for (let rowIndex = bounds.minRow; rowIndex <= bounds.maxRow; rowIndex++) {
         const cells: string[] = [];
-        for (
-          let colIndex = bounds.minCol;
-          colIndex <= bounds.maxCol;
-          colIndex++
-        ) {
+        for (let colIndex = bounds.minCol; colIndex <= bounds.maxCol; colIndex++) {
           const row = rows[rowIndex];
           const field = gridColumns[colIndex]?.key;
           if (!row || !field) {
-            cells.push("");
+            cells.push('');
             continue;
           }
           const rawValue = (row as unknown as Record<string, unknown>)[field];
-          cells.push(rawValue == null ? "" : String(rawValue));
+          cells.push(rawValue == null ? '' : String(rawValue));
         }
-        lines.push(cells.join("\t"));
+        lines.push(cells.join('\t'));
       }
-      return lines.join("\n");
+      return lines.join('\n');
     },
-    [rows],
+    [gridColumns, rows],
   );
 
   const handlePaste = useCallback(
@@ -144,7 +123,7 @@ export function ExtractionDataTable({
       updateRows(updated);
       setEditing(null);
     },
-    [data, isEditable, isSaving, rows, updateRows],
+    [data, gridColumns, isEditable, isSaving, rows, updateRows],
   );
 
   const {
@@ -168,10 +147,7 @@ export function ExtractionDataTable({
     () => getRowsSelectedBySpreadsheet(rows, selected),
     [rows, selected],
   );
-  const selectedCells = useMemo(
-    () => spreadsheetSelectionToInvoiceCells(selected),
-    [selected],
-  );
+  const selectedCells = useMemo(() => spreadsheetSelectionToInvoiceCells(selected), [selected]);
 
   const applyOcrRows = useCallback((nextRows: readonly ConfirmableStockEntry[]) => {
     setRows(nextRows.map((row) => ({ ...row })));
@@ -205,18 +181,18 @@ export function ExtractionDataTable({
 
   const exportOptions = useMemo(
     () => [
-      { label: "CSV", format: "csv" as const, onClick: () => exportCsv(getExportData()) },
-      { label: "Excel (.xls)", format: "excel" as const, onClick: () => exportExcel(getExportData()) },
-      { label: "PDF (stampa)", format: "pdf" as const, onClick: () => exportPdf(getExportData()) },
+      { label: 'CSV', format: 'csv' as const, onClick: () => exportCsv(getExportData()) },
+      {
+        label: 'Excel (.xls)',
+        format: 'excel' as const,
+        onClick: () => exportExcel(getExportData()),
+      },
+      { label: 'PDF (stampa)', format: 'pdf' as const, onClick: () => exportPdf(getExportData()) },
     ],
     [getExportData],
   );
 
-  function handleCellClick(
-    rowIndex: number,
-    colIndex: number,
-    shiftKey: boolean,
-  ) {
+  function handleCellClick(rowIndex: number, colIndex: number, shiftKey: boolean) {
     if (!isEditable || isSaving) return;
     selectCell(rowIndex, colIndex, shiftKey);
     if (!shiftKey) {
@@ -228,9 +204,7 @@ export function ExtractionDataTable({
 
   function handleChange(rowIndex: number, colIndex: number, value: string) {
     const field = gridColumns[colIndex].key;
-    const updated = rows.map((r, i) =>
-      i === rowIndex ? applyCellValue(r, field, value) : r,
-    );
+    const updated = rows.map((r, i) => (i === rowIndex ? applyCellValue(r, field, value) : r));
     updateRows(updated);
   }
 
@@ -246,7 +220,7 @@ export function ExtractionDataTable({
     setEditing(null);
   }, [data]);
 
-  const gridCols = `40px ${gridColumns.map((c) => c.width).join(" ")}`;
+  const gridCols = `40px ${gridColumns.map((c) => c.width).join(' ')}`;
 
   return (
     <div ref={tableRef} className="flex min-w-0 flex-col gap-2">
@@ -262,7 +236,7 @@ export function ExtractionDataTable({
 
       <div
         ref={containerRef}
-        className={`overflow-auto rounded-md border border-border outline-none ${!isEditable ? "opacity-85" : ""}`}
+        className={`overflow-auto rounded-md border border-border outline-none ${!isEditable ? 'opacity-85' : ''}`}
         tabIndex={isEditable ? 0 : -1}
       >
         <InvoiceProductTableHeader

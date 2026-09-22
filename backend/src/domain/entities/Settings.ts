@@ -1,62 +1,21 @@
-import { randomUUID } from 'node:crypto';
-import { Settings as PrismaSettings } from '@prisma/client';
+import {
+  type SettingsFields,
+  type TablesViewMode,
+  type WhatsAppConfig,
+  WhatsAppConnectionStatus,
+} from './settings-config';
+import {
+  createSettingsFields,
+  settingsFieldsFromPrisma,
+  type SettingsCreateProps,
+} from './settings-mappers';
 
-/**
- * WhatsApp connection status enum.
- */
-export enum WhatsAppConnectionStatus {
-  DISCONNECTED = 'disconnected',
-  CONNECTING = 'connecting',
-  CONNECTED = 'connected',
-  QR_CODE_READY = 'qr_code_ready',
-}
-
-/**
- * WhatsApp configuration interface.
- */
-export interface WhatsAppConfig {
-  instanceName: string | null;
-  apiKey: string | null;
-  instanceId: string | null;
-  connected: boolean;
-  phoneNumber: string | null;
-  qrCode: string | null;
-  lastSync: Date | null;
-  allowedNumbers: string[];
-}
-
-/**
- * Allowed values for the user preference that switches between the classic
- * React data-table and the Excel-like AG Grid view.
- */
-export const TABLES_VIEW_MODES = ['grid', 'excel'] as const;
-export type TablesViewMode = (typeof TABLES_VIEW_MODES)[number];
-
-interface SettingsFields {
-  readonly id: string;
-  readonly userId: string;
-  readonly language: string;
-  readonly qdcApiKey: string | null;
-  readonly ifarmingApiKey: string | null;
-  readonly tablesViewMode: TablesViewMode;
-  readonly whatsappInstanceName: string | null;
-  readonly whatsappApiKey: string | null;
-  readonly whatsappInstanceId: string | null;
-  readonly whatsappConnected: boolean;
-  readonly whatsappPhoneNumber: string | null;
-  readonly whatsappQrCode: string | null;
-  readonly whatsappLastSync: Date | null;
-  readonly whatsappAllowedNumbers: string[];
-  readonly emailIngestionEnabled: boolean;
-  readonly openMeteoEnabled: boolean;
-  readonly qdcSyncEnabled: boolean;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
-}
-
-function toTablesViewMode(value: string | null | undefined): TablesViewMode {
-  return value === 'excel' ? 'excel' : 'grid';
-}
+export {
+  TABLES_VIEW_MODES,
+  type TablesViewMode,
+  type WhatsAppConfig,
+  WhatsAppConnectionStatus,
+} from './settings-config';
 
 /**
  * Domain entity representing application settings associated to a specific user.
@@ -108,72 +67,15 @@ export class Settings {
    * Create a new Settings domain entity from raw properties.
    * tablesViewMode defaults to 'grid' when not provided.
    */
-  static create(
-    props: Omit<
-      PrismaSettings,
-      | 'id'
-      | 'createdAt'
-      | 'updatedAt'
-      | 'tablesViewMode'
-      | 'emailIngestionEnabled'
-      | 'openMeteoEnabled'
-      | 'qdcSyncEnabled'
-    > & {
-      tablesViewMode?: string | null;
-      emailIngestionEnabled?: boolean;
-      openMeteoEnabled?: boolean;
-      qdcSyncEnabled?: boolean;
-    },
-  ): Settings {
-    const now = new Date();
-    return new Settings({
-      id: randomUUID(),
-      userId: props.userId,
-      language: props.language,
-      qdcApiKey: props.qdcApiKey ?? null,
-      ifarmingApiKey: props.ifarmingApiKey ?? null,
-      tablesViewMode: toTablesViewMode(props.tablesViewMode),
-      whatsappInstanceName: props.whatsappInstanceName ?? null,
-      whatsappApiKey: props.whatsappApiKey ?? null,
-      whatsappInstanceId: props.whatsappInstanceId ?? null,
-      whatsappConnected: props.whatsappConnected ?? false,
-      whatsappPhoneNumber: props.whatsappPhoneNumber ?? null,
-      whatsappQrCode: props.whatsappQrCode ?? null,
-      whatsappLastSync: props.whatsappLastSync ?? null,
-      whatsappAllowedNumbers: props.whatsappAllowedNumbers ?? [],
-      emailIngestionEnabled: props.emailIngestionEnabled ?? false,
-      openMeteoEnabled: props.openMeteoEnabled ?? false,
-      qdcSyncEnabled: props.qdcSyncEnabled ?? false,
-      createdAt: now,
-      updatedAt: now,
-    });
+  static create(props: SettingsCreateProps): Settings {
+    return new Settings(createSettingsFields(props));
   }
 
   /**
    * Map a Prisma Settings model instance to the domain entity.
    */
-  static fromPrisma(prismaSettings: PrismaSettings): Settings {
-    return new Settings({
-      id: prismaSettings.id,
-      userId: prismaSettings.userId,
-      language: prismaSettings.language,
-      qdcApiKey: prismaSettings.qdcApiKey ?? null,
-      ifarmingApiKey: prismaSettings.ifarmingApiKey ?? null,
-      tablesViewMode: toTablesViewMode(prismaSettings.tablesViewMode),
-      whatsappInstanceName: prismaSettings.whatsappInstanceName ?? null,
-      whatsappApiKey: prismaSettings.whatsappApiKey ?? null,
-      whatsappInstanceId: prismaSettings.whatsappInstanceId ?? null,
-      whatsappConnected: prismaSettings.whatsappConnected ?? false,
-      whatsappPhoneNumber: prismaSettings.whatsappPhoneNumber ?? null,
-      whatsappQrCode: prismaSettings.whatsappQrCode ?? null,
-      whatsappLastSync: prismaSettings.whatsappLastSync ?? null,
-      whatsappAllowedNumbers: prismaSettings.whatsappAllowedNumbers ?? [],
-      emailIngestionEnabled: prismaSettings.emailIngestionEnabled ?? false,
-      openMeteoEnabled: prismaSettings.openMeteoEnabled ?? false,
-      qdcSyncEnabled: prismaSettings.qdcSyncEnabled ?? false,
-      createdAt: prismaSettings.createdAt,
-      updatedAt: prismaSettings.updatedAt,
-    });
+  static fromPrisma(prismaSettings: Parameters<typeof settingsFieldsFromPrisma>[0]): Settings {
+    return new Settings(settingsFieldsFromPrisma(prismaSettings));
   }
 
   /**

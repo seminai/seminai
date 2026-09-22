@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { Camera, Eye, EyeOff, Loader2, Save, User } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
@@ -61,6 +61,8 @@ export function SettingsUserSection() {
   const passwordForm = useForm<PasswordFormValues>({
     defaultValues: { oldPassword: '', newPassword: '', confirmPassword: '' },
   });
+  const newPassword = useWatch({ control: passwordForm.control, name: 'newPassword' });
+  const confirmPassword = useWatch({ control: passwordForm.control, name: 'confirmPassword' });
 
   const invalidateUser = () => queryClient.invalidateQueries({ queryKey: getGetUsersMeQueryKey() });
 
@@ -71,7 +73,13 @@ export function SettingsUserSection() {
   const onChangePassword = passwordForm.handleSubmit((data) => {
     if (data.newPassword !== data.confirmPassword) return;
     updatePassword.mutate(
-      { data: { oldPassword: data.oldPassword, newPassword: data.newPassword, confirmPassword: data.confirmPassword } },
+      {
+        data: {
+          oldPassword: data.oldPassword,
+          newPassword: data.newPassword,
+          confirmPassword: data.confirmPassword,
+        },
+      },
       { onSuccess: () => passwordForm.reset() },
     );
   });
@@ -108,7 +116,13 @@ export function SettingsUserSection() {
             <Camera className="h-5 w-5 text-white" />
           </span>
         </button>
-        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={onFileChange} />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={onFileChange}
+        />
         <div className="text-sm text-muted-foreground">
           {t('settings.user.avatarHint')}
           {uploadPicture.isPending && <span className="ml-2">{t('settings.user.uploading')}</span>}
@@ -124,22 +138,41 @@ export function SettingsUserSection() {
           <form onSubmit={onSaveProfile} className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <FormField label={t('settings.user.fields.name')} {...profileForm.register('name')} />
-              <FormField label={t('settings.user.fields.surname')} {...profileForm.register('surname')} />
+              <FormField
+                label={t('settings.user.fields.surname')}
+                {...profileForm.register('surname')}
+              />
               <div className="space-y-1.5">
                 <Label>{t('common.email')}</Label>
                 <Input value={(user.email as string) ?? ''} disabled />
               </div>
-              <FormField label={t('settings.user.fields.companyName')} {...profileForm.register('companyName')} />
-              <FormField label={t('settings.user.fields.vatNumber')} {...profileForm.register('vatNumber')} />
-              <FormField label={t('settings.user.fields.phoneNumber')} {...profileForm.register('phoneNumber')} />
+              <FormField
+                label={t('settings.user.fields.companyName')}
+                {...profileForm.register('companyName')}
+              />
+              <FormField
+                label={t('settings.user.fields.vatNumber')}
+                {...profileForm.register('vatNumber')}
+              />
+              <FormField
+                label={t('settings.user.fields.phoneNumber')}
+                {...profileForm.register('phoneNumber')}
+              />
               <div className="space-y-1.5 md:col-span-2">
                 <Label>{t('settings.user.fields.address')}</Label>
                 <Input {...profileForm.register('address')} />
               </div>
             </div>
             <div className="flex justify-end">
-              <Button type="submit" disabled={patchUser.isPending || !profileForm.formState.isDirty}>
-                {patchUser.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              <Button
+                type="submit"
+                disabled={patchUser.isPending || !profileForm.formState.isDirty}
+              >
+                {patchUser.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
                 {t('settings.user.save')}
               </Button>
             </div>
@@ -203,12 +236,15 @@ export function SettingsUserSection() {
                 />
               </div>
             </div>
-            {passwordForm.watch('newPassword') !== passwordForm.watch('confirmPassword') &&
+            {newPassword !== confirmPassword &&
               passwordForm.formState.dirtyFields.confirmPassword && (
                 <p className="text-sm text-destructive">{t('settings.user.passwordMismatch')}</p>
               )}
             <div className="flex justify-end">
-              <Button type="submit" disabled={updatePassword.isPending || !passwordForm.formState.isDirty}>
+              <Button
+                type="submit"
+                disabled={updatePassword.isPending || !passwordForm.formState.isDirty}
+              >
                 {updatePassword.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                 {t('settings.user.changePassword')}
               </Button>

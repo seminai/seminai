@@ -198,7 +198,6 @@ export function ChatLayout({ chatId = null }: ChatLayoutProps) {
     onRemoveMention: handleRemoveMention,
     onMentionQueryChange: handleMentionQueryChange,
   } as const;
-
   return (
     <div className="flex flex-1 overflow-hidden">
       {historyOpen && (
@@ -214,7 +213,6 @@ export function ChatLayout({ chatId = null }: ChatLayoutProps) {
           onClose={() => setHistoryOpen(false)}
         />
       )}
-
       <div className="flex flex-1 flex-col">
         <div className="flex items-center justify-between px-4 py-3">
           {historyOpen ? (
@@ -233,13 +231,11 @@ export function ChatLayout({ chatId = null }: ChatLayoutProps) {
             </Button>
           )}
         </div>
-
         {showChatDetail && isDetailLoading && (
           <div className="flex flex-1 items-center justify-center px-6 text-sm text-muted-foreground">
             Caricamento messaggi...
           </div>
         )}
-
         {showChatDetail && isDetailError && (
           <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6">
             <p className="text-sm text-destructive">Errore nel caricamento della chat.</p>
@@ -248,7 +244,6 @@ export function ChatLayout({ chatId = null }: ChatLayoutProps) {
             </Button>
           </div>
         )}
-
         {showChatDetail && !isDetailLoading && !isDetailError ? (
           <>
             {messages.length > 0 || stream.transientUser || stream.transientAssistant ? (
@@ -270,7 +265,6 @@ export function ChatLayout({ chatId = null }: ChatLayoutProps) {
             </div>
           </>
         ) : null}
-
         {!showChatDetail && (
           <>
             {(stream.transientUser || stream.transientAssistant) && (

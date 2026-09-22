@@ -119,13 +119,13 @@ describe('AssignUserToJobUseCase', () => {
   });
 
   it('assigns user when membership is valid', async () => {
-    (jobRepo.findById as any).mockResolvedValue({ id: 'j1', productionUnitId: 'pu1' });
-    (userRepo.findById as any).mockResolvedValue({ id: 'u1' });
-    (puRepo.findById as any).mockResolvedValue({ id: 'pu1', fieldId: 'f1' });
-    (puRepo.listFieldIdsByProductionUnit as any).mockResolvedValue(['f1']);
-    (fieldRepo.findById as any).mockResolvedValue({ id: 'f1', companyId: 'c1' });
-    (uocRepo.findByCompanyAndUser as any).mockResolvedValue({ id: 'uoc1' });
-    (jobRepo.update as any).mockResolvedValue({ id: 'j1', userId: 'u1' });
+    jobRepo.findById.mockResolvedValue({ id: 'j1', productionUnitId: 'pu1' } as Job);
+    userRepo.findById.mockResolvedValue({ id: 'u1' } as never);
+    puRepo.findById.mockResolvedValue({ id: 'pu1' } as never);
+    puRepo.listFieldIdsByProductionUnit.mockResolvedValue(['f1']);
+    fieldRepo.findById.mockResolvedValue({ id: 'f1', companyId: 'c1' } as never);
+    uocRepo.findByCompanyAndUser.mockResolvedValue({ id: 'uoc1' } as never);
+    jobRepo.update.mockResolvedValue({ id: 'j1', userId: 'u1' } as Job);
 
     const useCase = new AssignUserToJobUseCase(jobRepo, userRepo, puRepo, fieldRepo, uocRepo);
     const result = await useCase.execute({ jobId: 'j1', userId: 'u1' });
@@ -133,12 +133,12 @@ describe('AssignUserToJobUseCase', () => {
   });
 
   it('throws when user not in company', async () => {
-    (jobRepo.findById as any).mockResolvedValue({ id: 'j1', productionUnitId: 'pu1' });
-    (userRepo.findById as any).mockResolvedValue({ id: 'u1' });
-    (puRepo.findById as any).mockResolvedValue({ id: 'pu1', fieldId: 'f1' });
-    (puRepo.listFieldIdsByProductionUnit as any).mockResolvedValue(['f1']);
-    (fieldRepo.findById as any).mockResolvedValue({ id: 'f1', companyId: 'c1' });
-    (uocRepo.findByCompanyAndUser as any).mockResolvedValue(null);
+    jobRepo.findById.mockResolvedValue({ id: 'j1', productionUnitId: 'pu1' } as Job);
+    userRepo.findById.mockResolvedValue({ id: 'u1' } as never);
+    puRepo.findById.mockResolvedValue({ id: 'pu1' } as never);
+    puRepo.listFieldIdsByProductionUnit.mockResolvedValue(['f1']);
+    fieldRepo.findById.mockResolvedValue({ id: 'f1', companyId: 'c1' } as never);
+    uocRepo.findByCompanyAndUser.mockResolvedValue(null);
 
     const useCase = new AssignUserToJobUseCase(jobRepo, userRepo, puRepo, fieldRepo, uocRepo);
     await expect(useCase.execute({ jobId: 'j1', userId: 'u1' })).rejects.toThrow(AppError);

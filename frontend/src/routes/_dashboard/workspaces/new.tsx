@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, useWatch } from 'react-hook-form';
 import { ArrowLeft, Loader2 } from 'lucide-react';
-import {
-  usePostWorkspaces,
-  getGetWorkspacesQueryKey,
-} from '@/generated/api/workspaces/workspaces';
+import { usePostWorkspaces, getGetWorkspacesQueryKey } from '@/generated/api/workspaces/workspaces';
 import { extractObject } from '@/lib/api-response';
 import { useWorkspace } from '@/hooks/use-workspace';
 import { useAuth } from '@/hooks/use-auth';
@@ -53,7 +50,9 @@ function CreateWorkspacePage() {
   const queryClient = useQueryClient();
   const { setActiveWorkspaceId } = useWorkspace();
   const { user } = useAuth();
-  const canEnableLabels = user ? (LABEL_MODULE_ROLES as readonly string[]).includes(user.role) : false;
+  const canEnableLabels = user
+    ? (LABEL_MODULE_ROLES as readonly string[]).includes(user.role)
+    : false;
   const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm<CreateWorkspaceFormValues>({
@@ -66,11 +65,11 @@ function CreateWorkspacePage() {
       companyIds: [],
     },
   });
-  const nameValue = form.watch('name');
-  const slugValue = form.watch('slug');
-  const enableLabels = form.watch('enableLabels');
-  const selectedKind = form.watch('kind');
-  const selectedCompanyIds = form.watch('companyIds');
+  const nameValue = useWatch({ control: form.control, name: 'name' });
+  const slugValue = useWatch({ control: form.control, name: 'slug' });
+  const enableLabels = useWatch({ control: form.control, name: 'enableLabels' });
+  const selectedKind = useWatch({ control: form.control, name: 'kind' });
+  const selectedCompanyIds = useWatch({ control: form.control, name: 'companyIds' });
   const { companies: allCompanies } = useCompanies({ scope: 'all' });
 
   useEffect(() => {
@@ -197,7 +196,9 @@ function CreateWorkspacePage() {
                   <>
                     {' '}
                     Anteprima:{' '}
-                    <code className="rounded bg-muted px-1 py-0.5 text-[11px]">{effectiveSlug}</code>
+                    <code className="rounded bg-muted px-1 py-0.5 text-[11px]">
+                      {effectiveSlug}
+                    </code>
                   </>
                 )}
               </p>

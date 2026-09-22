@@ -11,7 +11,7 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: 'https://seminai-be-v2-661301438659.europe-west1.run.app',
+        url: 'http://localhost:8081',
         description: 'Production server',
       },
       {

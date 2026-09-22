@@ -20,56 +20,16 @@ import {
   normalizeDdtCode,
   defaultUnitOfMeasurePrice,
 } from '../../../infrastructure/utils/stock.util';
+import type {
+  CreateOrUpdateProductsAndStocksBulkDTO,
+  CreateOrUpdateResult,
+} from './product-stock-input.types';
 
-export interface ProductWithStockInput {
-  /** When provided, the existing product with this id is updated (and must belong to the warehouse). Otherwise product is matched by name. */
-  id?: string;
-  name: string;
-  sku?: string;
-  barcode?: string;
-  category?: ProductCategory | string;
-  type?: string;
-  description?: string;
-  registrationNumber?: string;
-  labelUrl?: string;
-  labelMetadata?: unknown;
-  stock?: {
-    sourceFileId?: string;
-    sourceExtractionId?: string;
-    quantity: number;
-    unitOfMeasureQuantity: string;
-    price?: number;
-    unitOfMeasurePrice?: string;
-    type?: string;
-    ddtCode?: string;
-    ddtDate?: string | Date;
-    ddtUrlFile?: string;
-    invoiceCode?: string;
-    invoiceDate?: string | Date;
-    invoiceDueDate?: string | Date;
-    invoiceUrlFile?: string;
-    companySupplierName?: string;
-    addressSupplier?: string;
-    vatNumberSupplier?: string;
-    productNameAsOnDocument?: string | null;
-    quantityConverted?: number | null;
-    unitMeasureConverted?: string | null;
-  };
-}
-
-export interface CreateOrUpdateProductsAndStocksBulkDTO {
-  companyId: string;
-  warehouseId?: string;
-  products: ProductWithStockInput[];
-}
-
-export interface CreateOrUpdateResult {
-  productsCreated: number;
-  productsUpdated: number;
-  stocksCreated: number;
-  errors: string[];
-  productIds: string[];
-}
+export type {
+  CreateOrUpdateProductsAndStocksBulkDTO,
+  CreateOrUpdateResult,
+  ProductWithStockInput,
+} from './product-stock-input.types';
 
 export class CreateOrUpdateProductsAndStocksBulkUseCase {
   constructor(

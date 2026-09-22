@@ -115,7 +115,6 @@ export class ContentFetcherService {
 
     return 'unknown';
   }
-
   /**
    * Fetches and extracts text from an HTML page.
    */
@@ -131,9 +130,7 @@ export class ContentFetcherService {
         responseType: 'text',
         maxRedirects: 5,
       });
-
       const text = this.extractTextFromHtml(response.data);
-
       return {
         success: true,
         contentType: 'html',
@@ -149,7 +146,6 @@ export class ContentFetcherService {
       };
     }
   }
-
   /**
    * Fetches and extracts text from a PDF document.
    */
@@ -164,7 +160,6 @@ export class ContentFetcherService {
           text,
         };
       }
-
       // Use pdfToText for standard PDFs
       const text = await this.fetchPdfWithPdfToText(url);
       return {
@@ -174,7 +169,6 @@ export class ContentFetcherService {
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'PDF fetch failed';
-
       // Try Mistral OCR as fallback if pdfToText failed
       if (!useMistralOcr) {
         try {
@@ -188,7 +182,6 @@ export class ContentFetcherService {
           // Both methods failed
         }
       }
-
       return {
         success: false,
         contentType: 'pdf',
@@ -197,7 +190,6 @@ export class ContentFetcherService {
       };
     }
   }
-
   /**
    * Fetches PDF and extracts text using pdfToText library.
    */
@@ -212,12 +204,10 @@ export class ContentFetcherService {
       },
       maxRedirects: 5,
     });
-
     const buffer = Buffer.from(response.data);
     const result = await pdfToText(buffer);
     return result.text;
   }
-
   /**
    * Fetches PDF and extracts text using Mistral OCR.
    */
@@ -226,7 +216,6 @@ export class ContentFetcherService {
     const text = await extractMarkdownWithMistralOCRFromUrl(url);
     return text;
   }
-
   /**
    * Extracts plain text from HTML content.
    * Removes scripts, styles, and HTML tags.
@@ -237,25 +226,19 @@ export class ContentFetcherService {
       .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
       .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
       .replace(/<noscript[^>]*>[\s\S]*?<\/noscript>/gi, '');
-
     // Remove HTML comments
     text = text.replace(/<!--[\s\S]*?-->/g, '');
-
     // Remove HTML tags but keep content
     text = text.replace(/<[^>]+>/g, ' ');
-
     // Decode HTML entities
     text = this.decodeHtmlEntities(text);
-
     // Normalize whitespace
     text = text
       .replace(/\s+/g, ' ')
       .replace(/\n\s*\n/g, '\n')
       .trim();
-
     return text;
   }
-
   /**
    * Decodes common HTML entities.
    */
@@ -288,28 +271,23 @@ export class ContentFetcherService {
       '&frac14;': '¼',
       '&frac34;': '¾',
     };
-
     let decoded = text;
     for (const [entity, char] of Object.entries(entities)) {
       decoded = decoded.replace(new RegExp(entity, 'g'), char);
     }
-
     // Handle numeric entities
     decoded = decoded.replace(/&#(\d+);/g, (_, num) => String.fromCharCode(parseInt(num, 10)));
     decoded = decoded.replace(/&#x([0-9a-fA-F]+);/g, (_, hex) =>
       String.fromCharCode(parseInt(hex, 16)),
     );
-
     return decoded;
   }
-
   /**
    * Clears the cache.
    */
   clearCache(): void {
     this.cache.clear();
   }
-
   /**
    * Gets cache statistics.
    */

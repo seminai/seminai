@@ -286,17 +286,14 @@ export function useMarkDeliveryNoteSent() {
     onSuccess: (_data, vars) => invalidateCommercial(queryClient, vars.companyId),
   });
 }
-
 /** Absolute URL of the printable DDT document (opened in a new tab). */
 export function deliveryNotePrintUrl(deliveryNoteId: string): string {
   return `${getApiBaseUrl()}/ddt/${deliveryNoteId}/print`;
 }
-
 /** Absolute URL of the printable proforma document (opened in a new tab). */
 export function proformaPrintUrl(proformaId: string): string {
   return `${getApiBaseUrl()}/proforma/${proformaId}/print`;
 }
-
 /** Absolute URL of the fixed-column agent order template (.xlsx download). */
 export function orderTemplateUrl(): string {
   return `${getApiBaseUrl()}/orders/template.xlsx`;

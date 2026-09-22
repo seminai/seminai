@@ -1,4 +1,4 @@
-import { Redis } from 'ioredis';
+import { Redis, type RedisOptions } from 'ioredis';
 
 let redisClient: Redis | null = null;
 
@@ -6,7 +6,7 @@ export function getRedisConnection(): Redis {
   if (!redisClient) {
     const isProduction = process.env.NODE_ENV === 'production';
     let redisUrl: string;
-    let redisOptions: any = {
+    let redisOptions: RedisOptions = {
       maxRetriesPerRequest: null,
       enableReadyCheck: false,
     };

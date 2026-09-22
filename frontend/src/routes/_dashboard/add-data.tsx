@@ -58,7 +58,6 @@ export const Route = createFileRoute('/_dashboard/add-data')({
   }),
 });
 
-// eslint-disable-next-line react-refresh/only-export-components -- route file keeps its page component inline
 function AddDataPage() {
   const { type, mode, entity, extractionIds, prefillCompanyId } = Route.useSearch();
   const { activeWorkspaceKind } = useWorkspace();

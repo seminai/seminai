@@ -16,7 +16,7 @@ export interface ContentBlock {
   type: 'text' | 'code' | 'citation';
   content: string;
   language?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface MessageCost {
@@ -25,7 +25,7 @@ export interface MessageCost {
   tavilyCalls?: number;
   totalCostUsd?: number;
   costWithMarginUsd?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export class Message {
@@ -37,10 +37,10 @@ export class Message {
     public readonly sequence: number,
     public readonly contentBlocks?: ContentBlock[],
     public readonly status?: AgentResponseStatus,
-    public readonly pendingToolCalls?: any[],
+    public readonly pendingToolCalls?: unknown[],
     public readonly error?: string,
     public readonly cost?: MessageCost,
-    public readonly metadata?: Record<string, any>,
+    public readonly metadata?: Record<string, unknown>,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date,
   ) {}
@@ -53,10 +53,10 @@ export class Message {
     sequence?: number;
     contentBlocks?: ContentBlock[];
     status?: AgentResponseStatus;
-    pendingToolCalls?: any[];
+    pendingToolCalls?: unknown[];
     error?: string;
     cost?: MessageCost;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     createdAt?: Date;
     updatedAt?: Date;
   }): Message {

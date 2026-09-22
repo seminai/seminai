@@ -204,10 +204,8 @@ export function buildSteps(
       }
     }
   }
-
   return steps;
 }
-
 export function buildCompliance(steps: PlanStep[]): PlanCompliance {
   const conformSteps = steps.filter((s) => s.compliance.status === 'conforme').length;
   const nonConformSteps = steps.filter((s) => s.compliance.status === 'non_conforme').length;
@@ -217,7 +215,6 @@ export function buildCompliance(steps: PlanStep[]): PlanCompliance {
     .map((v) => v.message);
   const overallStatus: ComplianceStatus =
     nonConformSteps > 0 ? 'non_conforme' : warnings.length > 0 ? 'da_verificare' : 'conforme';
-
   return {
     overallStatus,
     totalSteps: steps.length,
@@ -226,10 +223,8 @@ export function buildCompliance(steps: PlanStep[]): PlanCompliance {
     warnings: [...new Set(warnings)],
   };
 }
-
 export function buildStockSummary(stockBalance: StockBalanceLike | undefined): PlanStockSummary {
   if (!stockBalance) return { hasIssues: false, products: [] };
-
   const products = (stockBalance.products ?? stockBalance.items ?? []).map((item) => ({
     name: item.productName ?? item.name ?? '',
     required: item.totalUsed ?? item.required ?? 0,
@@ -240,10 +235,8 @@ export function buildStockSummary(stockBalance: StockBalanceLike | undefined): P
     ),
     unit: item.unit ?? item.unitOfMeasure ?? 'kg',
   }));
-
   return { hasIssues: products.some((p) => p.deficit > 0), products };
 }
-
 export function buildExcludedProductsSummary(
   dosageResults: DosageResultUnit[],
   unitDisplayNames?: ReadonlyMap<string, string>,
@@ -264,7 +257,6 @@ export function buildExcludedProductsSummary(
     })),
   );
 }
-
 export function buildMarkdownTable(steps: PlanStep[], stockSummary: PlanStockSummary): string {
   const rows = steps.map((s, rowIndex) => {
     const icon =
@@ -294,7 +286,6 @@ export function buildMarkdownTable(steps: PlanStep[], stockSummary: PlanStockSum
       formatCell(sources),
     ].join(' | ');
   });
-
   const stockWarnings = stockSummary.hasIssues
     ? `\n⚠️ PROBLEMI STOCK:\n${stockSummary.products
         .filter((p) => p.deficit > 0)
@@ -304,8 +295,6 @@ export function buildMarkdownTable(steps: PlanStep[], stockSummary: PlanStockSum
         )
         .join('\n')}`
     : '';
-
   return `| # | Unità | Coltura | Data | Prodotto | Reg. | P.A. | Avversità | Dose/ha | Limite etichetta | Limite disciplinare | Bollettini/deroghe | Quantità totale | Verdetto | Fonti |\n|---|-------|---------|------|----------|------|------|-----------|---------|----------------|---------------------|--------------------|-----------------|----------|-------|\n| ${rows.join(' |\n| ')} |${stockWarnings}`;
 }
-
 export type { TreatmentPlan };

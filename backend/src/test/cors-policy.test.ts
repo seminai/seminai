@@ -28,7 +28,7 @@ describe('corsPolicy', () => {
   });
 
   it('allows same-host origin for co-hosted developer portal', () => {
-    const host = 'seminai-be-v2-661301438659.europe-west1.run.app';
+    const host = 'api.example.test';
     const origin = `https://${host}`;
     expect(isOriginAllowed(origin, host)).toBe(true);
   });
@@ -37,7 +37,7 @@ describe('corsPolicy', () => {
     expect(
       isOriginAllowed(
         'https://evil.example.com',
-        'seminai-be-v2-661301438659.europe-west1.run.app',
+        'api.example.test',
       ),
     ).toBe(false);
   });

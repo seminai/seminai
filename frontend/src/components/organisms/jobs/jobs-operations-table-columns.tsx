@@ -3,33 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { DataTableTruncatedValue } from "@/components/organisms/data-table";
-import type { JobDraftEditableField } from "./types";
 import { toDateInputValue } from "./mappers";
 import type {
+  JobOperationsColumnsParams,
   JobOperationsTableRow,
-  MachineOption,
 } from "./jobs-operations-table-types";
 import {
   buildDisplayQuantityFromOperation,
   JobOperationStatusDot,
   MachineInput,
 } from "./jobs-operations-table-cells";
-
-function unitSuffix(unit: string | undefined): string | null {
-  const u = unit?.trim() ?? "";
-  return u.length > 0 ? u : null;
-}
-
-export interface JobOperationsColumnsParams {
-  readonly machineOptions: readonly MachineOption[];
-  readonly onSelectOperation: (operationId: string, checked: boolean) => void;
-  readonly onDraftChange: (
-    operationId: string,
-    field: JobDraftEditableField,
-    value: string | boolean,
-  ) => void;
-  readonly onRemoveDraft: (draftId: string) => void;
-}
+import { getUnitSuffix } from "./jobs-operations-table-config";
 
 export function createJobOperationsColumns({
   machineOptions,
@@ -215,7 +199,7 @@ export function createJobOperationsColumns({
         const r = row.original;
         if (r.kind === "draft" && r.draft) {
           const d = r.draft;
-          const unit = unitSuffix(d.unitOfMeasureQuantity);
+          const unit = getUnitSuffix(d.unitOfMeasureQuantity);
           return (
             <div className="flex min-w-0 items-center gap-2">
               <Input
@@ -243,7 +227,7 @@ export function createJobOperationsColumns({
           const quantityValue = draft
             ? draft.quantity
             : String(op.quantity ?? "");
-          const unit = unitSuffix(op.unitOfMeasureQuantity);
+          const unit = getUnitSuffix(op.unitOfMeasureQuantity);
           return (
             <div className="flex min-w-0 items-center gap-2">
               <Input
@@ -306,14 +290,3 @@ export function createJobOperationsColumns({
     },
   ];
 }
-
-export const JOB_OPERATIONS_COLUMN_LABELS: Record<string, string> = {
-  stato: "Stato",
-  data: "Data",
-  verifica: "Verifica",
-  tipo: "Tipo",
-  prodotto: "Prodotto",
-  up: "UP",
-  quantita: "Quantità",
-  macchina: "Macchina",
-};

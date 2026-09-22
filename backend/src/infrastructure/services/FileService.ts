@@ -179,7 +179,6 @@ export class FileService {
         const buffer = fs.readFileSync(localPath);
         const fileName = path.basename(localPath);
         const ext = path.extname(localPath).toLowerCase();
-
         // Determina il MIME type basato sull'estensione
         const mimeTypes: Record<string, string> = {
           '.pdf': 'application/pdf',
@@ -189,7 +188,6 @@ export class FileService {
           '.txt': 'text/plain',
         };
         const mimetype = mimeTypes[ext] || 'application/octet-stream';
-
         const multerFile: MulterFile = {
           fieldname: 'file',
           originalname: fileName,
@@ -202,30 +200,23 @@ export class FileService {
           buffer: buffer,
           stream: Readable.from(buffer),
         } as MulterFile;
-
         console.log(`[FileService] Loaded local file: ${localPath} (${buffer.length} bytes)`);
         return multerFile;
       }
-
       const gsPath = url.replace(`https://storage.googleapis.com/${this.bucket}/`, '');
-
       const bucket = this.storage.bucket(this.bucket);
       const file = bucket.file(gsPath);
-
       const [exists] = await file.exists();
       if (!exists) {
         throw new Error(`File non trovato: ${gsPath}`);
       }
-
       const [metadata] = await file.getMetadata();
       const stream = file.createReadStream();
-
-      const chunks: Buffer[] = [];
+      const chunks: Uint8Array<ArrayBuffer>[] = [];
       for await (const chunk of stream) {
-        chunks.push(Buffer.from(chunk));
+        chunks.push(Uint8Array.from(chunk));
       }
-      const buffer = Buffer.concat(chunks as any); //TODO: tipizzare il buffer
-
+      const buffer = Buffer.concat(chunks);
       const multerFile: MulterFile = {
         fieldname: 'file',
         originalname: gsPath.split('/').pop() || gsPath,
@@ -238,14 +229,12 @@ export class FileService {
         buffer: buffer,
         stream: Readable.from(buffer),
       } as MulterFile;
-
       return multerFile;
     } catch (error) {
       console.error('Errore nel recupero del file da GCS:', error);
       throw error;
     }
   }
-
   /**
    * Elimina un file dal cloud storage
    * @param fileUrl URL del file da eliminare
@@ -253,14 +242,12 @@ export class FileService {
   public async deleteFile(fileUrl: string): Promise<void> {
     try {
       const gsPath = fileUrl.replace(`https://storage.googleapis.com/${this.bucket}/`, '');
-
       const bucket = this.storage.bucket(this.bucket);
       await bucket.file(gsPath).delete();
     } catch (error) {
       throw new Error(`Errore nell'eliminazione del file: ${error.message}`);
     }
   }
-
   /**
    * Ottiene tutti i file di un utente in una directory specifica
    * @param path Percorso opzionale per filtrare i file
@@ -279,30 +266,24 @@ export class FileService {
     if (!this.userId) {
       throw new Error('userId non fornito');
     }
-
     const bucket = this.storage.bucket(this.bucket);
     let prefix: string;
-
     if (path) {
       prefix = `${this.userId}/${path}/`;
     } else {
       prefix = `${this.userId}/`;
     }
-
     try {
       const [files] = await bucket.getFiles({
         prefix: prefix,
       });
-
       const fileList = await Promise.all(
         files.map(async (file) => {
           const [metadata] = await file.getMetadata();
-
           const customMetadata = metadata.metadata as {
             userId: string;
             type: string;
           };
-
           return {
             name: file.name.split('/').pop() || '',
             url: `https://storage.googleapis.com/${this.bucket}/${file.name}`,
@@ -310,7 +291,6 @@ export class FileService {
           };
         }),
       );
-
       return fileList;
     } catch (error) {
       console.error('Errore nel recupero dei file:', error);

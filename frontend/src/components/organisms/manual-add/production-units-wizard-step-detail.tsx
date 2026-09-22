@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,20 +22,14 @@ import {
   type ProductionUnitDetailValues,
 } from '@/components/organisms/manual-add/production-units-wizard-schema';
 import type {
-  DateRange,
-  FieldAllocation,
-  ProductionUnitDraft,
+  ProductionUnitsWizardStepDetailProps,
 } from '@/components/organisms/manual-add/production-units-wizard-types';
 import { totalAllocatedHa } from '@/components/organisms/manual-add/production-units-wizard-types';
-
-interface ProductionUnitsWizardStepDetailProps {
-  readonly allocations: readonly FieldAllocation[];
-  readonly dateRange: DateRange;
-  readonly initialDraft: ProductionUnitDraft | null;
-  readonly disabled?: boolean;
-  readonly onBack: () => void;
-  readonly onSave: (draft: ProductionUnitDraft) => void;
-}
+import {
+  buildProductionUnitDefaultValues,
+  buildProductionUnitDraft,
+} from './production-units-wizard-detail-mappers';
+import { AllocationSummary, DetailActions } from './production-units-wizard-detail-chrome';
 
 export function ProductionUnitsWizardStepDetail({
   allocations,
@@ -48,35 +42,29 @@ export function ProductionUnitsWizardStepDetail({
   const { options: cropOptions, byCode, isLoading: isLoadingCrops } = useCropCatalog();
   const totalHa = totalAllocatedHa(allocations);
   const [isHarvestManuallyEdited, setIsHarvestManuallyEdited] = useState(false);
-
-  const defaultValues: ProductionUnitDetailInput = {
-    name: initialDraft?.name ?? '',
-    cropCode: initialDraft?.cropCode ?? '',
-    cropName: initialDraft?.cropName ?? '',
-    cropType: initialDraft?.cropType ?? '',
-    variety: initialDraft?.variety ?? '',
-    protocoll: initialDraft?.protocoll ?? 'Convenzionale',
-    protectionStructure: initialDraft?.protectionStructure ?? 'Nessuna',
-    startDate: initialDraft?.startDate || dateRange.start,
-    floweringDate: initialDraft?.floweringDate ?? '',
-    harvestingDate: initialDraft?.harvestingDate ?? '',
-    endDate: initialDraft?.endDate || dateRange.end,
-    acquaTotalePeridoL: initialDraft?.acquaTotalePeridoL ?? null,
-    occupazione: initialDraft?.occupazione ?? '',
-    destinazioneDiUso: initialDraft?.destinazioneDiUso ?? '',
-  };
+  const [generatedDraftId] = useState(() => `pu-${crypto.randomUUID()}`);
 
   const form = useForm<ProductionUnitDetailInput, unknown, ProductionUnitDetailValues>({
     resolver: zodResolver(productionUnitDetailSchema),
-    defaultValues,
+    defaultValues: buildProductionUnitDefaultValues(initialDraft, dateRange),
   });
 
-  const cropCode = form.watch('cropCode');
-  const variety = form.watch('variety');
-  const startDate = form.watch('startDate');
+  const cropCode = useWatch({ control: form.control, name: 'cropCode' });
+  const variety = useWatch({ control: form.control, name: 'variety' });
+  const startDate = useWatch({ control: form.control, name: 'startDate' });
+  const protocol = useWatch({ control: form.control, name: 'protocoll' });
+  const protectionStructure = useWatch({
+    control: form.control,
+    name: 'protectionStructure',
+  });
+  const occupation = useWatch({ control: form.control, name: 'occupazione' });
+  const destination = useWatch({ control: form.control, name: 'destinazioneDiUso' });
   const cropEntry = cropCode ? byCode.get(cropCode) : undefined;
-  const { options: varietyOptions, catalog, isLoading: isLoadingVarieties } =
-    useCultivarOptions(cropCode);
+  const {
+    options: varietyOptions,
+    catalog,
+    isLoading: isLoadingVarieties,
+  } = useCultivarOptions(cropCode);
 
   const suggestedHarvestDate = useMemo(() => {
     if (!catalog || !cropCode || !variety.trim()) return null;
@@ -87,20 +75,23 @@ export function ProductionUnitsWizardStepDetail({
     });
   }, [catalog, cropCode, dateRange.start, startDate, variety]);
 
-  function applySuggestedHarvest(force = false) {
-    if (!force && isHarvestManuallyEdited) return;
-    if (suggestedHarvestDate) {
-      form.setValue('harvestingDate', suggestedHarvestDate);
-      if (force) setIsHarvestManuallyEdited(false);
-      return;
-    }
-    if (!cropEntry) return;
-    const fallback = suggestCropDates(cropEntry, startDate || dateRange.start);
-    if (fallback) {
-      form.setValue('harvestingDate', fallback.harvestingDate);
-      if (force) setIsHarvestManuallyEdited(false);
-    }
-  }
+  const applySuggestedHarvest = useCallback(
+    (force = false) => {
+      if (!force && isHarvestManuallyEdited) return;
+      if (suggestedHarvestDate) {
+        form.setValue('harvestingDate', suggestedHarvestDate);
+        if (force) setIsHarvestManuallyEdited(false);
+        return;
+      }
+      if (!cropEntry) return;
+      const fallback = suggestCropDates(cropEntry, startDate || dateRange.start);
+      if (fallback) {
+        form.setValue('harvestingDate', fallback.harvestingDate);
+        if (force) setIsHarvestManuallyEdited(false);
+      }
+    },
+    [cropEntry, dateRange.start, form, isHarvestManuallyEdited, startDate, suggestedHarvestDate],
+  );
 
   useEffect(() => {
     if (!cropEntry) return;
@@ -113,7 +104,15 @@ export function ProductionUnitsWizardStepDetail({
     if (!initialDraft?.harvestingDate && !isHarvestManuallyEdited) {
       applySuggestedHarvest();
     }
-  }, [cropEntry, dateRange.start, form, initialDraft?.floweringDate, initialDraft?.harvestingDate]);
+  }, [
+    applySuggestedHarvest,
+    cropEntry,
+    dateRange.start,
+    form,
+    initialDraft?.floweringDate,
+    initialDraft?.harvestingDate,
+    isHarvestManuallyEdited,
+  ]);
 
   useEffect(() => {
     if (!cropEntry || form.getValues('name').trim()) return;
@@ -128,40 +127,17 @@ export function ProductionUnitsWizardStepDetail({
   useEffect(() => {
     if (!variety.trim() || isHarvestManuallyEdited) return;
     applySuggestedHarvest();
-  }, [variety, suggestedHarvestDate]);
+  }, [applySuggestedHarvest, isHarvestManuallyEdited, variety]);
 
   const handleSubmit = form.handleSubmit((values) => {
-    const draft: ProductionUnitDraft = {
-      id: initialDraft?.id ?? `pu-${Date.now()}`,
-      name: values.name.trim(),
-      cropCode: values.cropCode,
-      cropName: values.cropName,
-      cropType: values.cropType,
-      variety: values.variety.trim(),
-      protocoll: values.protocoll.trim(),
-      protectionStructure: values.protectionStructure.trim(),
-      startDate: values.startDate,
-      floweringDate: values.floweringDate,
-      harvestingDate: values.harvestingDate,
-      endDate: values.endDate,
-      acquaTotalePeridoL: values.acquaTotalePeridoL ?? null,
-      occupazione: values.occupazione?.trim() ?? '',
-      destinazioneDiUso: values.destinazioneDiUso?.trim() ?? '',
-      allocations,
-    };
-    onSave(draft);
+    onSave(buildProductionUnitDraft({ values, initialDraft, generatedDraftId, allocations }));
   });
 
   const errors = form.formState.errors;
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <section className="rounded-lg border bg-muted/30 p-3 text-sm">
-        <p>
-          Superficie allocata: <strong>{totalHa.toLocaleString('it-IT')} ha</strong> su{' '}
-          {allocations.length} {allocations.length === 1 ? 'campo' : 'campi'}
-        </p>
-      </section>
+      <AllocationSummary totalHa={totalHa} allocationCount={allocations.length} />
 
       <section className="rounded-lg border bg-card p-4">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -187,9 +163,7 @@ export function ProductionUnitsWizardStepDetail({
             <SearchableSelectWithOther
               value={variety}
               options={varietyOptions}
-              placeholder={
-                isLoadingVarieties ? 'Caricamento...' : 'Seleziona varietà'
-              }
+              placeholder={isLoadingVarieties ? 'Caricamento...' : 'Seleziona varietà'}
               searchPlaceholder="Cerca varietà..."
               otherPlaceholder="Inserisci varietà"
               disabled={disabled || !cropCode}
@@ -201,7 +175,7 @@ export function ProductionUnitsWizardStepDetail({
           </FormFieldRow>
           <FormFieldRow id="pu-protocol" label="Protocollo *" error={errors.protocoll?.message}>
             <SearchableSelectWithOther
-              value={form.watch('protocoll')}
+              value={protocol}
               options={toSelectOptions(PROTOCOL_OPTIONS)}
               placeholder="Seleziona protocollo"
               searchPlaceholder="Cerca protocollo..."
@@ -210,9 +184,13 @@ export function ProductionUnitsWizardStepDetail({
               onChange={(value) => form.setValue('protocoll', value, { shouldValidate: true })}
             />
           </FormFieldRow>
-          <FormFieldRow id="pu-structure" label="Struttura *" error={errors.protectionStructure?.message}>
+          <FormFieldRow
+            id="pu-structure"
+            label="Struttura *"
+            error={errors.protectionStructure?.message}
+          >
             <SearchableSelectWithOther
-              value={form.watch('protectionStructure')}
+              value={protectionStructure}
               options={toSelectOptions(STRUCTURE_OPTIONS)}
               placeholder="Seleziona struttura"
               searchPlaceholder="Cerca struttura..."
@@ -223,13 +201,9 @@ export function ProductionUnitsWizardStepDetail({
               }
             />
           </FormFieldRow>
-          <FormFieldRow
-            id="pu-occ"
-            label="Uso suolo primario"
-            error={errors.occupazione?.message}
-          >
+          <FormFieldRow id="pu-occ" label="Uso suolo primario" error={errors.occupazione?.message}>
             <SearchableSelectWithOther
-              value={form.watch('occupazione')}
+              value={occupation}
               options={toSelectOptions(SOIL_USE_PRIMARY_OPTIONS)}
               placeholder="Seleziona uso primario"
               searchPlaceholder="Cerca..."
@@ -244,7 +218,7 @@ export function ProductionUnitsWizardStepDetail({
             error={errors.destinazioneDiUso?.message}
           >
             <SearchableSelectWithOther
-              value={form.watch('destinazioneDiUso')}
+              value={destination}
               options={toSelectOptions(SOIL_USE_SECONDARY_OPTIONS)}
               placeholder="Seleziona uso secondario"
               searchPlaceholder="Cerca..."
@@ -260,7 +234,12 @@ export function ProductionUnitsWizardStepDetail({
             <Input id="pu-start" type="date" {...form.register('startDate')} disabled={disabled} />
           </FormFieldRow>
           <FormFieldRow id="pu-flow" label="Fioritura" error={errors.floweringDate?.message}>
-            <Input id="pu-flow" type="date" {...form.register('floweringDate')} disabled={disabled} />
+            <Input
+              id="pu-flow"
+              type="date"
+              {...form.register('floweringDate')}
+              disabled={disabled}
+            />
           </FormFieldRow>
           <div className="space-y-1">
             <FormFieldRow id="pu-harv" label="Raccolta" error={errors.harvestingDate?.message}>
@@ -314,14 +293,7 @@ export function ProductionUnitsWizardStepDetail({
         </FormFieldRow>
       </section>
 
-      <div className="flex justify-between gap-2">
-        <Button type="button" variant="outline" disabled={disabled} onClick={onBack}>
-          Indietro
-        </Button>
-        <Button type="submit" disabled={disabled}>
-          Salva unità
-        </Button>
-      </div>
+      <DetailActions disabled={disabled} onBack={onBack} />
     </form>
   );
 }

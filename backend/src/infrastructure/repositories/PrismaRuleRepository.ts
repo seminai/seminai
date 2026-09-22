@@ -2,6 +2,11 @@ import { PrismaClient, Prisma } from '@prisma/client';
 import { Rule } from '../../domain/entities/Rule';
 import { IRuleRepository } from '../../domain/repositories/IRuleRepository';
 import { RuleListFiltersDTO, RuleWithAssignmentsDTO } from '../../domain/dtos/rule.dto';
+import {
+  buildRuleWhere,
+  RULE_WITH_ASSIGNMENTS_INCLUDE,
+  toRuleWithAssignments,
+} from './prisma-rule-mappers';
 
 export class PrismaRuleRepository implements IRuleRepository {
   constructor(private prisma: PrismaClient) {}
@@ -67,33 +72,8 @@ export class PrismaRuleRepository implements IRuleRepository {
   }
 
   async findWithFilters(filters: RuleListFiltersDTO): Promise<Rule[]> {
-    const where: Prisma.RuleWhereInput = {};
-    if (filters.workspaceId) {
-      where.workspaceId = filters.workspaceId;
-    }
-    if (filters.category) {
-      where.category = filters.category;
-    }
-    if (filters.status) {
-      where.status = filters.status;
-    }
-    if (filters.region) {
-      where.region = filters.region;
-    }
-    if (filters.isPublic !== undefined) {
-      where.isPublic = filters.isPublic;
-    }
-    if (filters.isTemplate !== undefined) {
-      where.isTemplate = filters.isTemplate;
-    }
-    if (filters.search) {
-      where.OR = [
-        { name: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
-      ];
-    }
     const rules = await this.prisma.rule.findMany({
-      where,
+      where: buildRuleWhere(filters),
       include: {
         _count: {
           select: {
@@ -108,148 +88,21 @@ export class PrismaRuleRepository implements IRuleRepository {
   }
 
   async findWithFiltersAndCounts(filters: RuleListFiltersDTO): Promise<RuleWithAssignmentsDTO[]> {
-    const where: Prisma.RuleWhereInput = {};
-    if (filters.workspaceId) {
-      where.workspaceId = filters.workspaceId;
-    }
-    if (filters.category) {
-      where.category = filters.category;
-    }
-    if (filters.status) {
-      where.status = filters.status;
-    }
-    if (filters.region) {
-      where.region = filters.region;
-    }
-    if (filters.isPublic !== undefined) {
-      where.isPublic = filters.isPublic;
-    }
-    if (filters.isTemplate !== undefined) {
-      where.isTemplate = filters.isTemplate;
-    }
-    if (filters.search) {
-      where.OR = [
-        { name: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
-      ];
-    }
     const rules = await this.prisma.rule.findMany({
-      where,
-      include: {
-        _count: {
-          select: {
-            companyRules: true,
-            cropRules: true,
-          },
-        },
-        companyRules: {
-          include: {
-            company: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-          orderBy: {
-            priority: 'asc',
-          },
-        },
-      },
+      where: buildRuleWhere(filters),
+      include: RULE_WITH_ASSIGNMENTS_INCLUDE,
       orderBy: { createdAt: 'desc' },
     });
-    return rules.map((rule) => ({
-      id: rule.id,
-      workspaceId: rule.workspaceId,
-      name: rule.name,
-      slug: rule.slug,
-      description: rule.description,
-      category: rule.category,
-      status: rule.status,
-      content: rule.content,
-      sourceUrl: rule.sourceUrl,
-      sourceDocument: rule.sourceDocument,
-      region: rule.region,
-      validFrom: rule.validFrom,
-      validUntil: rule.validUntil,
-      version: rule.version,
-      isPublic: rule.isPublic,
-      isTemplate: rule.isTemplate,
-      createdById: rule.createdById,
-      createdAt: rule.createdAt,
-      updatedAt: rule.updatedAt,
-      pdfFileUrl: rule.pdfFileUrl,
-      pdfFileName: rule.pdfFileName,
-      isVectorized: rule.isVectorized,
-      vectorizedAt: rule.vectorizedAt,
-      vectorizationError: rule.vectorizationError,
-      companiesCount: rule._count.companyRules,
-      cropsCount: rule._count.cropRules,
-      companies: rule.companyRules.map((assignment) => ({
-        id: assignment.company.id,
-        name: assignment.company.name,
-      })),
-    }));
+    return rules.map(toRuleWithAssignments);
   }
 
   async findWithCounts(id: string): Promise<RuleWithAssignmentsDTO | null> {
     const rule = await this.prisma.rule.findUnique({
       where: { id },
-      include: {
-        _count: {
-          select: {
-            companyRules: true,
-            cropRules: true,
-          },
-        },
-        companyRules: {
-          include: {
-            company: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-          orderBy: {
-            priority: 'asc',
-          },
-        },
-      },
+      include: RULE_WITH_ASSIGNMENTS_INCLUDE,
     });
     if (!rule) return null;
-    return {
-      id: rule.id,
-      workspaceId: rule.workspaceId,
-      name: rule.name,
-      slug: rule.slug,
-      description: rule.description,
-      category: rule.category,
-      status: rule.status,
-      content: rule.content,
-      sourceUrl: rule.sourceUrl,
-      sourceDocument: rule.sourceDocument,
-      region: rule.region,
-      validFrom: rule.validFrom,
-      validUntil: rule.validUntil,
-      version: rule.version,
-      isPublic: rule.isPublic,
-      isTemplate: rule.isTemplate,
-      createdById: rule.createdById,
-      createdAt: rule.createdAt,
-      updatedAt: rule.updatedAt,
-      pdfFileUrl: rule.pdfFileUrl,
-      pdfFileName: rule.pdfFileName,
-      isVectorized: rule.isVectorized,
-      vectorizedAt: rule.vectorizedAt,
-      vectorizationError: rule.vectorizationError,
-      companiesCount: rule._count.companyRules,
-      cropsCount: rule._count.cropRules,
-      companies: rule.companyRules.map((assignment) => ({
-        id: assignment.company.id,
-        name: assignment.company.name,
-      })),
-    };
+    return toRuleWithAssignments(rule);
   }
 
   async findPublicRules(): Promise<Rule[]> {

@@ -12,7 +12,6 @@ export const Route = createFileRoute('/_auth/auth/reset-password')({
   }),
 });
 
-// eslint-disable-next-line react-refresh/only-export-components -- route file keeps its page component inline
 function ResetPasswordRoute() {
   const { token } = Route.useSearch();
   return <ResetPasswordPage token={token} />;

@@ -7,6 +7,11 @@ import { WorkspacePlanLimitsPolicy } from '../application/services/workspace/Wor
 import { UpdateWorkspaceUseCase } from '../application/use-cases/workspace/UpdateWorkspaceUseCase';
 import { AcceptInvitationUseCase } from '../application/use-cases/workspace/AcceptInvitationUseCase';
 import { CreateRuleUseCase } from '../application/use-cases/rule/CreateRuleUseCase';
+import { IRuleRepository } from '../domain/repositories/IRuleRepository';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
+import { IWorkspaceInvitationRepository } from '../domain/repositories/IWorkspaceInvitationRepository';
+import { IWorkspaceMemberRepository } from '../domain/repositories/IWorkspaceMemberRepository';
+import { IWorkspaceRepository } from '../domain/repositories/IWorkspaceRepository';
 
 describe('WorkspacePlanLimitsPolicy', () => {
   it('should return limits for free plan', () => {
@@ -37,10 +42,10 @@ describe('Workspace plan hard-block enforcement', () => {
       countMembers: jest.fn(),
       countRules: jest.fn(),
       update: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<IWorkspaceRepository>;
     const mockWorkspaceMemberRepository = {
       findByWorkspaceAndUser: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<IWorkspaceMemberRepository>;
     const useCase = new UpdateWorkspaceUseCase(
       mockWorkspaceRepository,
       mockWorkspaceMemberRepository,
@@ -92,18 +97,18 @@ describe('Workspace plan hard-block enforcement', () => {
     const mockWorkspaceRepository = {
       findById: jest.fn(),
       countMembers: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<IWorkspaceRepository>;
     const mockWorkspaceMemberRepository = {
       findByWorkspaceAndUser: jest.fn(),
       create: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<IWorkspaceMemberRepository>;
     const mockWorkspaceInvitationRepository = {
       findByToken: jest.fn(),
       update: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<IWorkspaceInvitationRepository>;
     const mockUserRepository = {
       findById: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<IUserRepository>;
     const useCase = new AcceptInvitationUseCase(
       mockWorkspaceRepository,
       mockWorkspaceMemberRepository,
@@ -168,14 +173,14 @@ describe('Workspace plan hard-block enforcement', () => {
     const mockRuleRepository = {
       findBySlug: jest.fn(),
       create: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<IRuleRepository>;
     const mockWorkspaceRepository = {
       findById: jest.fn(),
       countRules: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<IWorkspaceRepository>;
     const mockWorkspaceMemberRepository = {
       findByWorkspaceAndUser: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<IWorkspaceMemberRepository>;
     const useCase = new CreateRuleUseCase(
       mockRuleRepository,
       mockWorkspaceRepository,

@@ -1,0 +1,24 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Ignored generated build output"
+paths = [
+  '''^backend/dist/''',
+  '''^frontend/dist/''',
+  '''^packages/(?:mcp|telegram-bot)/dist/''',
+]
+
+[[allowlists]]
+description = "Documented placeholders and deterministic synthetic test values"
+regexTarget = "secret"
+regexes = [
+  '''^(?:YOUR_JWT|YOUR_JWT_TOKEN|YOUR_TOKEN|YOUR_VALID_TOKEN|your_token_here)$''',
+  '''^(?:admin-token-xyz\.\.\.|user-token-abc\.\.\.)$''',
+  '''^eyJhbGciOi\.\.\.$''',
+  '''^eyJhbGciOiJIUzI1NiIs\.\.\.$''',
+  '''^eyJhbGciOi(?:JIUzI1Ni|JSUzI1Ni)IsInR5cCI6IkpXVCJ9\.\.\.$''',
+  '''^(?:apikey-xyz789|qdc-test-api-key-12345|ifarming-test-api-key-67890)$''',
+  '''^(?:sk_live_abc123|1234567890abcdef)$''',
+  '''^(?:useGpt4oThreshold|seminai_bucket_1)$''',
+]

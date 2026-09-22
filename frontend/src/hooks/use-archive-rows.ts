@@ -6,10 +6,7 @@ import { useFieldNoteCompanies } from '@/hooks/use-field-notes';
 import { useDosageAgentJobs } from '@/hooks/use-dosage-agent-job';
 import { useWorkspace } from '@/hooks/use-workspace';
 import { isManufacturingWorkspace } from '@/types/workspace';
-import {
-  formatJobGroupTitle,
-  parseJobGroupCodeFromGeneratedId,
-} from '@/lib/job-group-format';
+import { formatJobGroupTitle, parseJobGroupCodeFromGeneratedId } from '@/lib/job-group-format';
 import { formatDate } from '@/lib/format-date';
 import type { DosageAgentJobListItem } from '@/types/planning';
 import type {
@@ -64,7 +61,6 @@ function extractionToRow(item: ArchiveListItem): ExtractionArchiveRow {
     category: item.category as ResolvedCategory,
   };
 }
-
 function generatedToRow(item: ArchiveListItem): EntityArchiveRow {
   const type = item.generatedType ?? 'company';
   const jobGroupCode = type === 'job_group' ? parseJobGroupCodeFromGeneratedId(item.id) : null;
@@ -87,7 +83,6 @@ function generatedToRow(item: ArchiveListItem): EntityArchiveRow {
     pendingOperations: item.pendingOperations,
   };
 }
-
 function dosageJobToRow(job: DosageAgentJobListItem): DosageJobArchiveRow {
   const updatedAt = job.updatedAt ?? job.createdAt ?? new Date().toISOString();
   return {
@@ -106,7 +101,6 @@ function dosageJobToRow(job: DosageAgentJobListItem): DosageJobArchiveRow {
     state: job.state,
   };
 }
-
 interface UseArchiveRowsParams {
   readonly companyId?: string;
   readonly page: number;
@@ -120,7 +114,6 @@ interface UseArchiveRowsParams {
   readonly updatedAtFrom?: string;
   readonly updatedAtTo?: string;
 }
-
 export function useArchiveRows(params: UseArchiveRowsParams): {
   rows: ArchiveRow[];
   isLoading: boolean;
@@ -149,7 +142,6 @@ export function useArchiveRows(params: UseArchiveRowsParams): {
     updatedAtTo: params.updatedAtTo,
   });
   const { data: dosageJobsPage, isLoading: dosageJobsLoading } = useDosageAgentJobs();
-
   const baseRows = useMemo<ArchiveRow[]>(() => {
     const items = extractionPage?.items;
     if (!items || items.length === 0) return [];
@@ -157,20 +149,20 @@ export function useArchiveRows(params: UseArchiveRowsParams): {
       item.kind === 'generated' ? generatedToRow(item) : extractionToRow(item),
     );
   }, [extractionPage?.items]);
-
   const batchIds = useMemo(
     () => [
       ...new Set(
         baseRows
-          .filter((r): r is ExtractionArchiveRow => r.kind === 'extraction' && r.status === 'In caricamento')
+          .filter(
+            (r): r is ExtractionArchiveRow =>
+              r.kind === 'extraction' && r.status === 'In caricamento',
+          )
           .map((r) => r.batchId),
       ),
     ],
     [baseRows],
   );
-
   const { getProgress } = useExtractionProgress(batchIds);
-
   const progressRows = useMemo<ArchiveRow[]>(
     () =>
       baseRows.map((row) => {
@@ -181,7 +173,6 @@ export function useArchiveRows(params: UseArchiveRowsParams): {
       }),
     [baseRows, getProgress],
   );
-
   const dosageJobRows = useMemo<DosageJobArchiveRow[]>(() => {
     if (isManufacturing || !shouldIncludeDosageRows(params)) return [];
     const jobs = dosageJobsPage?.data ?? [];
@@ -191,18 +182,14 @@ export function useArchiveRows(params: UseArchiveRowsParams): {
       .filter((row) => matchesDosageRowFilters(row, params))
       .filter((row) => matchesUpdatedAtRange(row.aggiornatoIso, params));
   }, [dosageJobsPage?.data, params, isManufacturing]);
-
   const activeDosageJobCount = dosageJobRows.length;
-
   useEffect(() => {
     if (previousActiveDosageCountRef.current > 0 && activeDosageJobCount === 0) {
       void queryClient.invalidateQueries({ queryKey: extractionKeys.lists() });
     }
     previousActiveDosageCountRef.current = activeDosageJobCount;
   }, [activeDosageJobCount, queryClient]);
-
   const { companies: fieldNoteCompanies } = useFieldNoteCompanies();
-
   const fieldNoteRows = useMemo<EntityArchiveRow[]>(() => {
     if (isManufacturing || params.page !== 1 || fieldNoteCompanies.length === 0) return [];
     const filtered = params.companyId
@@ -224,8 +211,7 @@ export function useArchiveRows(params: UseArchiveRowsParams): {
         entityType: 'field-notes' as const,
         companyId: company.id,
       }));
-  }, [params.page, params.companyId, fieldNoteCompanies, params, isManufacturing]);
-
+  }, [fieldNoteCompanies, params, isManufacturing]);
   const rows = useMemo<ArchiveRow[]>(() => {
     const merged: ArchiveRow[] = [...dosageJobRows, ...progressRows, ...fieldNoteRows];
     if (params.sortBy !== 'updatedAt') return merged;
@@ -237,7 +223,6 @@ export function useArchiveRows(params: UseArchiveRowsParams): {
       return aIso < bIso ? -direction : direction;
     });
   }, [dosageJobRows, fieldNoteRows, progressRows, params.sortBy, params.sortOrder]);
-
   const extractionTotal = extractionPage?.totalItems ?? extractionPage?.total ?? 0;
   return {
     rows,
@@ -246,12 +231,10 @@ export function useArchiveRows(params: UseArchiveRowsParams): {
     isLoading: extractionLoading || dosageJobsLoading,
   };
 }
-
 function generatedStatus(item: ArchiveListItem, type: string): string {
   if (type !== 'job_group') return 'Generato';
   return (item.pendingOperations ?? 0) > 0 ? 'Da verificare' : 'Confermato';
 }
-
 function generatedTitle(type: string, jobGroupCode: string | null): string {
   if (type === 'fields') return 'Campi';
   if (type === 'production_units') return 'Unità Produttive';
@@ -259,7 +242,6 @@ function generatedTitle(type: string, jobGroupCode: string | null): string {
   if (type === 'job_group') return formatJobGroupTitle(jobGroupCode);
   return 'Azienda';
 }
-
 function generatedFileType(type: string): string {
   if (type === 'fields') return 'Lista campi';
   if (type === 'production_units') return 'Lista unità produttive';
@@ -267,7 +249,6 @@ function generatedFileType(type: string): string {
   if (type === 'job_group') return 'Gruppo operazioni';
   return 'Informazioni aziendali';
 }
-
 function generatedEntityType(type: string): EntityArchiveRow['entityType'] {
   if (type === 'fields') return 'fields';
   if (type === 'production_units') return 'production-units';
@@ -275,7 +256,6 @@ function generatedEntityType(type: string): EntityArchiveRow['entityType'] {
   if (type === 'job_group') return 'jobs';
   return 'company';
 }
-
 function normalizeGeneratedId(item: ArchiveListItem): string {
   if (item.generatedType === 'job_group') {
     const legacyMatch = item.id.match(/^generated-job_group-([0-9a-f-]{36})-/i);
@@ -298,13 +278,11 @@ function normalizeGeneratedId(item: ArchiveListItem): string {
   }
   return item.id;
 }
-
 function shouldIncludeDosageRows(params: UseArchiveRowsParams): boolean {
   if (params.page !== 1) return false;
   if (params.category && params.category.length > 0) return false;
   return !params.status || params.status.length === 0 || params.status.includes('LOADING');
 }
-
 function matchesDosageRowFilters(row: DosageJobArchiveRow, params: UseArchiveRowsParams): boolean {
   const q = params.q?.trim().toLowerCase();
   const fileNames = params.fileNames?.map((name) => name.toLowerCase());
@@ -313,7 +291,6 @@ function matchesDosageRowFilters(row: DosageJobArchiveRow, params: UseArchiveRow
   if (!fileNames || fileNames.length === 0) return true;
   return fileNames.some((fileName) => row.titolo.toLowerCase().includes(fileName));
 }
-
 function matchesUpdatedAtRange(iso: string, params: UseArchiveRowsParams): boolean {
   if (!params.updatedAtFrom && !params.updatedAtTo) return true;
   if (!iso) return false;

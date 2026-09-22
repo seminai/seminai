@@ -50,7 +50,7 @@ Restituisce lo stato di revoca, la data e il motivo per ogni prodotto.`,
         // Batch mode
         if (products && products.length > 0) {
           const results = checkProductsBatchRevoked(products);
-          const output: unknown[] = [];
+          const output: Array<{ readonly status: 'REVOCATO' | 'ATTIVO'; readonly [key: string]: unknown }> = [];
           for (const [key, result] of results) {
             output.push({
               key,
@@ -65,7 +65,7 @@ Restituisce lo stato di revoca, la data e il motivo per ogni prodotto.`,
                 : {}),
             });
           }
-          const revokedCount = output.filter((o: any) => o.status === 'REVOCATO').length;
+          const revokedCount = output.filter((item) => item.status === 'REVOCATO').length;
           return JSON.stringify({
             totalChecked: products.length,
             revokedCount,

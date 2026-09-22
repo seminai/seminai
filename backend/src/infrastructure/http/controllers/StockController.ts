@@ -4,7 +4,7 @@ import { Stock } from '../../../domain/entities/Stock';
 import { IStockRepository } from '../../../domain/repositories/IStockRepository';
 import { Stock as PrismaStock } from '@prisma/client';
 import { FileService } from '../../services/FileService';
-import { UpdateStockProps } from '../../../domain/dtos/stock.dto';
+import { CreateStockProps, UpdateStockProps } from '../../../domain/dtos/stock.dto';
 
 // Extend PrismaStock to include new fields if they are not yet generated in the client
 interface ExtendedStockInput
@@ -77,8 +77,7 @@ export class StockController {
     const normalizedType = this.normalizeStockType(type);
     const normalizedQuantity = this.normalizeStockQuantity(normalizedType, quantity);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const input: any = {
+    const input: CreateStockProps = {
       productId,
       jobId,
       quantity: normalizedQuantity,

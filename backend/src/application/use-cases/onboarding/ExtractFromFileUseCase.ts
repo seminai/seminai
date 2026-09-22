@@ -181,9 +181,7 @@ export class ExtractFromFileUseCase {
       }));
     } else if (isGeojson) {
       report('parsing_geojson', 10, 'Parsing PCG GeoJSON...');
-
       const geoResult = await parsePcgGeojson(fileBuffer);
-
       report('extracting_fields', 50, 'Elaborazione campi da PCG GeoJSON...');
       fields = geoResult.fields.map((f) => ({
         name: f.name,
@@ -218,7 +216,6 @@ export class ExtractFromFileUseCase {
         inizioConduzione: f.inizioConduzione,
         fineConduzione: f.fineConduzione,
       }));
-
       report('extracting_production_units', 80, 'Elaborazione unità produttive...');
       productionUnits = geoResult.productionUnits.map((pu) => ({
         name: pu.name,
@@ -239,16 +236,13 @@ export class ExtractFromFileUseCase {
       }));
     } else {
       report('parsing_csv', 10, 'Parsing CSV/Excel...');
-
       const fieldAgent = new FieldCsvAgent();
       const puAgent = new ProductionUnitCsvAgent();
-
       report('extracting_fields', 20, 'Estrazione campi da CSV/Excel...');
       const [fieldResult, puExtractionResult] = await Promise.all([
         fieldAgent.extractFieldsFromCsv(fileBuffer),
         puAgent.extractProductionUnitsFromCsv(fileBuffer),
       ]);
-
       report('extracting_production_units', 70, 'Elaborazione unità produttive...');
       fields = fieldResult.fields;
       productionUnits = puExtractionResult.units.map((pu) => ({
@@ -269,16 +263,13 @@ export class ExtractFromFileUseCase {
         fieldAllocations: pu.allocations,
       }));
     }
-
     report('finalizing', 95, 'Finalizzazione risultati...');
-
     const result: ExtractionResult = {
       fields,
       productionUnits,
       fieldCount: fields.length,
       productionUnitCount: productionUnits.length,
     };
-
     report(
       'completed',
       100,
@@ -286,7 +277,6 @@ export class ExtractFromFileUseCase {
     );
     return result;
   }
-
   private extractShapefileFromZip(buffer: Buffer): { shp: Buffer; dbf: Buffer } | null {
     if (buffer.length < 4 || buffer[0] !== 0x50 || buffer[1] !== 0x4b) {
       return null;

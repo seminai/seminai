@@ -82,7 +82,7 @@ export class AcceptInvitationUseCase {
     // Mark invitation as accepted
     await this.workspaceInvitationRepository.update(invitation.id, {
       acceptedAt: new Date(),
-    } as any);
+    });
 
     return createdMember;
   }

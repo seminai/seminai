@@ -2,6 +2,7 @@ import { FieldNote } from '../../../domain/entities/FieldNote';
 import {
   IFieldNoteRepository,
   UpdateFieldNoteData,
+  FieldNoteWithRelations,
 } from '../../../domain/repositories/IFieldNoteRepository';
 import { AppError } from '../../../domain/errors/AppError';
 import { UpdateFieldNoteDto } from '../../../domain/dtos/field-note.dto';
@@ -41,7 +42,7 @@ export class UpdateFieldNoteUseCase {
     id: string,
     userId: string,
     dto: UpdateFieldNoteDto,
-  ): Promise<Awaited<ReturnType<IFieldNoteRepository['findByIdWithRelationsForResponse']>>> {
+  ): Promise<FieldNoteWithRelations> {
     await this.execute(id, userId, dto);
     const fieldNoteWithRelations =
       await this.fieldNoteRepository.findByIdWithRelationsForResponse(id);

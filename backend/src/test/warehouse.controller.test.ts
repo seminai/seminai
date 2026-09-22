@@ -25,14 +25,12 @@ describe('WarehouseController', () => {
     } as unknown as jest.Mocked<ResourceAccessGuard>;
 
     controller = new WarehouseController(mockRepository, mockAccess);
-
     mockResponse = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
       send: jest.fn(),
     } as unknown as Partial<Response>;
   });
-
   describe('create', () => {
     it('should create a warehouse for authenticated user', async () => {
       const now = new Date();
@@ -52,7 +50,6 @@ describe('WarehouseController', () => {
         now,
         now,
       );
-
       mockRequest = {
         body: {
           companyId: 'c1',
@@ -69,11 +66,8 @@ describe('WarehouseController', () => {
         },
         user: { id: 'u1' },
       };
-
       mockRepository.create.mockResolvedValue(created);
-
       await controller.create(mockRequest as Request, mockResponse as Response);
-
       expect(mockRepository.create).toHaveBeenCalled();
       expect(mockResponse.status).toHaveBeenCalledWith(201);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -81,14 +75,12 @@ describe('WarehouseController', () => {
         data: { warehouse: created },
       });
     });
-
     it('should reject unauthenticated', async () => {
       mockRequest = { body: {}, user: undefined };
       await expect(
         controller.create(mockRequest as Request, mockResponse as Response),
       ).rejects.toThrow(AppError);
     });
-
     it('should create warehouse with only companyId and name (other fields default to empty)', async () => {
       const now = new Date();
       const created = new Warehouse(
@@ -123,7 +115,6 @@ describe('WarehouseController', () => {
       expect(call.foglio).toBe('');
       expect(call.particella).toBe('');
     });
-
     it('should reject missing companyId or name', async () => {
       mockRequest = { body: { name: 'x' }, user: { id: 'u1' } };
       await expect(
@@ -135,7 +126,6 @@ describe('WarehouseController', () => {
       ).rejects.toThrow(AppError);
     });
   });
-
   describe('findById', () => {
     it('should return warehouse when found', async () => {
       const now = new Date();
@@ -157,14 +147,12 @@ describe('WarehouseController', () => {
       );
       mockRequest = { params: { id: 'w1' }, user: { id: 'u1' } };
       mockAccess.assertWarehouse.mockResolvedValue(found);
-
       await controller.findById(mockRequest as Request, mockResponse as Response);
       expect(mockResponse.json).toHaveBeenCalledWith({
         status: 'success',
         data: { warehouse: found },
       });
     });
-
     it('should throw when not found', async () => {
       mockRequest = { params: { id: 'w1' }, user: { id: 'u1' } };
       mockAccess.assertWarehouse.mockRejectedValue(
@@ -174,7 +162,6 @@ describe('WarehouseController', () => {
         controller.findById(mockRequest as Request, mockResponse as Response),
       ).rejects.toThrow(AppError);
     });
-
     it('should reject access to another company warehouse', async () => {
       mockRequest = { params: { id: 'w1' }, user: { id: 'u2' } };
       mockAccess.assertWarehouse.mockRejectedValue(
@@ -185,7 +172,6 @@ describe('WarehouseController', () => {
       ).rejects.toMatchObject({ statusCode: 403, code: 'NO_COMPANY_ACCESS' });
     });
   });
-
   describe('listByCompany', () => {
     it('should list warehouses', async () => {
       const now = new Date();
@@ -209,7 +195,6 @@ describe('WarehouseController', () => {
       ];
       mockRequest = { params: { companyId: 'c1' } };
       mockRepository.findManyByCompanyId.mockResolvedValue(list);
-
       await controller.listByCompany(mockRequest as Request, mockResponse as Response);
       expect(mockResponse.json).toHaveBeenCalledWith({
         status: 'success',
@@ -217,7 +202,6 @@ describe('WarehouseController', () => {
       });
     });
   });
-
   describe('update', () => {
     it('should update existing warehouse', async () => {
       const now = new Date();
@@ -260,14 +244,12 @@ describe('WarehouseController', () => {
       };
       mockAccess.assertWarehouse.mockResolvedValue(existing);
       mockRepository.update.mockResolvedValue(updated);
-
       await controller.update(mockRequest as Request, mockResponse as Response);
       expect(mockResponse.json).toHaveBeenCalledWith({
         status: 'success',
         data: { warehouse: updated },
       });
     });
-
     it('should throw when not found', async () => {
       mockRequest = { params: { id: 'w1' }, body: {}, user: { id: 'u1' } };
       mockAccess.assertWarehouse.mockRejectedValue(
@@ -278,7 +260,6 @@ describe('WarehouseController', () => {
       ).rejects.toThrow(AppError);
     });
   });
-
   describe('delete', () => {
     it('should delete existing warehouse', async () => {
       const now = new Date();
@@ -301,13 +282,11 @@ describe('WarehouseController', () => {
       mockRequest = { params: { id: 'w1' }, user: { id: 'u1' } };
       mockAccess.assertWarehouse.mockResolvedValue(existing);
       mockRepository.delete.mockResolvedValue();
-
       await controller.delete(mockRequest as Request, mockResponse as Response);
       expect(mockRepository.delete).toHaveBeenCalledWith('w1');
       expect(mockResponse.status).toHaveBeenCalledWith(204);
       expect(mockResponse.send).toHaveBeenCalled();
     });
-
     it('should throw when not found', async () => {
       mockRequest = { params: { id: 'w1' }, user: { id: 'u1' } };
       mockAccess.assertWarehouse.mockRejectedValue(

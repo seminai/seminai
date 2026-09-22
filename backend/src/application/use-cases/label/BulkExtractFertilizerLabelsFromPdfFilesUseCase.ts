@@ -8,6 +8,7 @@ import { ILabelTextProvider } from '../../../domain/repositories/ILabelServices'
 import { ExtractFertilizerLabelAdapter } from '../../../infrastructure/services/tool/extractFertilizerLabel.adapter';
 import { IFileUploadService } from './BulkExtractLabelsFromPdfFilesUseCase';
 import { DosageAgentContext } from '../../../infrastructure/services/agents/dosage_agent/context';
+import type { BaseCallbackHandler } from '@langchain/core/callbacks/base';
 
 const MIN_USABLE_FERTILIZER_CONFIDENCE = 20;
 
@@ -15,7 +16,7 @@ export interface BulkExtractFertilizerFromPdfFilesInput {
   readonly files: ReadonlyArray<{ fileName: string; pdfBuffer: Buffer }>;
   readonly userId: string;
   readonly concurrency?: number;
-  readonly callbacks?: ReadonlyArray<unknown>;
+  readonly callbacks?: ReadonlyArray<BaseCallbackHandler>;
   readonly usageAccumulator?: { addMistralOcrPage: () => void };
   readonly context?: DosageAgentContext;
 }
@@ -84,7 +85,7 @@ export class BulkExtractFertilizerLabelsFromPdfFilesUseCase {
   private async extractAndPersist(
     file: { fileName: string; pdfBuffer: Buffer },
     userId: string,
-    callbacks?: ReadonlyArray<unknown>,
+    callbacks?: ReadonlyArray<BaseCallbackHandler>,
     usageAccumulator?: { addMistralOcrPage: () => void },
   ): Promise<BulkExtractFertilizerFromPdfFilesOutput['results'][number]> {
     try {
@@ -105,9 +106,7 @@ export class BulkExtractFertilizerLabelsFromPdfFilesUseCase {
       if (textRes.usedMistralOcr && usageAccumulator) {
         usageAccumulator.addMistralOcrPage();
       }
-      // Cast callbacks to the type expected by the adapter
-      const adapterCallbacks = callbacks as any;
-      const label = await this.extractor.extract(textRes.text, adapterCallbacks);
+      const label = await this.extractor.extract(textRes.text, callbacks);
 
       const name =
         label.prodotto_fertilizzante_ue?.identificazione_prodotto?.nome_commerciale?.trim() || null;

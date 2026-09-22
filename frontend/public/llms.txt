@@ -16,7 +16,7 @@ Seminai serves two audiences: agricultural businesses and agronomist consultants
 
 ## Developer
 
-- [Developer portal](https://seminai-be-v2-661301438659.europe-west1.run.app/developer): API keys, usage dashboard, OpenAPI documentation.
+- [Developer portal](http://localhost:8081/developer): API keys, usage dashboard, OpenAPI documentation.
 - [OCR landing & API docs](https://seminai.github.io/seminai-be-v2/): product overview and Extraction API usage.
 
 ## Contact

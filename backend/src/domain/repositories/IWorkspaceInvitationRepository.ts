@@ -8,7 +8,10 @@ export interface IWorkspaceInvitationRepository {
   findByWorkspaceId(workspaceId: string): Promise<WorkspaceInvitation[]>;
   findPendingByWorkspaceId(workspaceId: string): Promise<WorkspaceInvitation[]>;
   findPendingByEmail(email: string): Promise<WorkspaceInvitation[]>;
-  update(id: string, data: Partial<WorkspaceInvitation>): Promise<WorkspaceInvitation>;
+  update(
+    id: string,
+    data: { readonly role?: WorkspaceInvitation['role']; readonly expiresAt?: Date; readonly acceptedAt?: Date | null },
+  ): Promise<WorkspaceInvitation>;
   delete(id: string): Promise<void>;
   deleteExpired(): Promise<number>;
 }

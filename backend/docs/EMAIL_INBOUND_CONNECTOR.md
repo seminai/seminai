@@ -59,7 +59,7 @@ replies via the existing `EmailService` (Gmail SMTP).
 ```bash
 curl -X POST http://localhost:3001/webhooks/email/sendgrid \
   -H "X-Webhook-Token: $SENDGRID_INBOUND_WEBHOOK_TOKEN" \
-  -F "from=francemazzi@gmail.com" \
+  -F "from=user@example.com" \
   -F "to=inbox@inbox.seminai.app" \
   -F "subject=Piano colturale 2026" \
   -F "text=Ecco i documenti" \
@@ -76,7 +76,7 @@ Verify in `npx prisma studio`:
 
 ## Multi-company disambiguation
 
-If `francemazzi@gmail.com` is associated to N companies, the user
+If `user@example.com` is associated to N companies, the user
 receives a reply like:
 
 ```

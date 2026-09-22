@@ -89,14 +89,12 @@ describe('FieldController', () => {
         data: { field: created },
       });
     });
-
     it('should reject unauthenticated', async () => {
       mockRequest = { body: {}, user: undefined };
       await expect(
         controller.create(mockRequest as Request, mockResponse as Response),
       ).rejects.toThrow(AppError);
     });
-
     it('should reject missing required fields', async () => {
       mockRequest = { body: { companyId: 'c1', name: 'X' }, user: { id: 'u1' } };
       await expect(
@@ -104,7 +102,6 @@ describe('FieldController', () => {
       ).rejects.toThrow(AppError);
     });
   });
-
   describe('createBulk', () => {
     it('should create many fields with createMany', async () => {
       mockRequest = {
@@ -132,13 +129,11 @@ describe('FieldController', () => {
         },
         user: { id: 'u1' },
       };
-
       await controller.createBulk(mockRequest as Request, mockResponse as Response);
       expect(mockRepository.createMany).toHaveBeenCalledTimes(1);
       expect(mockResponse.status).toHaveBeenCalledWith(201);
     });
   });
-
   describe('findById', () => {
     it('should return field when found', async () => {
       const field = Field.create({
@@ -176,12 +171,10 @@ describe('FieldController', () => {
       });
       mockRequest = { params: { id: 'f1' } };
       mockRepository.findById.mockResolvedValue(field);
-
       await controller.findById(mockRequest as Request, mockResponse as Response);
       expect(mockResponse.json).toHaveBeenCalledWith({ status: 'success', data: { field } });
     });
   });
-
   describe('update', () => {
     it('should update existing field', async () => {
       const existing = Field.create({
@@ -253,7 +246,6 @@ describe('FieldController', () => {
       mockRequest = { params: { id: 'f1' }, body: { name: 'Field B', address: 'Via Roma 2' } };
       mockRepository.findById.mockResolvedValue(existing);
       mockRepository.update.mockResolvedValue(updated);
-
       await controller.update(mockRequest as Request, mockResponse as Response);
       expect(mockResponse.json).toHaveBeenCalledWith({
         status: 'success',
@@ -261,7 +253,6 @@ describe('FieldController', () => {
       });
     });
   });
-
   describe('delete', () => {
     it('should delete existing field', async () => {
       const existing = Field.create({
@@ -300,7 +291,6 @@ describe('FieldController', () => {
       mockRequest = { params: { id: 'f1' } };
       mockRepository.findById.mockResolvedValue(existing);
       mockRepository.delete.mockResolvedValue();
-
       await controller.delete(mockRequest as Request, mockResponse as Response);
       expect(mockRepository.delete).toHaveBeenCalledWith('f1');
       expect(mockResponse.status).toHaveBeenCalledWith(204);

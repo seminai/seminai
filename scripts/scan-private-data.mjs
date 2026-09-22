@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { extname, resolve } from 'node:path';
 import {
   forbiddenContentFragments,
@@ -50,7 +50,9 @@ function trackedFiles() {
 
 function contentViolation(path) {
   if (ignoredFiles.has(path) || binaryExtensions.has(extname(path).toLowerCase())) return false;
-  const content = readFileSync(resolve(repositoryRoot, path), 'utf8');
+  const absolutePath = resolve(repositoryRoot, path);
+  if (!existsSync(absolutePath)) return false;
+  const content = readFileSync(absolutePath, 'utf8');
   return deniedContent.some((fragment) => content.includes(fragment));
 }
 

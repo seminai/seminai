@@ -37,7 +37,6 @@ export class RulePdfVectorizationQueue {
     const connection = getRedisConnection();
     this.queue = new Queue(QUEUE_NAME, { connection });
   }
-
   /**
    * Adds a vectorization job to the queue.
    * @param data Job data containing rule and PDF information
@@ -56,7 +55,6 @@ export class RulePdfVectorizationQueue {
     console.log(`[RULE-VECTORIZATION] Job ${job.id} added for rule ${data.ruleId}`);
     return job.id!;
   }
-
   /**
    * Gets the status of a vectorization job.
    * @param jobId Job ID to check
@@ -86,7 +84,6 @@ export class RulePdfVectorizationQueue {
       finishedOn: job.finishedOn,
     };
   }
-
   /**
    * Starts the background worker for processing vectorization jobs.
    */
@@ -120,7 +117,6 @@ export class RulePdfVectorizationQueue {
     });
     console.log('[RULE-VECTORIZATION] Worker started');
   }
-
   /**
    * Processes a single vectorization job.
    */
@@ -159,10 +155,8 @@ export class RulePdfVectorizationQueue {
         throw new Error('No text extracted from PDF');
       }
       await job.updateProgress(40);
-
       // Use table-aware splitter for DISCIPLINARE documents, legacy splitter for others
       let documents: Document[];
-
       if (category === 'DISCIPLINARE') {
         // Use table-aware chunking for disciplinari (preserves table structure)
         console.log(`[RULE-VECTORIZATION] Using table-aware splitter for DISCIPLINARE`);
@@ -175,7 +169,6 @@ export class RulePdfVectorizationQueue {
           parsedResult.text,
         );
         console.log(`[RULE-VECTORIZATION] Created ${tableAwareChunks.length} table-aware chunks`);
-
         const metadata: RuleVectorMetadata = {
           ruleId,
           workspaceId,
@@ -184,7 +177,6 @@ export class RulePdfVectorizationQueue {
           sourceType: 'rule_pdf',
           ruleName,
         };
-
         documents = tableAwareChunks.map((chunk) => ({
           pageContent: chunk.content,
           metadata: {
@@ -211,7 +203,6 @@ export class RulePdfVectorizationQueue {
         });
         const chunks = await textSplitter.splitText(parsedResult.text);
         console.log(`[RULE-VECTORIZATION] Created ${chunks.length} legacy chunks`);
-
         const metadata: RuleVectorMetadata = {
           ruleId,
           workspaceId,
@@ -220,7 +211,6 @@ export class RulePdfVectorizationQueue {
           sourceType: 'rule_pdf',
           ruleName,
         };
-
         documents = chunks.map((chunk, index) => ({
           pageContent: chunk,
           metadata: {
@@ -233,7 +223,6 @@ export class RulePdfVectorizationQueue {
           },
         }));
       }
-
       await job.updateProgress(50);
       await job.updateProgress(60);
       const vectorService = createVectorSearchQdrantService(RULES_QDRANT_COLLECTION);
@@ -261,7 +250,6 @@ export class RulePdfVectorizationQueue {
       throw err;
     }
   }
-
   /**
    * Marks a rule as successfully vectorized in the database.
    */
@@ -276,7 +264,6 @@ export class RulePdfVectorizationQueue {
       },
     });
   }
-
   /**
    * Marks a rule vectorization as failed in the database.
    */
@@ -289,7 +276,6 @@ export class RulePdfVectorizationQueue {
       },
     });
   }
-
   /**
    * Stops the worker gracefully.
    */
@@ -301,10 +287,8 @@ export class RulePdfVectorizationQueue {
     }
   }
 }
-
 /** Singleton instance for the vectorization queue */
 let queueInstance: RulePdfVectorizationQueue | null = null;
-
 /**
  * Gets or creates the singleton instance of the vectorization queue.
  */

@@ -1,16 +1,9 @@
 import { useState, useMemo, useCallback } from 'react';
-import { EditablePropertyList } from '@/components/molecules/editable-property-list';
 import type { EditablePropertyItem } from '@/components/molecules/editable-property-list';
-import { ProductCommonSection } from '@/components/molecules/product-common-section';
-import { PesticideDetailsSection } from '@/components/molecules/pesticide-details-section';
-import { FertilizerCompositionSection } from '@/components/molecules/fertilizer-composition-section';
-import { ProductDosagesTable } from '@/components/molecules/product-dosages-table';
-import { StockMovementsTable } from '@/components/molecules/stock-movements-table';
 import type { StockRow } from '@/components/molecules/stock-movements-table';
 import type { ProductDetails } from '@/lib/extract-product-details';
 import { PdfSidebarView } from '@/components/molecules/pdf-sidebar-view';
 import { StockDetailPanelHeader } from '@/components/molecules/stock-detail-panel-header';
-import { Button } from '@/components/ui/button';
 import {
   usePostStocks,
   usePatchStocksStockId,
@@ -20,6 +13,7 @@ import { ConfirmDeleteDialog } from '@/components/molecules/confirm-delete-dialo
 import { usePutProductsId, usePostProductsSyncLabels } from '@/generated/api/products/products';
 import type { ProductCategory } from '@/generated/schemas';
 import { toast } from 'sonner';
+import { StockDetailPanelContent } from './stock-detail-panel-content';
 
 type PdfView =
   | { readonly kind: 'closed' }
@@ -36,7 +30,7 @@ const CATEGORY_OPTIONS = [
   { value: 'OTHER', label: 'Altro' },
 ] as const;
 
-interface ProductData {
+export interface ProductData {
   readonly id: string;
   readonly name: string;
   readonly category: string;
@@ -268,64 +262,26 @@ export function StockDetailPanel({ product, companyId, onSaved, onClose }: Stock
         onReextractLabel={handleReextractLabel}
         onClose={onClose}
       />
-      <div className="flex-1 overflow-auto p-4">
-        {isEditingProduct ? (
-          <div className="mb-4">
-            <EditablePropertyList
-              properties={editableProperties}
-              values={productEditValues}
-              onChange={(k, v) => setProductEditValues((prev) => ({ ...prev, [k]: v }))}
-            />
-          </div>
-        ) : (
-          <>
-            <ProductCommonSection
-              name={product.name}
-              category={product.category}
-              registrationNumber={product.registrationNumber}
-              details={product.details}
-            />
-            {product.category === 'PESTICIDE' ? (
-              <>
-                <PesticideDetailsSection
-                  details={product.details}
-                  productName={product.name}
-                  registrationNumber={product.registrationNumber}
-                  onOpenLabel={(url, fileName) => setPdfView({ kind: 'label', url, fileName })}
-                />
-                <ProductDosagesTable dosaggi={product.details.dosaggi} />
-              </>
-            ) : null}
-            {product.category === 'FERTILIZER' ? (
-              <FertilizerCompositionSection composition={product.details.fertilizerComposition} />
-            ) : null}
-          </>
-        )}
-        {product.stocks.length === 0 && !isAddingStock ? (
-          <div className="py-8 text-center">
-            <p className="mb-2 text-sm text-muted-foreground">Nessun movimento di magazzino</p>
-            <Button variant="outline" size="sm" onClick={handleAddNew}>
-              Aggiungi movimento
-            </Button>
-          </div>
-        ) : (
-          <StockMovementsTable
-            stocks={product.stocks}
-            editingId={editingStockId}
-            editValues={stockEditValues}
-            onEditStart={handleStockEditStart}
-            onEditCancel={handleStockEditCancel}
-            onEditChange={(k, v) => setStockEditValues((prev) => ({ ...prev, [k]: v }))}
-            onEditSave={handleStockEditSave}
-            isAddingNew={isAddingStock}
-            onAddNew={handleAddNew}
-            onCreateSave={handleCreateSave}
-            isSaving={isSavingStock}
-            onOpenSourcePdf={(url, fileName) => setPdfView({ kind: 'stock', url, fileName })}
-            onDelete={(stock) => setDeletingStock(stock)}
-          />
-        )}
-      </div>
+      <StockDetailPanelContent
+        product={product}
+        isEditingProduct={isEditingProduct}
+        editableProperties={editableProperties}
+        productEditValues={productEditValues}
+        editingStockId={editingStockId}
+        stockEditValues={stockEditValues}
+        isAddingStock={isAddingStock}
+        isSavingStock={isSavingStock}
+        onProductEditChange={(key, value) => setProductEditValues((previous) => ({ ...previous, [key]: value }))}
+        onOpenLabel={(url, fileName) => setPdfView({ kind: 'label', url, fileName })}
+        onStockEditStart={handleStockEditStart}
+        onStockEditCancel={handleStockEditCancel}
+        onStockEditChange={(key, value) => setStockEditValues((previous) => ({ ...previous, [key]: value }))}
+        onStockEditSave={handleStockEditSave}
+        onAddNew={handleAddNew}
+        onCreateSave={handleCreateSave}
+        onOpenSourcePdf={(url, fileName) => setPdfView({ kind: 'stock', url, fileName })}
+        onDelete={setDeletingStock}
+      />
       <ConfirmDeleteDialog
         open={!!deletingStock}
         onOpenChange={(o) => !o && setDeletingStock(null)}
@@ -341,4 +297,3 @@ export function StockDetailPanel({ product, companyId, onSaved, onClose }: Stock
     </div>
   );
 }
-

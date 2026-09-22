@@ -246,14 +246,12 @@ export class TavilyResultValidationService {
     const urlLower = url.toLowerCase();
     return OFFICIAL_DOMAINS.some((domain) => urlLower.includes(domain));
   }
-
   /**
    * Determines if Mistral OCR should be used for a URL.
    * Uses Mistral for scientific/research PDFs.
    */
   private shouldUseMistralOcr(url: string): boolean {
     const urlLower = url.toLowerCase();
-
     // Scientific repositories and publishers
     const scientificDomains = [
       'sciencedirect',
@@ -269,10 +267,8 @@ export class TavilyResultValidationService {
       'doi.org',
       'jstor',
     ];
-
     return scientificDomains.some((domain) => urlLower.includes(domain));
   }
-
   /**
    * Creates a fallback result when validation fails entirely.
    */
@@ -287,7 +283,6 @@ export class TavilyResultValidationService {
       fetchError: error,
     };
   }
-
   /**
    * Gets statistics about the validation service.
    */
@@ -296,7 +291,6 @@ export class TavilyResultValidationService {
       cacheStats: this.contentFetcher.getCacheStats(),
     };
   }
-
   /**
    * Clears the content cache.
    */

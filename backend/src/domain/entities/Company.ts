@@ -20,9 +20,6 @@ export class Company {
   public readonly createdAt: Date;
   public readonly updatedAt: Date;
 
-  /**
-   * Overload without ownerId (legacy/tests):
-   */
   constructor(
     id: string,
     name: string,
@@ -40,9 +37,6 @@ export class Company {
     createdAt: Date,
     updatedAt?: Date,
   );
-  /**
-   * Overload with ownerId (preferred in application layer):
-   */
   constructor(
     id: string,
     name: string,
@@ -61,9 +55,6 @@ export class Company {
     createdAt: Date,
     updatedAt?: Date,
   );
-  /**
-   * Overload with ownerId and kind (preferred in application layer):
-   */
   constructor(
     id: string,
     name: string,

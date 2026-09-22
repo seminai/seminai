@@ -1,39 +1,29 @@
-/**
- * BDF (Banca Dati Fitofarmaci) WS REST API Client
- *
- * Base URL: https://m.bdfup.it/
- * Auth: Basic Auth → JWT Bearer Token
- */
+import type { BdfAvversita, BdfClientConfig, BdfColtura, BdfComposizione, BdfDistributore, BdfDose, BdfDosiParams, BdfImpiego, BdfProdListParams, BdfProdotto, BdfProdottoDati, BdfSostanzaAttiva, BdfSostanzaAttivaDati, BdfSostListParams, BdfTipologia } from './types';
+import type { BdfClientContext } from './client.context';
+import { bdfClientAuthenticate } from './client.01-authenticate';
+import { bdfClientCurlGet } from './client.02-curl-get';
+import { bdfClientRequest } from './client.03-request';
+import { bdfClientRequestText } from './client.04-request-text';
+import { bdfClientGetAvversita } from './client.05-get-avversita';
+import { bdfClientGetDistributori } from './client.06-get-distributori';
+import { bdfClientGetSostanzaAttivaDati } from './client.07-get-sostanza-attiva-dati';
+import { bdfClientGetImpieghi } from './client.08-get-impieghi';
+import { bdfClientGetSostanzeAttive } from './client.09-get-sostanze-attive';
+import { bdfClientGetComposizione } from './client.10-get-composizione';
+import { bdfClientGetPittogrammi } from './client.11-get-pittogrammi';
+import { bdfClientGetProdotti } from './client.12-get-prodotti';
+import { bdfClientGetTipologie } from './client.13-get-tipologie';
+import { bdfClientGetColture } from './client.14-get-colture';
+import { bdfClientGetProdottoDati } from './client.15-get-prodotto-dati';
+import { bdfClientGetDosi } from './client.16-get-dosi';
 
-import { exec } from 'node:child_process';
-import { promisify } from 'node:util';
-
-const execAsync = promisify(exec);
-
-import type {
-  BdfAuthResponse,
-  BdfAvversita,
-  BdfClientConfig,
-  BdfColtura,
-  BdfComposizione,
-  BdfDistributore,
-  BdfDose,
-  BdfDosiParams,
-  BdfImpiego,
-  BdfProdListParams,
-  BdfProdotto,
-  BdfProdottoDati,
-  BdfSostanzaAttiva,
-  BdfSostanzaAttivaDati,
-  BdfSostListParams,
-  BdfTipologia,
-} from './types';
 
 export class BdfClient {
-  private readonly baseUrl: string;
-  private readonly username: string;
-  private readonly password: string;
-  private accessToken: string | null = null;
+
+  readonly baseUrl: string;
+  readonly username: string;
+  readonly password: string;
+  accessToken: string | null = null;
 
   constructor(config: BdfClientConfig) {
     this.baseUrl = config.baseUrl.replace(/\/+$/, '');
@@ -50,113 +40,29 @@ export class BdfClient {
    * Stores the JWT Bearer token for subsequent requests.
    */
   public async authenticate(): Promise<string> {
-    const authUrl = `${this.baseUrl}/rest/bdf/auth`;
-
-    console.log(`[BDF] Authenticating to ${authUrl} (user: ${this.username})`);
-
-    // Use curl via child_process — the BDF WiRL/Delphi server is case-sensitive
-    // and rejects lowercase "authorization" headers (HTTP/2 lowercases them).
-    // curl preserves header casing. We use async exec to avoid blocking the event loop.
-    const credentials = Buffer.from(`${this.username}:${this.password}`).toString('base64');
-    let responseText: string;
-    try {
-      const { stdout } = await execAsync(
-        `curl -s -X POST -H "Authorization: Basic ${credentials}" -H "Accept: application/json" "${authUrl}"`,
-        { encoding: 'utf-8', timeout: 15000 },
-      );
-      responseText = stdout;
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : String(e);
-      throw new Error(`BDF auth network error: ${msg}`);
-    }
-
-    let data: BdfAuthResponse;
-    try {
-      data = JSON.parse(responseText);
-    } catch {
-      throw new Error(`BDF auth failed: invalid response - ${responseText}`);
-    }
-
-    if ('status' in data && (data as Record<string, unknown>).status !== 200 && !data.success) {
-      throw new Error(`BDF auth failed: ${responseText}`);
-    }
-    if (!data.success || !data.access_token) {
-      throw new Error('BDF auth failed: invalid response');
-    }
-
-    this.accessToken = data.access_token;
-    return data.access_token;
+    return bdfClientAuthenticate.call(this as unknown as BdfClientContext);
   }
 
   // ============================================================
   // HTTP Request Helper
   // ============================================================
 
-  private async curlGet(url: string): Promise<string> {
-    const { stdout } = await execAsync(
-      `curl -s -H "Authorization: Bearer ${this.accessToken}" -H "Accept: application/json" "${url}"`,
-      { encoding: 'utf-8', timeout: 30000 },
-    );
-    return stdout;
+  async curlGet(url: string): Promise<string> {
+    return bdfClientCurlGet.call(this as unknown as BdfClientContext, url);
   }
 
-  private async request<T>(
+  async request<T>(
     endpoint: string,
     params?: Record<string, string | number | boolean | undefined>,
   ): Promise<T> {
-    if (!this.accessToken) {
-      await this.authenticate();
-    }
-
-    const url = new URL(`${this.baseUrl}${endpoint}`);
-
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined) {
-          url.searchParams.append(key, String(value));
-        }
-      });
-    }
-
-    let responseText: string;
-    try {
-      responseText = await this.curlGet(url.toString());
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : String(e);
-      throw new Error(`BDF API error on ${endpoint}: ${msg}`);
-    }
-
-    try {
-      return JSON.parse(responseText) as T;
-    } catch {
-      throw new Error(`BDF API invalid JSON on ${endpoint}: ${responseText.slice(0, 200)}`);
-    }
+    return bdfClientRequest.call(this as unknown as BdfClientContext, endpoint, params);
   }
 
-  private async requestText(
+  async requestText(
     endpoint: string,
     params?: Record<string, string | number | boolean | undefined>,
   ): Promise<string> {
-    if (!this.accessToken) {
-      await this.authenticate();
-    }
-
-    const url = new URL(`${this.baseUrl}${endpoint}`);
-
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined) {
-          url.searchParams.append(key, String(value));
-        }
-      });
-    }
-
-    try {
-      return await this.curlGet(url.toString());
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : String(e);
-      throw new Error(`BDF API error on ${endpoint}: ${msg}`);
-    }
+    return bdfClientRequestText.call(this as unknown as BdfClientContext, endpoint, params);
   }
 
   // ============================================================
@@ -168,9 +74,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/avversita?coltura={coltura}
    */
   public async getAvversita(coltura: string | number): Promise<BdfAvversita[]> {
-    return this.request<BdfAvversita[]>('/rest/bdf/agr/avversita', {
-      coltura: String(coltura),
-    });
+    return bdfClientGetAvversita.call(this as unknown as BdfClientContext, coltura);
   }
 
   // ============================================================
@@ -182,7 +86,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/azidistr?codice={codice}
    */
   public async getDistributori(codice: string): Promise<BdfDistributore[]> {
-    return this.request<BdfDistributore[]>('/rest/bdf/agr/azidistr', { codice });
+    return bdfClientGetDistributori.call(this as unknown as BdfClientContext, codice);
   }
 
   // ============================================================
@@ -194,7 +98,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/sostdati/{id}
    */
   public async getSostanzaAttivaDati(id: string): Promise<BdfSostanzaAttivaDati[]> {
-    return this.request<BdfSostanzaAttivaDati[]>(`/rest/bdf/agr/sostdati/${id}`);
+    return bdfClientGetSostanzaAttivaDati.call(this as unknown as BdfClientContext, id);
   }
 
   // ============================================================
@@ -206,10 +110,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/impieghi?tipo=P&codice={codice}
    */
   public async getImpieghi(codice: string): Promise<BdfImpiego[]> {
-    return this.request<BdfImpiego[]>('/rest/bdf/agr/impieghi', {
-      tipo: 'P',
-      codice,
-    });
+    return bdfClientGetImpieghi.call(this as unknown as BdfClientContext, codice);
   }
 
   // ============================================================
@@ -221,13 +122,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/sostlist
    */
   public async getSostanzeAttive(params: BdfSostListParams): Promise<BdfSostanzaAttiva[]> {
-    return this.request<BdfSostanzaAttiva[]>('/rest/bdf/agr/sostlist', {
-      ricalfa: params.ricalfa,
-      dettbio: params.dettbio,
-      coltura: params.coltura,
-      tipologia: params.tipologia,
-      codSA: params.codSA,
-    });
+    return bdfClientGetSostanzeAttive.call(this as unknown as BdfClientContext, params);
   }
 
   // ============================================================
@@ -239,7 +134,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/composiz?codice={codice}
    */
   public async getComposizione(codice: string): Promise<BdfComposizione[]> {
-    return this.request<BdfComposizione[]>('/rest/bdf/agr/composiz', { codice });
+    return bdfClientGetComposizione.call(this as unknown as BdfClientContext, codice);
   }
 
   // ============================================================
@@ -251,7 +146,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/pittogrammi?codice={codice}
    */
   public async getPittogrammi(codice: string): Promise<string> {
-    return this.requestText('/rest/bdf/agr/pittogrammi', { codice });
+    return bdfClientGetPittogrammi.call(this as unknown as BdfClientContext, codice);
   }
 
   // ============================================================
@@ -263,14 +158,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/prodlist
    */
   public async getProdotti(params: BdfProdListParams): Promise<BdfProdotto[]> {
-    return this.request<BdfProdotto[]>('/rest/bdf/agr/prodlist', {
-      ricalfa: params.ricalfa,
-      dettbio: params.dettbio,
-      coltura: params.coltura,
-      avversita: params.avversita,
-      tipologia: params.tipologia,
-      codSA: params.codSA,
-    });
+    return bdfClientGetProdotti.call(this as unknown as BdfClientContext, params);
   }
 
   // ============================================================
@@ -282,7 +170,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/tipologie
    */
   public async getTipologie(): Promise<BdfTipologia[]> {
-    return this.request<BdfTipologia[]>('/rest/bdf/agr/tipologie');
+    return bdfClientGetTipologie.call(this as unknown as BdfClientContext);
   }
 
   // ============================================================
@@ -294,7 +182,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/colture
    */
   public async getColture(): Promise<BdfColtura[]> {
-    return this.request<BdfColtura[]>('/rest/bdf/agr/colture');
+    return bdfClientGetColture.call(this as unknown as BdfClientContext);
   }
 
   // ============================================================
@@ -306,7 +194,7 @@ export class BdfClient {
    * GET /rest/bdf/agr/proddati/{id}
    */
   public async getProdottoDati(id: string): Promise<BdfProdottoDati[]> {
-    return this.request<BdfProdottoDati[]>(`/rest/bdf/agr/proddati/${id}`);
+    return bdfClientGetProdottoDati.call(this as unknown as BdfClientContext, id);
   }
 
   // ============================================================
@@ -318,35 +206,16 @@ export class BdfClient {
    * GET /rest/bdf/agr/dosi
    */
   public async getDosi(params: BdfDosiParams): Promise<BdfDose[]> {
-    const raw = await this.request<unknown>('/rest/bdf/agr/dosi', {
-      codprod: params.codprod,
-      coltura: params.coltura,
-      avversita: params.avversita,
-      codsito: params.codsito,
-      codmetododist: params.codmetododist,
-      codstadiocolt: params.codstadiocolt,
-      iddettimp: params.iddettimp,
-      datatrattamento: params.datatrattamento,
-      dataupd1: params.dataupd1,
-      dataupd2: params.dataupd2,
-    });
-    if (Array.isArray(raw)) return raw as BdfDose[];
-    if (raw && typeof raw === 'object') return [raw as BdfDose];
-    return [];
+    return bdfClientGetDosi.call(this as unknown as BdfClientContext, params);
   }
 }
 
-/**
- * Factory function to create a BdfClient from environment variables
- */
 export function createBdfClient(): BdfClient {
   const baseUrl = process.env.URL_SERVER_BDF;
   const username = process.env.USERNAME_BDF;
   const password = process.env.PASSWORD_BDF;
-
   if (!baseUrl) throw new Error('URL_SERVER_BDF environment variable is required');
   if (!username) throw new Error('USERNAME_BDF environment variable is required');
   if (!password) throw new Error('PASSWORD_BDF environment variable is required');
-
   return new BdfClient({ baseUrl, username, password });
 }

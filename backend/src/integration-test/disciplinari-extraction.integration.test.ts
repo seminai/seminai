@@ -218,19 +218,14 @@ describe('Disciplinari Extraction Integration Test', () => {
         const endTime = Date.now();
         const durationSeconds = ((endTime - startTime) / 1000).toFixed(1);
         console.log(`\nExtraction completed in ${durationSeconds} seconds`);
-
         // Validate structure
         console.log('\n=== VALIDATING EXTRACTION RESULTS ===');
-
         validateMetadataStructure(extractedData);
         console.log('✓ Metadata structure valid');
-
         validateRulesStructure(extractedData);
         console.log('✓ Rules structure valid');
-
         validateDefenseTargetsStructure(extractedData);
         console.log('✓ Defense targets structure valid');
-
         // Validate some interventions if present
         let totalInterventions = 0;
         for (const target of extractedData.defenseTargets) {
@@ -240,7 +235,6 @@ describe('Disciplinari Extraction Integration Test', () => {
           }
         }
         console.log(`✓ ${totalInterventions} interventions validated`);
-
         // Print summary
         console.log('\n=== EXTRACTION SUMMARY ===');
         console.log(`Region: ${extractedData.documentMetadata.region}`);
@@ -255,7 +249,6 @@ describe('Disciplinari Extraction Integration Test', () => {
         console.log(`\nScope Entities: ${extractedData.scopeEntities.length}`);
         console.log(`Defense Targets: ${extractedData.defenseTargets.length}`);
         console.log(`Total Interventions: ${totalInterventions}`);
-
         // Print first few defense targets
         if (extractedData.defenseTargets.length > 0) {
           console.log('\n=== SAMPLE DEFENSE TARGETS ===');
@@ -264,7 +257,6 @@ describe('Disciplinari Extraction Integration Test', () => {
             const target = extractedData.defenseTargets[i];
             console.log(`\n${i + 1}. ${target.target.name} (${target.target.type})`);
             console.log(`   Interventions: ${target.interventions.length}`);
-
             if (target.interventions.length > 0) {
               const intervention = target.interventions[0];
               console.log(`   Sample intervention:`);
@@ -278,26 +270,22 @@ describe('Disciplinari Extraction Integration Test', () => {
             }
           }
         }
-
         // Print rules summary
         console.log('\n=== RULES SUMMARY ===');
         console.log(`General Principles: ${extractedData.rules.generalPrinciples.length}`);
         console.log(`Prohibitions: ${extractedData.rules.prohibitions.length}`);
         console.log(`Mandatory Actions: ${extractedData.rules.mandatoryActions.length}`);
         console.log(`Definitions: ${extractedData.rules.definitions.length}`);
-
         if (extractedData.rules.generalPrinciples.length > 0) {
           console.log(
             `\nFirst general principle: "${extractedData.rules.generalPrinciples[0].substring(0, 100)}..."`,
           );
         }
-
         // Assertions
         expect(extractedData.documentMetadata.region.toLowerCase()).toContain('emilia');
         expect(extractedData.documentMetadata.year).toBe(2025);
         expect(extractedData.extractionConfidence).toBeGreaterThan(0);
         expect(extractedData.defenseTargets.length).toBeGreaterThan(0);
-
         // Save full output for inspection
         const outputPath = path.resolve(
           __dirname,

@@ -152,23 +152,9 @@ Seminai (`POST /auth/login`).
 **ChatGPT (Plus/Pro, Developer mode):** Settings → Apps/Connectors → add a remote
 MCP server with the same URL. The first protected tool call starts OAuth.
 
-Do not put Cloud Run / IAP in front of this service. Ingress must be public;
-authentication is OAuth at the application layer.
-
-### Publish on Google Cloud Run (project `seminai`)
-
-```bash
-cd seminai-be-v2/seminai-mcp
-chmod +x deploy/create-secrets.sh deploy/cloudrun.sh
-./deploy/create-secrets.sh
-./deploy/cloudrun.sh
-```
-
-Deploys service `seminai-mcp` to `europe-west1` (same region as `seminai-be-v2`),
-`--allow-unauthenticated`, session affinity, 300s timeout, **max 1 instance**
-(OAuth codes and MCP sessions are in-memory). Then set `PUBLIC_BASE_URL` to the
-printed `*.run.app` URL (or a custom domain) and redeploy so OAuth `aud` /
-metadata match.
+Expose the service only through an operator-controlled HTTPS tunnel or reverse
+proxy. Authentication remains at the application layer. Keep LAN-only access as
+the default until the optional remote-access profiles are configured.
 
 ---
 

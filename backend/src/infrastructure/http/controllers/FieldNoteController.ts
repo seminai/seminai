@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { FieldNoteCategory, FieldNoteProcessingStatus } from '@prisma/client';
 import { AppError } from '../../../domain/errors/AppError';
 import { CreateFieldNoteUseCase } from '../../../application/use-cases/field-note/CreateFieldNoteUseCase';
 import { GetFieldNoteByIdUseCase } from '../../../application/use-cases/field-note/GetFieldNoteByIdUseCase';
@@ -11,15 +10,14 @@ import { GetFieldNoteStatsUseCase } from '../../../application/use-cases/field-n
 import {
   CreateFieldNoteDto,
   UpdateFieldNoteDto,
-  CreateFieldNoteAttachmentDto,
-  FieldNoteFiltersDto,
 } from '../../../domain/dtos/field-note.dto';
-import { FileService } from '../../services/FileService';
-import { MulterFile } from '../../services/Multer';
-import { extractMarkdownWithMistralOCRFromUrl } from '../../services/ocr/mistral';
+import { requireAuthenticatedUserId } from './controller-auth';
+import { FieldNoteAttachmentController } from './FieldNoteAttachmentController';
+import { parseFieldNoteFilters } from './field-note-filters';
+import { toFieldNoteResponse } from './field-note-response';
 
 export class FieldNoteController {
-  private static readonly ATTACHMENT_UPLOAD_PATH = 'field-note/attachments';
+  private readonly attachmentController: FieldNoteAttachmentController;
 
   constructor(
     private readonly createFieldNoteUseCase: CreateFieldNoteUseCase,
@@ -27,14 +25,14 @@ export class FieldNoteController {
     private readonly listFieldNotesByUserUseCase: ListFieldNotesByUserUseCase,
     private readonly updateFieldNoteUseCase: UpdateFieldNoteUseCase,
     private readonly deleteFieldNoteUseCase: DeleteFieldNoteUseCase,
-    private readonly addFieldNoteAttachmentUseCase: AddFieldNoteAttachmentUseCase,
+    addFieldNoteAttachmentUseCase: AddFieldNoteAttachmentUseCase,
     private readonly getFieldNoteStatsUseCase: GetFieldNoteStatsUseCase,
-  ) {}
+  ) {
+    this.attachmentController = new FieldNoteAttachmentController(addFieldNoteAttachmentUseCase);
+  }
 
   async create(request: Request, response: Response): Promise<Response> {
-    if (!request.user?.id) {
-      throw AppError.unauthorized('User not authenticated', 'USER_NOT_AUTHENTICATED');
-    }
+    const userId = requireAuthenticatedUserId(request);
 
     const dto = request.body as CreateFieldNoteDto;
 
@@ -42,7 +40,7 @@ export class FieldNoteController {
       throw AppError.badRequest('Category and rawContent are required', 'MISSING_REQUIRED_FIELDS');
     }
 
-    const fieldNote = await this.createFieldNoteUseCase.execute(request.user.id, dto);
+    const fieldNote = await this.createFieldNoteUseCase.execute(userId, dto);
 
     return response.status(201).json({
       status: 'success',
@@ -51,9 +49,7 @@ export class FieldNoteController {
   }
 
   async getById(request: Request, response: Response): Promise<Response> {
-    if (!request.user?.id) {
-      throw AppError.unauthorized('User not authenticated', 'USER_NOT_AUTHENTICATED');
-    }
+    const userId = requireAuthenticatedUserId(request);
 
     const { id } = request.params;
 
@@ -61,7 +57,7 @@ export class FieldNoteController {
       throw AppError.badRequest('Field note ID is required', 'MISSING_ID');
     }
 
-    const fieldNote = await this.getFieldNoteByIdUseCase.execute(id, request.user.id);
+    const fieldNote = await this.getFieldNoteByIdUseCase.execute(id, userId);
 
     return response.status(200).json({
       status: 'success',
@@ -70,110 +66,12 @@ export class FieldNoteController {
   }
 
   async list(request: Request, response: Response): Promise<Response> {
-    if (!request.user?.id) {
-      throw AppError.unauthorized('User not authenticated', 'USER_NOT_AUTHENTICATED');
-    }
-
-    const fieldNoteCategories = Object.values(FieldNoteCategory) as FieldNoteCategory[];
-    const fieldNoteStatuses = Object.values(
-      FieldNoteProcessingStatus,
-    ) as FieldNoteProcessingStatus[];
-    const filters: FieldNoteFiltersDto = {
-      category: this.parseEnumValue(request.query.category, fieldNoteCategories),
-      status: this.parseEnumValue(request.query.status, fieldNoteStatuses),
-      fieldId: this.parseStringQuery(request.query.fieldId),
-      productionUnitId: this.parseStringQuery(request.query.productionUnitId),
-      productId: this.parseStringQuery(request.query.productId),
-      startDate: this.parseDateQuery(request.query.startDate),
-      endDate: this.parseDateQuery(request.query.endDate),
-      hasLocation: this.parseBooleanQuery(request.query.hasLocation),
-    };
-
+    const userId = requireAuthenticatedUserId(request);
     const fieldNotesWithRelations = await this.listFieldNotesByUserUseCase.executeWithRelations(
-      request.user.id,
-      filters,
+      userId,
+      parseFieldNoteFilters(request.query),
     );
-
-    const fieldNotes = fieldNotesWithRelations.map((fn) => {
-      const company = fn.field?.company || fn.product?.warehouse?.company || null;
-
-      // Show only the specifically associated field, not all fields from the production unit
-      const field = fn.field
-        ? {
-            id: fn.field.id,
-            name: fn.field.name,
-          }
-        : null;
-
-      // Optionally include other fields from the production unit for context
-      const relatedFields: Array<{ id: string; name: string }> = [];
-      if (fn.productionUnit?.productionUnitsOnFields) {
-        fn.productionUnit.productionUnitsOnFields.forEach(
-          (puf: { field: { id: string; name: string } | null }) => {
-            if (puf.field && puf.field.id !== fn.fieldId) {
-              relatedFields.push({
-                id: puf.field.id,
-                name: puf.field.name,
-              });
-            }
-          },
-        );
-      }
-
-      return {
-        id: fn.id,
-        userId: fn.userId,
-        category: fn.category,
-        status: fn.status,
-        rawContent: fn.rawContent,
-        extractedData: fn.extractedData,
-        latitude: fn.latitude,
-        longitude: fn.longitude,
-        altitude: fn.altitude,
-        gpsAccuracy: fn.gpsAccuracy,
-        conformityNotes: fn.conformityNotes,
-        operationDate: fn.operationDate,
-        fieldId: fn.fieldId,
-        field, // Single field that was specifically associated
-        relatedFields, // Other fields from the same production unit (for context)
-        productionUnitId: fn.productionUnitId,
-        productionUnit: fn.productionUnit
-          ? {
-              id: fn.productionUnit.id,
-              name: fn.productionUnit.name,
-            }
-          : null,
-        productId: fn.productId,
-        product: fn.product
-          ? {
-              id: fn.product.id,
-              name: fn.product.name,
-              sku: fn.product.sku,
-              category: fn.product.category,
-              companyId: fn.product.warehouse?.companyId ?? null,
-              company: fn.product.warehouse?.company
-                ? {
-                    id: fn.product.warehouse.company.id,
-                    name: fn.product.warehouse.company.name,
-                  }
-                : null,
-            }
-          : null,
-        company: company
-          ? {
-              id: company.id,
-              name: company.name,
-            }
-          : null,
-        jobId: fn.jobId,
-        metadata: fn.metadata,
-        aiConfidenceScore: fn.aiConfidenceScore,
-        notes: fn.notes,
-        attachments: (fn as Record<string, unknown>).attachments ?? [],
-        createdAt: fn.createdAt,
-        updatedAt: fn.updatedAt,
-      };
-    });
+    const fieldNotes = fieldNotesWithRelations.map(toFieldNoteResponse);
 
     return response.status(200).json({
       status: 'success',
@@ -182,9 +80,7 @@ export class FieldNoteController {
   }
 
   async update(request: Request, response: Response): Promise<Response> {
-    if (!request.user?.id) {
-      throw AppError.unauthorized('User not authenticated', 'USER_NOT_AUTHENTICATED');
-    }
+    const userId = requireAuthenticatedUserId(request);
 
     const { id } = request.params;
     const dto = request.body as UpdateFieldNoteDto;
@@ -195,91 +91,11 @@ export class FieldNoteController {
 
     const fieldNoteWithRelations = await this.updateFieldNoteUseCase.executeWithRelations(
       id,
-      request.user.id,
+      userId,
       dto,
     );
 
-    const company =
-      fieldNoteWithRelations.field?.company ||
-      fieldNoteWithRelations.product?.warehouse?.company ||
-      null;
-
-    // Show only the specifically associated field
-    const field = fieldNoteWithRelations.field
-      ? {
-          id: fieldNoteWithRelations.field.id,
-          name: fieldNoteWithRelations.field.name,
-        }
-      : null;
-
-    // Optionally include other fields from the production unit for context
-    const relatedFields: Array<{ id: string; name: string }> = [];
-    if (fieldNoteWithRelations.productionUnit?.productionUnitsOnFields) {
-      fieldNoteWithRelations.productionUnit.productionUnitsOnFields.forEach(
-        (puf: { field: { id: string; name: string } | null }) => {
-          const pufField = puf.field;
-          if (pufField && pufField.id !== fieldNoteWithRelations.fieldId) {
-            relatedFields.push({
-              id: pufField.id,
-              name: pufField.name,
-            });
-          }
-        },
-      );
-    }
-
-    const fieldNote = {
-      id: fieldNoteWithRelations.id,
-      userId: fieldNoteWithRelations.userId,
-      category: fieldNoteWithRelations.category,
-      status: fieldNoteWithRelations.status,
-      rawContent: fieldNoteWithRelations.rawContent,
-      extractedData: fieldNoteWithRelations.extractedData,
-      latitude: fieldNoteWithRelations.latitude,
-      longitude: fieldNoteWithRelations.longitude,
-      altitude: fieldNoteWithRelations.altitude,
-      gpsAccuracy: fieldNoteWithRelations.gpsAccuracy,
-      conformityNotes: fieldNoteWithRelations.conformityNotes,
-      operationDate: fieldNoteWithRelations.operationDate,
-      fieldId: fieldNoteWithRelations.fieldId,
-      field, // Single field that was specifically associated
-      relatedFields, // Other fields from the same production unit (for context)
-      productionUnitId: fieldNoteWithRelations.productionUnitId,
-      productionUnit: fieldNoteWithRelations.productionUnit
-        ? {
-            id: fieldNoteWithRelations.productionUnit.id,
-            name: fieldNoteWithRelations.productionUnit.name,
-          }
-        : null,
-      productId: fieldNoteWithRelations.productId,
-      product: fieldNoteWithRelations.product
-        ? {
-            id: fieldNoteWithRelations.product.id,
-            name: fieldNoteWithRelations.product.name,
-            sku: fieldNoteWithRelations.product.sku,
-            category: fieldNoteWithRelations.product.category,
-            companyId: fieldNoteWithRelations.product.warehouse?.companyId ?? null,
-            company: fieldNoteWithRelations.product.warehouse?.company
-              ? {
-                  id: fieldNoteWithRelations.product.warehouse.company.id,
-                  name: fieldNoteWithRelations.product.warehouse.company.name,
-                }
-              : null,
-          }
-        : null,
-      company: company
-        ? {
-            id: company.id,
-            name: company.name,
-          }
-        : null,
-      jobId: fieldNoteWithRelations.jobId,
-      metadata: fieldNoteWithRelations.metadata,
-      aiConfidenceScore: fieldNoteWithRelations.aiConfidenceScore,
-      notes: fieldNoteWithRelations.notes,
-      createdAt: fieldNoteWithRelations.createdAt,
-      updatedAt: fieldNoteWithRelations.updatedAt,
-    };
+    const fieldNote = toFieldNoteResponse(fieldNoteWithRelations);
 
     return response.status(200).json({
       status: 'success',
@@ -288,9 +104,7 @@ export class FieldNoteController {
   }
 
   async delete(request: Request, response: Response): Promise<Response> {
-    if (!request.user?.id) {
-      throw AppError.unauthorized('User not authenticated', 'USER_NOT_AUTHENTICATED');
-    }
+    const userId = requireAuthenticatedUserId(request);
 
     const { id } = request.params;
 
@@ -298,7 +112,7 @@ export class FieldNoteController {
       throw AppError.badRequest('Field note ID is required', 'MISSING_ID');
     }
 
-    await this.deleteFieldNoteUseCase.execute(id, request.user.id);
+    await this.deleteFieldNoteUseCase.execute(id, userId);
 
     return response.status(200).json({
       status: 'success',
@@ -307,193 +121,17 @@ export class FieldNoteController {
   }
 
   async addAttachment(request: Request, response: Response): Promise<Response> {
-    if (!request.user?.id) {
-      throw AppError.unauthorized('User not authenticated', 'USER_NOT_AUTHENTICATED');
-    }
-
-    const dto = request.body as Partial<CreateFieldNoteAttachmentDto>;
-    const file = request.file as MulterFile | undefined;
-    const metadata = this.parseMetadata(dto.metadata);
-    const fileType = this.resolveFileType(dto.fileType, file);
-    const fileName = this.resolveFileName(dto.fileName, file);
-    const fileSize = this.resolveFileSize(dto.fileSize, file);
-    const fileUrl = await this.resolveFileUrl(request.user.id, dto.fileUrl, file, fileType);
-    const ocrContext =
-      fileUrl && fileType ? await this.extractAttachmentContext(fileUrl, fileType) : undefined;
-    const mergedMetadata = this.mergeMetadata(metadata, ocrContext);
-
-    if (!dto.fieldNoteId || !fileUrl || !fileName || !fileType || fileSize === null) {
-      throw AppError.badRequest('Missing required attachment fields', 'MISSING_FIELDS');
-    }
-
-    const attachment = await this.addFieldNoteAttachmentUseCase.execute(request.user.id, {
-      fieldNoteId: dto.fieldNoteId,
-      fileUrl,
-      fileName,
-      fileType,
-      fileSize,
-      thumbnailUrl: dto.thumbnailUrl,
-      metadata: mergedMetadata,
-    });
-
-    return response.status(201).json({
-      status: 'success',
-      data: { attachment },
-    });
+    return this.attachmentController.add(request, response);
   }
 
   async getStats(request: Request, response: Response): Promise<Response> {
-    if (!request.user?.id) {
-      throw AppError.unauthorized('User not authenticated', 'USER_NOT_AUTHENTICATED');
-    }
-
-    const stats = await this.getFieldNoteStatsUseCase.execute(request.user.id);
+    const stats = await this.getFieldNoteStatsUseCase.execute(
+      requireAuthenticatedUserId(request),
+    );
 
     return response.status(200).json({
       status: 'success',
       data: { stats },
     });
-  }
-
-  private parseMetadata(metadata: unknown): Record<string, unknown> | undefined {
-    if (!metadata) {
-      return undefined;
-    }
-    if (typeof metadata === 'string') {
-      try {
-        const parsed = JSON.parse(metadata) as Record<string, unknown>;
-        return parsed;
-      } catch {
-        return undefined;
-      }
-    }
-    if (typeof metadata === 'object') {
-      return metadata as Record<string, unknown>;
-    }
-    return undefined;
-  }
-
-  private resolveFileName(fileName: string | undefined, file?: MulterFile): string | undefined {
-    if (file?.originalname) {
-      return file.originalname;
-    }
-    return fileName;
-  }
-
-  private resolveFileType(fileType: string | undefined, file?: MulterFile): string | undefined {
-    if (file?.mimetype) {
-      return file.mimetype;
-    }
-    return fileType;
-  }
-
-  private resolveFileSize(fileSize: number | undefined, file?: MulterFile): number | null {
-    if (file?.size !== undefined) {
-      return file.size;
-    }
-    if (fileSize === undefined || fileSize === null) {
-      return null;
-    }
-    const numericSize = Number(fileSize);
-    if (Number.isNaN(numericSize)) {
-      return null;
-    }
-    return numericSize;
-  }
-
-  private async resolveFileUrl(
-    userId: string,
-    fileUrl: string | undefined,
-    file: MulterFile | undefined,
-    fileType: string | undefined,
-  ): Promise<string | undefined> {
-    if (!file) {
-      return fileUrl;
-    }
-    const type = fileType || file.mimetype;
-    const fileService = new FileService(userId);
-    return await fileService.uploadFile(
-      file,
-      userId,
-      FieldNoteController.ATTACHMENT_UPLOAD_PATH,
-      type,
-    );
-  }
-
-  private async extractAttachmentContext(
-    fileUrl: string,
-    fileType: string,
-  ): Promise<Record<string, unknown> | undefined> {
-    const isSupported = fileType.startsWith('image/') || fileType === 'application/pdf';
-    if (!isSupported) {
-      return undefined;
-    }
-    try {
-      const markdown = await extractMarkdownWithMistralOCRFromUrl(fileUrl);
-      if (!markdown || markdown.trim().length === 0) {
-        return undefined;
-      }
-      return {
-        ocr: {
-          provider: 'mistral',
-          markdown,
-        },
-      };
-    } catch {
-      return undefined;
-    }
-  }
-
-  private mergeMetadata(
-    base: Record<string, unknown> | undefined,
-    extra: Record<string, unknown> | undefined,
-  ): Record<string, unknown> | undefined {
-    if (!base && !extra) {
-      return undefined;
-    }
-    if (!extra) {
-      return base;
-    }
-    return {
-      ...(base ?? {}),
-      ...extra,
-    };
-  }
-
-  private parseEnumValue<T extends string>(value: unknown, allowed: readonly T[]): T | undefined {
-    if (typeof value !== 'string') {
-      return undefined;
-    }
-    const trimmed = value.trim();
-    if (trimmed.length === 0) {
-      return undefined;
-    }
-    return allowed.includes(trimmed as T) ? (trimmed as T) : undefined;
-  }
-
-  private parseStringQuery(value: unknown): string | undefined {
-    if (typeof value !== 'string') {
-      return undefined;
-    }
-    const trimmed = value.trim();
-    return trimmed.length > 0 ? trimmed : undefined;
-  }
-
-  private parseDateQuery(value: unknown): Date | undefined {
-    if (typeof value !== 'string') {
-      return undefined;
-    }
-    const parsed = new Date(value);
-    return Number.isNaN(parsed.getTime()) ? undefined : parsed;
-  }
-
-  private parseBooleanQuery(value: unknown): boolean | undefined {
-    if (value === 'true') {
-      return true;
-    }
-    if (value === 'false') {
-      return false;
-    }
-    return undefined;
   }
 }

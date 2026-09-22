@@ -10,11 +10,11 @@ import { isFitoLabel, Label, LabelDoseDetail } from '../../../../../domain/dtos/
  * Existing data takes priority; DB fills gaps in missing fields.
  */
 function mergeWithDbDosages(
-  existing: ReadonlyArray<Record<string, unknown>>,
+  existing: ReadonlyArray<LabelDoseDetail>,
   dbDosaggi: ReadonlyArray<LabelDoseDetail>,
-): ReadonlyArray<Record<string, unknown>> {
+): ReadonlyArray<LabelDoseDetail> {
   if (existing.length === 0) {
-    return dbDosaggi as unknown as ReadonlyArray<Record<string, unknown>>;
+    return dbDosaggi;
   }
 
   return existing.map((entry) => {
@@ -31,7 +31,6 @@ function mergeWithDbDosages(
 
     if (!match) return entry;
 
-    const merged = { ...entry };
     const fillableFields: Array<keyof LabelDoseDetail> = [
       'dose_minima',
       'dose_massima',
@@ -44,13 +43,13 @@ function mergeWithDbDosages(
       'modalita_applicazione',
     ];
 
-    for (const field of fillableFields) {
-      if (merged[field] == null && match[field] != null) {
-        merged[field] = match[field];
-      }
-    }
-
-    return merged;
+    return fillableFields.reduce<LabelDoseDetail>(
+      (merged, field) =>
+        merged[field] == null && match[field] != null
+          ? ({ ...merged, [field]: match[field] } as LabelDoseDetail)
+          : merged,
+      { ...entry },
+    );
   });
 }
 
@@ -99,9 +98,12 @@ Usa search_product_label_database per dati completi; usa questo tool per arricch
           );
 
           if (cropDosaggi.length > 0) {
-            const enriched = mergeWithDbDosages(existingDosageDetails, cropDosaggi);
+            const enriched = mergeWithDbDosages(
+              existingDosageDetails as ReadonlyArray<LabelDoseDetail>,
+              cropDosaggi,
+            );
 
-            const summary = enriched.map((d: any) => ({
+            const summary = enriched.map((d) => ({
               coltura: d.coltura ?? cropName,
               dose_min: d.dose_minima,
               dose_max: d.dose_massima,
@@ -124,7 +126,7 @@ Usa search_product_label_database per dati completi; usa questo tool per arricch
 
         // Step 2: Fallback to BDF API
         const enriched = await enrichDosageDetailsFromBdf(
-          existingDosageDetails as any,
+          existingDosageDetails as ReadonlyArray<LabelDoseDetail>,
           registrationNumber,
           productName,
           cropName,
@@ -140,11 +142,11 @@ Usa search_product_label_database per dati completi; usa questo tool per arricch
           });
         }
 
-        const summary = enriched.map((d: any) => ({
+        const summary = enriched.map((d) => ({
           coltura: d.coltura ?? cropName,
           dose_min: d.dose_minima,
           dose_max: d.dose_massima,
-          dose_um: d.dose_um ?? d.dosaggio_um,
+          dose_um: d.dose_um,
           n_max_applicazioni: d.n_max_applicazioni,
           intervallo_min_giorni: d.intervallo_min_giorni,
           intervallo_sicurezza_giorni: d.intervallo_sicurezza_giorni,

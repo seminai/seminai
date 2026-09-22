@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Loader2, Save } from 'lucide-react';
 import { toast } from 'sonner';
@@ -28,14 +28,18 @@ export function WorkspaceAssignedCompaniesSection({
   const assignmentsQuery = useGetWorkspacesIdCompanies(workspaceId);
   const replaceMutation = usePutWorkspacesIdCompanies();
 
-  const assignedIds = extractArray(assignmentsQuery.data?.data, 'companies').map((item) =>
-    String(item.companyId ?? ''),
+  const assignedIds = useMemo(
+    () =>
+      extractArray(assignmentsQuery.data?.data, 'companies').map((item) =>
+        String(item.companyId ?? ''),
+      ),
+    [assignmentsQuery.data?.data],
   );
   const [selectedIds, setSelectedIds] = useState<readonly string[]>([]);
 
   useEffect(() => {
     setSelectedIds(assignedIds.filter((id) => id.length > 0));
-  }, [assignedIds.join('|')]);
+  }, [assignedIds]);
 
   const hasChanges =
     selectedIds.length !== assignedIds.length ||

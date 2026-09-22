@@ -183,7 +183,6 @@ export class PrismaLabelExtractionRepository implements ILabelExtractionReposito
       orderBy: { updatedAt: 'desc' },
     });
   }
-
   private async findByAlias(
     productName: string,
     registrationNumber: string,
@@ -201,7 +200,6 @@ export class PrismaLabelExtractionRepository implements ILabelExtractionReposito
     });
     return alias?.labelExtraction ?? null;
   }
-
   private async findActiveByRegistration(
     registrationNumber: string,
   ): Promise<LabelExtractionRow | null> {
@@ -216,7 +214,6 @@ export class PrismaLabelExtractionRepository implements ILabelExtractionReposito
       orderBy: { updatedAt: 'desc' },
     });
   }
-
   private async findCanonicalForInput(
     input: SavedLabelExtraction,
     normalizedRegistration: string | null,
@@ -231,7 +228,6 @@ export class PrismaLabelExtractionRepository implements ILabelExtractionReposito
       orderBy: [{ isVerified: 'desc' }, { extractionConfidence: 'desc' }, { updatedAt: 'desc' }],
     });
   }
-
   private async searchActiveLabels(
     productName: string,
     registrationNumber: string | undefined,
@@ -255,7 +251,6 @@ export class PrismaLabelExtractionRepository implements ILabelExtractionReposito
       take: limit,
     });
   }
-
   private async searchAliases(
     productName: string,
     registrationNumber: string | undefined,
@@ -278,7 +273,6 @@ export class PrismaLabelExtractionRepository implements ILabelExtractionReposito
     });
     return aliases.map((alias) => alias.labelExtraction);
   }
-
   private async createAlias(
     labelExtractionId: string,
     input: Pick<SavedLabelExtraction, 'productName' | 'registrationNumber' | 'category'>,

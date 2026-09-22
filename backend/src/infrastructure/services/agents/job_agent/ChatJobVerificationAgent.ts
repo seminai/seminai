@@ -160,10 +160,8 @@ export async function approveJobVerificationAction(
       void event;
       // Stream processing
     }
-
     const stateSnapshot = await app.getState(config);
     const state = stateSnapshot.values;
-
     // Check if more human input is required
     if (state.requiresHumanInput && state.pendingAction) {
       return {
@@ -174,7 +172,6 @@ export async function approveJobVerificationAction(
         sources: state.sources,
       };
     }
-
     const lastMessage = state.messages[state.messages.length - 1] as AIMessage & {
       tool_calls?: Array<{
         name: string;
@@ -182,7 +179,6 @@ export async function approveJobVerificationAction(
         id: string;
       }>;
     };
-
     if (lastMessage?.tool_calls && lastMessage.tool_calls.length > 0) {
       return {
         status: 'REQUIRES_APPROVAL',
@@ -192,7 +188,6 @@ export async function approveJobVerificationAction(
         sources: state.sources,
       };
     }
-
     return {
       status: 'COMPLETED',
       message: state.finalAnswer || 'Azione approvata ed eseguita con successo.',
@@ -208,7 +203,6 @@ export async function approveJobVerificationAction(
     };
   }
 }
-
 /**
  * Rejects a pending action and provides feedback.
  */
@@ -218,31 +212,24 @@ export async function rejectJobVerificationAction(
   reason: string,
 ): Promise<AgentResponse> {
   const config = { configurable: { thread_id: threadId } };
-
   try {
     const rejectionMessage = new HumanMessage(
       `L'azione è stata rifiutata dall'utente. Motivo: ${reason}. Per favore, proponi un'alternativa o chiedi chiarimenti.`,
     );
-
     await app.updateState(config, {
       messages: [rejectionMessage],
       requiresHumanInput: false,
       pendingAction: undefined,
     });
-
     // Resume execution
     const stream = await app.stream(null, config);
-
     for await (const event of stream) {
       void event;
       // Stream processing
     }
-
     const stateSnapshot = await app.getState(config);
     const state = stateSnapshot.values;
-
     const lastMessage = state.messages[state.messages.length - 1] as AIMessage;
-
     return {
       status: 'COMPLETED',
       message: lastMessage?.content?.toString() || "Azione rifiutata. L'agente è stato informato.",
@@ -258,7 +245,6 @@ export async function rejectJobVerificationAction(
     };
   }
 }
-
 /**
  * Gets the current conversation state for a thread.
  */
@@ -270,17 +256,14 @@ export async function getJobVerificationAgentState(
   const stateSnapshot = await app.getState(config);
   return stateSnapshot.values;
 }
-
 /**
  * Extracts source citations from messages.
  */
 export function extractSourcesFromMessages(messages: BaseMessage[]): SourceCitation[] {
   const sources: SourceCitation[] = [];
-
   for (const message of messages) {
     if (message instanceof ToolMessage) {
       const content = message.content.toString();
-
       // Try to parse JSON response
       try {
         const parsed = JSON.parse(content);
@@ -296,7 +279,6 @@ export function extractSourcesFromMessages(messages: BaseMessage[]): SourceCitat
         const sourceRegex =
           /\[SOURCE_(\d+)\]\s*Title:\s*(.+?)\s*URL:\s*(.+?)\s*Content:[\s\S]*?Fragment:\s*(.+?)(?=\n---|\n\[SOURCE_|$)/gs;
         let match;
-
         while ((match = sourceRegex.exec(content)) !== null) {
           const [, , title, url, fragment] = match;
           if (title && url) {
@@ -310,11 +292,9 @@ export function extractSourcesFromMessages(messages: BaseMessage[]): SourceCitat
       }
     }
   }
-
   // Deduplicate by URL
   const uniqueSources = sources.filter(
     (source, index, self) => index === self.findIndex((s) => s.url === source.url),
   );
-
   return uniqueSources;
 }

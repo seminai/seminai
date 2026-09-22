@@ -34,6 +34,8 @@ export function MasterListPanel<TData extends { id: string }>({
 }: MasterListPanelProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  // TanStack Table intentionally returns non-memoizable callbacks managed by its own state machine.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: data as TData[],
     columns,

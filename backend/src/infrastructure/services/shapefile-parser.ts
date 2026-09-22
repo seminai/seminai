@@ -156,7 +156,6 @@ function parseCodeDescription(value: string | undefined): string {
  */
 function parseShapefileDate(dateVal: Date | string | undefined | null): string | null {
   if (!dateVal) return null;
-
   if (dateVal instanceof Date) {
     if (isNaN(dateVal.getTime())) return null;
     const y = dateVal.getFullYear();
@@ -165,7 +164,6 @@ function parseShapefileDate(dateVal: Date | string | undefined | null): string |
     if (y === 1970 && m === '01' && d === '01') return null;
     return `${y}-${m}-${d}`;
   }
-
   const str = String(dateVal);
   const cleaned = str.replace(/-/g, '');
   if (cleaned.length !== 8) return null;
@@ -175,7 +173,6 @@ function parseShapefileDate(dateVal: Date | string | undefined | null): string |
   if (year === '1970' && month === '01' && day === '01') return null;
   return `${year}-${month}-${day}`;
 }
-
 /**
  * Determines whether a crop code represents an actual agricultural production
  * (as opposed to non-agricultural land like buildings, ditches, hedges).
@@ -190,11 +187,9 @@ const NON_CROP_CODES = new Set([
   '1763', // MACERI, STAGNI E LAGHETTI
   '1059', // BOSCO
 ]);
-
 function isProductiveCrop(cropCode: string): boolean {
   return cropCode.length > 0 && !NON_CROP_CODES.has(cropCode);
 }
-
 /**
  * Parses shapefile buffers (.shp + .dbf) and extracts Field and ProductionUnit arrays.
  * Coordinates are provided in both WGS84 and EPSG:3003 (Gauss-Boaga West).
@@ -211,31 +206,25 @@ export async function parseShapefile(
     dbfBuffer.byteOffset,
     dbfBuffer.byteOffset + dbfBuffer.byteLength,
   );
-
   const geojson = await shapefile.read(
     shpArrayBuffer as ArrayBuffer,
     dbfArrayBuffer as ArrayBuffer,
     { encoding: 'latin1' },
   );
-
   const fields: ShapefileExtractedField[] = [];
   const productionUnits: ShapefileExtractedProductionUnit[] = [];
-
   for (const feature of geojson.features) {
     const props = (feature.properties ?? {}) as ShapefileProperties;
     const fieldIndex = fields.length;
     const appezzId = props.ID_APPEZZ ?? fieldIndex + 1;
     const { code: cropCode, description: cropDescription } = parseCropCode(props.COD_COLTUR);
-
     const fieldName = cropDescription
       ? `Appezzamento ${appezzId} - ${cropDescription}`
       : `Appezzamento ${appezzId}`;
-
     let polygonWgs84: GeoJsonPolygon | null = null;
     let polygonGB: GeoJsonPolygon | null = null;
     let centroidWgs84: [number, number] = [0, 0];
     let centroidGB: [number, number] = [0, 0];
-
     if (feature.geometry && feature.geometry.type === 'Polygon') {
       const originalCoords = feature.geometry.coordinates as number[][][];
       polygonGB = { type: 'Polygon', coordinates: originalCoords };
@@ -244,10 +233,8 @@ export async function parseShapefile(
       centroidGB = computeCentroid(originalCoords[0]);
       centroidWgs84 = computeCentroid(wgs84Coords[0]);
     }
-
     const supAppeHa = props.SUP_APPE ?? null;
     const supAppeMq = supAppeHa != null ? supAppeHa * 10000 : null;
-
     const extractedField: ShapefileExtractedField = {
       name: fieldName,
       coordinates: centroidWgs84[0] !== 0 ? [centroidWgs84[0], centroidWgs84[1]] : [],
@@ -281,14 +268,11 @@ export async function parseShapefile(
       calcium: null,
       magnesium: null,
     };
-
     fields.push(extractedField);
-
     if (isProductiveCrop(cropCode)) {
       const variety = parseCodeDescription(props.VARIETA);
       const biologico = parseCodeDescription(props.BIOLOGICO);
       const protectionStructure = props.TIPO_SERRA?.trim() || props.PROTEZIONE?.trim() || '';
-
       productionUnits.push({
         name: cropDescription || `Coltura ${cropCode}`,
         cropName: cropDescription,
@@ -304,7 +288,6 @@ export async function parseShapefile(
       });
     }
   }
-
   return {
     fields,
     productionUnits,

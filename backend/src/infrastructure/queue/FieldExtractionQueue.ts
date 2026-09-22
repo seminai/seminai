@@ -290,9 +290,7 @@ export class FieldExtractionQueue {
     await this.queue.close();
   }
 }
-
 let queueInstance: FieldExtractionQueue | null = null;
-
 export function getFieldExtractionQueue(): FieldExtractionQueue {
   if (!queueInstance) {
     queueInstance = new FieldExtractionQueue();

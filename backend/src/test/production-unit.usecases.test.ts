@@ -1,6 +1,7 @@
 // import { PrismaClient } from '@prisma/client';
 import { IProductionUnitRepository } from '../domain/repositories/IProductionUnitRepository';
 import { IFieldRepository } from '../domain/repositories/IFieldRepository';
+import { Field } from '../domain/entities/Field';
 import { ProductionUnit } from '../domain/entities/ProductionUnit';
 import { CreateProductionUnitUseCase } from '../application/use-cases/production-unit/CreateProductionUnitUseCase';
 import { UpdateProductionUnitUseCase } from '../application/use-cases/production-unit/UpdateProductionUnitUseCase';
@@ -74,7 +75,7 @@ describe('ProductionUnit UseCases', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         productionUnits: [],
-      } as unknown as any);
+      } as unknown as Field);
       repo.sumAreaByFieldAndOverlappingRange.mockResolvedValue(4);
 
       const useCase = new CreateProductionUnitUseCase(repo, fieldRepo);
@@ -133,11 +134,11 @@ describe('ProductionUnit UseCases', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         productionUnits: [],
-      } as unknown as any);
+      } as unknown as Field);
       repo.sumAreaByFieldAndOverlappingRange.mockResolvedValue(3);
 
       const useCase = new CreateProductionUnitUseCase(repo, fieldRepo);
-      repo.create.mockImplementation(async (pu) => pu as any);
+      repo.create.mockImplementation(async (productionUnit) => productionUnit);
       const { productionUnit } = await useCase.execute({
         allocations: [{ fieldId: 'field1', areaHa: 4 }],
         name: 'PU',
@@ -194,7 +195,7 @@ describe('ProductionUnit UseCases', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         productionUnits: [],
-      } as unknown as any);
+      } as unknown as Field);
       repo.findById.mockResolvedValue(
         ProductionUnit.create({
           name: 'PU',
@@ -210,7 +211,7 @@ describe('ProductionUnit UseCases', () => {
           endDate: new Date('2025-04-01'),
           acquaTotalePeridoL: 10,
         }),
-      ) as any;
+      );
       // Previous allocations indicate the PU was allocated with 2 ha on field1
       repo.getAllocationsByProductionUnit.mockResolvedValue([
         { fieldId: 'field1', areaHaOnField: 2 },

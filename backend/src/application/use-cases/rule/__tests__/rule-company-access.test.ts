@@ -175,7 +175,6 @@ describe('rule company access use cases', () => {
     });
   });
 });
-
 function createRule(
   overrides: { readonly isPublic?: boolean; readonly workspaceId?: string } = {},
 ): Rule {
@@ -201,7 +200,6 @@ function createRule(
     new Date(),
   );
 }
-
 function createMember(workspaceId: string): WorkspaceMember {
   return new WorkspaceMember(
     `member-${workspaceId}`,
@@ -214,7 +212,6 @@ function createMember(workspaceId: string): WorkspaceMember {
     new Date(),
   );
 }
-
 function createCompany(id: string): Company {
   return new Company(
     id,
@@ -234,17 +231,14 @@ function createCompany(id: string): Company {
     new Date(),
   );
 }
-
 function createAssignment(id: string, companyId: string): RuleOnCompany {
   return new RuleOnCompany(id, 'rule-1', companyId, true, 0, null, null, new Date(), 'user-1');
 }
-
 function createRuleRepository(rule: Rule): jest.Mocked<IRuleRepository> {
   return {
     findById: jest.fn().mockResolvedValue(rule),
   } as unknown as jest.Mocked<IRuleRepository>;
 }
-
 function createAssignmentRepository(
   assignments: RuleOnCompany[] = [],
 ): jest.Mocked<IRuleOnCompanyRepository> {
@@ -257,7 +251,6 @@ function createAssignmentRepository(
     deleteByRuleAndCompany: jest.fn(),
   } as unknown as jest.Mocked<IRuleOnCompanyRepository>;
 }
-
 function createWorkspaceMemberRepository(
   member: WorkspaceMember,
 ): jest.Mocked<IWorkspaceMemberRepository> {
@@ -265,7 +258,6 @@ function createWorkspaceMemberRepository(
     findByWorkspaceAndUser: jest.fn().mockResolvedValue(member),
   } as unknown as jest.Mocked<IWorkspaceMemberRepository>;
 }
-
 function createWorkspaceMemberRepositoryByWorkspace(
   members: Record<string, WorkspaceMember>,
 ): jest.Mocked<IWorkspaceMemberRepository> {
@@ -275,7 +267,6 @@ function createWorkspaceMemberRepositoryByWorkspace(
     ),
   } as unknown as jest.Mocked<IWorkspaceMemberRepository>;
 }
-
 function createCompanyRepository(
   company: Company,
   accessibleCompanies: Company[],
@@ -285,7 +276,6 @@ function createCompanyRepository(
     findManyByUserId: jest.fn().mockResolvedValue(accessibleCompanies),
   } as unknown as jest.Mocked<ICompanyRepository>;
 }
-
 function createWorkspaceRepository(): jest.Mocked<IWorkspaceRepository> {
   return {
     findById: jest.fn().mockResolvedValue(

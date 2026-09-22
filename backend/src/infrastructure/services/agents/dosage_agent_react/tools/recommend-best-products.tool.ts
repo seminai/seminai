@@ -222,7 +222,6 @@ export function createRecommendBestProductsTool(
           source: r.source,
         };
       });
-
       const filtered = onlyInStock ? inputs.filter((c) => (c.inStockQty ?? 0) > 0) : inputs;
       const ranked = rankCandidates(filtered, {
         weights,
@@ -230,7 +229,6 @@ export function createRecommendBestProductsTool(
         preferBio,
         preferLowResidue,
       });
-
       const recommendations = ranked.map((c, idx) => ({
         rank: idx + 1,
         productName: c.productName,
@@ -245,7 +243,6 @@ export function createRecommendBestProductsTool(
         scoreBreakdown: c.scoreBreakdown,
         source: c.source,
       }));
-
       const topN = recommendations.slice(0, Math.min(5, recommendations.length));
       updateWorkingMemory(threadId, {
         recommendedProducts: recommendations.map((r) => ({
@@ -267,7 +264,6 @@ export function createRecommendBestProductsTool(
           ...(r.inStockQty && r.inStockQty > 0 ? { quantity: r.inStockQty } : {}),
         })),
       });
-
       const missing: string[] = [];
       if (weights.efficacy > 0)
         missing.push('efficacia: stima agronomica LLM, non un dato di etichetta');
@@ -278,7 +274,6 @@ export function createRecommendBestProductsTool(
         );
       if (!evaluateStock)
         missing.push('disponibilità a magazzino non valutata (nessun utente o peso stock=0)');
-
       getAnalyticsService().capture({
         distinctId: userId ?? 'system',
         event: 'products_recommended',
@@ -288,7 +283,6 @@ export function createRecommendBestProductsTool(
           excluded_revoked_count: excludedRevoked.length,
         },
       });
-
       return JSON.stringify({
         crop: search.crop?.nome ?? cropName,
         adversity: search.adversity?.nome ?? adversityName,

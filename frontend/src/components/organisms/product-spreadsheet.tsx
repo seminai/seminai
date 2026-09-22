@@ -87,9 +87,7 @@ export function ProductSpreadsheet({
     () => [
       {
         id: 'select',
-        header: () => (
-          <Checkbox checked={allSelected} onCheckedChange={onToggleAll} />
-        ),
+        header: () => <Checkbox checked={allSelected} onCheckedChange={onToggleAll} />,
         cell: ({ row }) => (
           <Checkbox
             checked={selectedIndices.has(row.original._index)}
@@ -121,7 +119,9 @@ export function ProductSpreadsheet({
             value={row.original.registrationNumber}
             placeholder="N. reg."
             className="h-7 border-0 bg-transparent px-1 text-xs shadow-none focus-visible:ring-0"
-            onChange={(e) => handleCellChange(row.original._index, 'registrationNumber', e.target.value)}
+            onChange={(e) =>
+              handleCellChange(row.original._index, 'registrationNumber', e.target.value)
+            }
           />
         ),
         filterFn: 'multiValue' as never,
@@ -136,7 +136,9 @@ export function ProductSpreadsheet({
             value={row.original.quantity || ''}
             placeholder="Qty"
             className="h-7 border-0 bg-transparent px-1 text-xs shadow-none focus-visible:ring-0"
-            onChange={(e) => handleCellChange(row.original._index, 'quantity', Number(e.target.value) || 0)}
+            onChange={(e) =>
+              handleCellChange(row.original._index, 'quantity', Number(e.target.value) || 0)
+            }
           />
         ),
         filterFn: 'multiValue' as never,
@@ -150,7 +152,9 @@ export function ProductSpreadsheet({
             value={row.original.quantityUnitOfMeasure}
             placeholder="UM"
             className="h-7 border-0 bg-transparent px-1 text-xs shadow-none focus-visible:ring-0"
-            onChange={(e) => handleCellChange(row.original._index, 'quantityUnitOfMeasure', e.target.value)}
+            onChange={(e) =>
+              handleCellChange(row.original._index, 'quantityUnitOfMeasure', e.target.value)
+            }
           />
         ),
         filterFn: 'multiValue' as never,
@@ -173,9 +177,18 @@ export function ProductSpreadsheet({
         enableColumnFilter: false,
       },
     ],
-    [allSelected, selectedIndices, onToggleAll, onToggleSelection, handleCellChange, onRemoveProduct],
+    [
+      allSelected,
+      selectedIndices,
+      onToggleAll,
+      onToggleSelection,
+      handleCellChange,
+      onRemoveProduct,
+    ],
   );
 
+  // TanStack Table intentionally returns non-memoizable callbacks managed by its own state machine.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
@@ -208,7 +221,11 @@ export function ProductSpreadsheet({
   const exportOptions = useMemo(
     () => [
       { label: 'CSV', format: 'csv' as const, onClick: () => exportCsv(getExportData) },
-      { label: 'Excel (.xls)', format: 'excel' as const, onClick: () => exportExcel(getExportData) },
+      {
+        label: 'Excel (.xls)',
+        format: 'excel' as const,
+        onClick: () => exportExcel(getExportData),
+      },
       { label: 'PDF (stampa)', format: 'pdf' as const, onClick: () => exportPdf(getExportData) },
     ],
     [getExportData],
@@ -238,7 +255,10 @@ export function ProductSpreadsheet({
           <TableBody>
             {table.getRowModel().rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-16 text-center text-sm text-muted-foreground">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-16 text-center text-sm text-muted-foreground"
+                >
                   Nessun risultato
                 </TableCell>
               </TableRow>

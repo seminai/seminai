@@ -147,13 +147,10 @@ export function evaluateLabelDosage(input: LabelDosageCheckInput): LabelDosageRe
   const phi = dosageDetail.intervallo_sicurezza_giorni ?? null;
 
   let treatmentsInRange = 0;
-
   // Check each treatment dose
   treatments.forEach((t, index) => {
     if (typeof t.dose !== 'number') return;
-
     const { inRange, belowMin, aboveMax } = isDoseInRange(t.dose, doseMin, doseMax);
-
     if (inRange) {
       treatmentsInRange++;
     } else if (belowMin && doseMin !== null) {
@@ -174,7 +171,6 @@ export function evaluateLabelDosage(input: LabelDosageCheckInput): LabelDosageRe
       });
     }
   });
-
   // Check number of applications
   if (maxApplications !== null && treatments.length > maxApplications) {
     violations.push({
@@ -184,18 +180,15 @@ export function evaluateLabelDosage(input: LabelDosageCheckInput): LabelDosageRe
       limit: maxApplications,
     });
   }
-
   // Check interval between applications
   if (minInterval !== null && treatments.length > 1) {
     const sortedTreatments = [...treatments]
       .filter((t) => t.data_distribuzione)
       .sort((a, b) => a.data_distribuzione!.getTime() - b.data_distribuzione!.getTime());
-
     for (let i = 1; i < sortedTreatments.length; i++) {
       const prev = sortedTreatments[i - 1];
       const curr = sortedTreatments[i];
       const daysDiff = daysBetween(prev.data_distribuzione!, curr.data_distribuzione!);
-
       if (daysDiff < minInterval) {
         violations.push({
           type: 'INTERVAL_TOO_SHORT',
@@ -207,13 +200,11 @@ export function evaluateLabelDosage(input: LabelDosageCheckInput): LabelDosageRe
       }
     }
   }
-
   // Check PHI (Pre-Harvest Interval)
   if (phi !== null && input.harvestDate) {
     const lastTreatment = [...treatments]
       .filter((t) => t.data_distribuzione)
       .sort((a, b) => b.data_distribuzione!.getTime() - a.data_distribuzione!.getTime())[0];
-
     if (lastTreatment?.data_distribuzione) {
       const daysToHarvest = daysBetween(lastTreatment.data_distribuzione, input.harvestDate);
       if (daysToHarvest < phi) {
@@ -226,22 +217,17 @@ export function evaluateLabelDosage(input: LabelDosageCheckInput): LabelDosageRe
       }
     }
   }
-
   // Calculate score
   const treatmentsWithDose = treatments.filter((t) => typeof t.dose === 'number').length;
   const doseScore = treatmentsWithDose > 0 ? (treatmentsInRange / treatmentsWithDose) * 100 : 100;
-
   const applicationScore =
     maxApplications !== null && treatments.length > maxApplications ? 0 : 100;
-
   const intervalViolations = violations.filter((v) => v.type === 'INTERVAL_TOO_SHORT').length;
   const intervalScore =
     treatments.length > 1 && minInterval !== null
       ? ((treatments.length - 1 - intervalViolations) / (treatments.length - 1)) * 100
       : 100;
-
   const phiScore = violations.some((v) => v.type === 'PHI_VIOLATED') ? 0 : 100;
-
   // Weighted average
   const finalScore = Math.round(
     doseScore * 0.5 + // 50% weight on dose compliance
@@ -249,7 +235,6 @@ export function evaluateLabelDosage(input: LabelDosageCheckInput): LabelDosageRe
       intervalScore * 0.15 + // 15% weight on intervals
       phiScore * 0.1, // 10% weight on PHI
   );
-
   return {
     isCompliant: violations.length === 0,
     score: finalScore,
@@ -269,7 +254,6 @@ export function evaluateLabelDosage(input: LabelDosageCheckInput): LabelDosageRe
     },
   };
 }
-
 export function printLabelDosageReport(
   results: ReadonlyArray<{
     unitId: string;
@@ -280,29 +264,23 @@ export function printLabelDosageReport(
   console.log('\n[LABEL-DOSAGE] ═══════════════════════════════════════════════════════════');
   console.log('[LABEL-DOSAGE] REPORT COMPLIANCE DOSAGGI vs ETICHETTA');
   console.log('[LABEL-DOSAGE] ═══════════════════════════════════════════════════════════\n');
-
   let totalCompliant = 0;
   let totalProducts = 0;
   let totalScore = 0;
-
   for (const r of results) {
     if (!r.result.details.labelFound || !r.result.details.dosageDetailFound) continue;
-
     totalProducts++;
     totalScore += r.result.score;
     if (r.result.isCompliant) totalCompliant++;
-
     const icon = r.result.isCompliant ? '✅' : '❌';
     const range = r.result.details.doseRange
       ? `[${r.result.details.doseRange.min}-${r.result.details.doseRange.max}] ${r.result.details.doseRange.unit}`
       : 'N/A';
-
     console.log(`${icon} ${r.productName} (${r.unitId})`);
     console.log(`   Score: ${r.result.score}% | Range etichetta: ${range}`);
     console.log(
       `   Trattamenti: ${r.result.details.treatmentsInRange}/${r.result.details.totalTreatments} nel range`,
     );
-
     if (r.result.violations.length > 0) {
       console.log('   Violazioni:');
       for (const v of r.result.violations) {
@@ -311,7 +289,6 @@ export function printLabelDosageReport(
     }
     console.log('');
   }
-
   if (totalProducts > 0) {
     console.log('[LABEL-DOSAGE] ───────────────────────────────────────────────────────────');
     console.log(

@@ -237,7 +237,7 @@ class DatabaseSeeder {
     console.log('Database has been seeded. 🌱');
     console.log('[SEED] Login credentials:');
     console.log(`  - admin@seminai.demo / ${DEFAULT_PASSWORD}`);
-    console.log(`  - francemazzi@gmail.com / ${LABEL_MANAGER_PASSWORD}`);
+    console.log(`  - admin@seminai.local / ${LABEL_MANAGER_PASSWORD}`);
     console.log(`  - operator@seminai.demo / ${DEFAULT_PASSWORD}`);
     console.log('[SEED] Seminai Fruit Farm sales demo:');
     console.log(`  - ${salesContext.harvestProducts.length} harvest products with stock`);
@@ -305,7 +305,7 @@ class DatabaseSeeder {
 
     const labelManager = await this.prisma.user.create({
       data: {
-        email: 'francemazzi@gmail.com',
+        email: 'admin@seminai.local',
         password: labelManagerPasswordHash,
         name: 'Francesco',
         surname: 'Mazzi',

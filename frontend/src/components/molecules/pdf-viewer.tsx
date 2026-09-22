@@ -2,26 +2,8 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import { Button, buttonVariants } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  ExternalLink,
-  ChevronLeft,
-  ChevronRight,
-  ZoomIn,
-  ZoomOut,
-  Search,
-  Pen,
-  LayoutGrid,
-  MoreHorizontal,
-  FileText,
-  FileSpreadsheet,
-} from 'lucide-react';
+import { FileText } from 'lucide-react';
+import { PdfViewerToolbar } from './pdf-viewer-toolbar';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -150,110 +132,27 @@ export function PdfViewer({ url, fileName, mimeType }: PdfViewerProps) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex flex-wrap items-center gap-2 border-b px-2 py-2 md:flex-nowrap md:justify-between md:px-3 md:py-1.5">
-        <div className="order-1 flex w-full items-center gap-1 overflow-x-auto md:w-auto md:overflow-visible">
-          <Button
-            variant={showAllPages ? 'secondary' : 'ghost'}
-            size="icon-sm"
-            title="Vista pagine"
-            onClick={toggleAllPages}
-            disabled={!isPageNavigationEnabled || viewerMode !== 'react-pdf'}
-          >
-            <LayoutGrid className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            title="Vai a pagina"
-            onClick={jumpToPage}
-            disabled={!isPageNavigationEnabled}
-          >
-            <Search className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            title="Alterna motore anteprima"
-            onClick={toggleBrowserMode}
-            disabled={!isPageNavigationEnabled}
-          >
-            <Pen className="h-4 w-4" />
-          </Button>
-          {isExcelFile || isImageFile ? (
-            <div className="ml-1 inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] text-muted-foreground">
-              {isExcelFile ? <FileSpreadsheet className="h-3.5 w-3.5" /> : <FileText className="h-3.5 w-3.5" />}
-              {isExcelFile ? 'Excel' : 'Immagine'}
-            </div>
-          ) : null}
-        </div>
-
-        <div className="order-2 flex items-center gap-1 md:order-0">
-          <Button variant="ghost" size="icon-sm" onClick={zoomOut} disabled={isExcelFile}>
-            <ZoomOut className="h-4 w-4" />
-          </Button>
-          <span className="min-w-12 text-center text-xs text-muted-foreground">
-            {Math.round(scale * 100)}%
-          </span>
-          <Button variant="ghost" size="icon-sm" onClick={zoomIn} disabled={isExcelFile}>
-            <ZoomIn className="h-4 w-4" />
-          </Button>
-        </div>
-
-        <div className="order-3 flex w-full items-center justify-between gap-1 md:w-auto md:justify-start">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={prevPage}
-            disabled={!isPageNavigationEnabled || pageNumber <= 1}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-          <span className="truncate text-xs text-muted-foreground">
-            {isExcelFile
-              ? 'Anteprima Excel'
-              : isImageFile
-                ? 'Anteprima immagine'
-              : viewerMode === 'iframe'
-                ? `Pagina ${pageNumber} (browser)`
-                : `${pageNumber} di ${numPages || '–'}`}
-          </span>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={nextPage}
-            disabled={
-              !isPageNavigationEnabled
-                ? true
-                : viewerMode === 'react-pdf' && numPages > 0
-                  ? pageNumber >= numPages
-                  : false
-            }
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-          {url ? (
-            <a
-              href={url}
-              target="_blank"
-              rel="noreferrer"
-              title="Apri in una nuova scheda"
-              className={buttonVariants({ variant: 'ghost', size: 'icon-sm' })}
-            >
-              <ExternalLink className="h-4 w-4" />
-            </a>
-          ) : null}
-          <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" title="Altro" />}>
-              <MoreHorizontal className="h-4 w-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={resetView}>Ripristina vista</DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDownload}>Scarica file</DropdownMenuItem>
-              <DropdownMenuItem onClick={handlePrint}>Apri per stampa</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+      <PdfViewerToolbar
+        url={url}
+        scale={scale}
+        pageNumber={pageNumber}
+        numPages={numPages}
+        viewerMode={viewerMode}
+        showAllPages={showAllPages}
+        isExcelFile={isExcelFile}
+        isImageFile={isImageFile}
+        isPageNavigationEnabled={isPageNavigationEnabled}
+        onToggleAllPages={toggleAllPages}
+        onJumpToPage={jumpToPage}
+        onToggleBrowserMode={toggleBrowserMode}
+        onZoomOut={zoomOut}
+        onZoomIn={zoomIn}
+        onPreviousPage={prevPage}
+        onNextPage={nextPage}
+        onReset={resetView}
+        onDownload={handleDownload}
+        onPrint={handlePrint}
+      />
 
       <div className="flex-1 overflow-auto bg-muted/20 p-2 md:p-4">
         {isPdfFile && viewerMode === 'react-pdf' ? (

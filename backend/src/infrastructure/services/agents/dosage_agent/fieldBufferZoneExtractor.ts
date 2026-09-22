@@ -61,7 +61,6 @@ export function calculateAdjustedTreatableArea(params: {
   minTreatable?: number;
 }): { adjustedAreaHa: number; wasReduced: boolean } {
   const { currentAreaHa, sauHa, bufferAreaHa, minTreatable = 0 } = params;
-
   if (sauHa != null && Number.isFinite(sauHa) && sauHa > 0) {
     const maxTreatable = sauHa - bufferAreaHa;
     if (currentAreaHa <= maxTreatable) {
@@ -70,7 +69,6 @@ export function calculateAdjustedTreatableArea(params: {
     const adjusted = maxTreatable <= 0 ? minTreatable : maxTreatable;
     return { adjustedAreaHa: adjusted, wasReduced: true };
   }
-
   // sauHa not available: best effort reduction
   const adjusted = currentAreaHa - bufferAreaHa;
   if (adjusted <= 0) {
@@ -79,7 +77,6 @@ export function calculateAdjustedTreatableArea(params: {
   return { adjustedAreaHa: adjusted, wasReduced: currentAreaHa !== adjusted };
 }
 const MAX_BUFFER_ZONE_TEXT_LENGTH = 2000;
-
 /**
  * Sanitizza testo utente prima dell'interpolazione nel prompt LLM.
  * Tronca, rimuove code fences e marcatori di ruolo che potrebbero confondere il modello.
@@ -91,7 +88,6 @@ function sanitizeForPrompt(text: string): string {
     .replace(/\b(system|assistant|user)\s*:/gi, '')
     .trim();
 }
-
 /**
  * Cache per evitare chiamate LLM ridondanti sullo stesso testo bufferZoneNotes.
  * Bounded: TTL 30 minuti, max 200 entries.
@@ -100,7 +96,6 @@ const CACHE_TTL_MS = 30 * 60 * 1000;
 const CACHE_MAX_SIZE = 200;
 const BUFFER_ZONE_PRELOAD_CONCURRENCY = 5;
 const fieldBufferZoneCache = new Map<string, { data: FieldBufferZoneResult; expiresAt: number }>();
-
 function cacheGet(key: string): FieldBufferZoneResult | undefined {
   const entry = fieldBufferZoneCache.get(key);
   if (!entry) return undefined;
@@ -110,7 +105,6 @@ function cacheGet(key: string): FieldBufferZoneResult | undefined {
   }
   return entry.data;
 }
-
 function cacheSet(key: string, data: FieldBufferZoneResult): void {
   if (fieldBufferZoneCache.size >= CACHE_MAX_SIZE) {
     const firstKey = fieldBufferZoneCache.keys().next().value;
@@ -118,9 +112,7 @@ function cacheSet(key: string, data: FieldBufferZoneResult): void {
   }
   fieldBufferZoneCache.set(key, { data, expiresAt: Date.now() + CACHE_TTL_MS });
 }
-
 const usageLogger = LlmUsageLogger.getInstance();
-
 /**
  * Estrae dati strutturati sulle fasce di rispetto dal campo bufferZoneNotes.
  * Usa LLM per parsare il testo libero in dati strutturati.
@@ -137,20 +129,17 @@ export async function extractFieldBufferZones(
   if (!trimmed) {
     return EMPTY_RESULT;
   }
-
   // Check cache (with TTL)
   const cached = cacheGet(trimmed);
   if (cached) {
     console.log(`[FIELD-BUFFER-ZONE] Cache hit for bufferZoneNotes`);
     return cached;
   }
-
   // LLM extraction
   const result = await extractFieldBufferZonesWithLLM(trimmed, context);
   cacheSet(trimmed, result);
   return result;
 }
-
 /**
  * LLM-based extraction for field buffer zone notes
  */
@@ -159,13 +148,10 @@ async function extractFieldBufferZonesWithLLM(
   context?: DosageAgentContext,
 ): Promise<FieldBufferZoneResult> {
   const tracker = usageLogger.createTracker();
-
   const prompt = `Analizza il seguente testo che descrive le fasce di rispetto di un campo agricolo.
 Estrai TUTTE le fasce di rispetto menzionate.
-
 TESTO:
 ${sanitizeForPrompt(bufferZoneNotes)}
-
 Per ogni fascia di rispetto, identifica:
 1. tipo: corpo_idrico | centro_abitato | parco | colture_adiacenti | strade | altro
    - corpo_idrico: fiumi, canali, fossi, laghi, torrenti, acque superficiali, corsi d'acqua
@@ -178,19 +164,15 @@ Per ogni fascia di rispetto, identifica:
 3. area_ha: area in ettari (null se non specificata). Se hai solo m², converti: 1 ha = 10000 m²
 4. distanza_m: distanza in metri (null se non specificata)
 5. descrizione_originale: testo originale che descrive questa fascia
-
 Calcola area_totale_non_trattabile_ha = somma di tutti gli area_ha delle fasce trovate.
 Se nessuna fascia ha un'area specificata, area_totale_non_trattabile_ha = 0.
-
 IMPORTANTE:
 - Se viene specificata solo l'area in m², calcola anche area_ha (dividi per 10000)
 - Se viene specificata solo l'area in ha, calcola anche area_mq (moltiplica per 10000)
 - Se viene specificata solo la distanza ma non l'area, metti area_mq e area_ha a null
 - Riporta il testo originale, non parafrasare
-
 Rispondi SOLO in JSON con questo formato:
 {"buffer_zones": [{"tipo": "...", "area_mq": ..., "area_ha": ..., "distanza_m": ..., "descrizione_originale": "..."}], "area_totale_non_trattabile_ha": ...}`;
-
   try {
     const { result: parsed, usedModel } = await callWithFallback<FieldBufferZoneResult>({
       operation: 'buffer-zone',
@@ -204,7 +186,6 @@ Rispondi SOLO in JSON con questo formato:
         return FieldBufferZoneSchema.parse(json);
       },
     });
-
     await usageLogger.logFromAccumulator(tracker.accumulator, {
       userId: context?.userId,
       companyId: context?.companyId,
@@ -214,7 +195,6 @@ Rispondi SOLO in JSON con questo formato:
       model: usedModel,
       metadata: { step: 'field-buffer-zone-extraction' },
     });
-
     console.log(
       `[FIELD-BUFFER-ZONE] Extracted ${parsed.buffer_zones.length} buffer zones, total non-treatable: ${parsed.area_totale_non_trattabile_ha} ha`,
     );
@@ -224,7 +204,6 @@ Rispondi SOLO in JSON con questo formato:
     return EMPTY_RESULT;
   }
 }
-
 /**
  * Applica la riduzione area basata sulle fasce di rispetto del campo.
  * Per ogni unità con bufferZoneNotes:
@@ -248,23 +227,19 @@ export async function applyFieldBufferZoneReduction(
       uniqueNotes.add(notes);
     }
   }
-
   if (uniqueNotes.size === 0) {
     console.log('[FIELD-BUFFER-ZONE] No units with bufferZoneNotes, skipping reduction');
     return units;
   }
-
   console.log(
     `[FIELD-BUFFER-ZONE] Processing ${uniqueNotes.size} unique bufferZoneNotes across ${units.length} units`,
   );
-
   // Pre-extract all unique buffer zone notes (populates cache) with limited concurrency.
   await mapWithLimit(
     [...uniqueNotes],
     async (notes) => extractFieldBufferZones(notes, context),
     BUFFER_ZONE_PRELOAD_CONCURRENCY,
   );
-
   // Apply reduction to each unit
   const result: RawUnitOfProduction[] = [];
   for (const unit of units) {
@@ -273,22 +248,18 @@ export async function applyFieldBufferZoneReduction(
       result.push(unit);
       continue;
     }
-
     const bufferZoneResult = await extractFieldBufferZones(notes, context); // served from cache
     if (bufferZoneResult.area_totale_non_trattabile_ha <= 0) {
       result.push(unit);
       continue;
     }
-
     const unitAreaHa = unit.areaHa;
     const sauHa = (unit as { sauHa?: number }).sauHa;
     const bufferAreaHa = bufferZoneResult.area_totale_non_trattabile_ha;
-
     if (typeof unitAreaHa !== 'number' || !Number.isFinite(unitAreaHa) || unitAreaHa <= 0) {
       result.push(unit);
       continue;
     }
-
     const { adjustedAreaHa, wasReduced } = calculateAdjustedTreatableArea({
       currentAreaHa: unitAreaHa,
       sauHa,
@@ -301,7 +272,6 @@ export async function applyFieldBufferZoneReduction(
       result.push(unit);
       continue;
     }
-
     if (adjustedAreaHa <= 0) {
       console.warn(
         `[FIELD-BUFFER-ZONE] Unit ${unit.id || 'unknown'}: buffer zone area (${bufferAreaHa}) leaves no treatable surface. Marking areaHa as 0.`,
@@ -315,16 +285,13 @@ export async function applyFieldBufferZoneReduction(
         `[FIELD-BUFFER-ZONE] Unit ${unit.id || 'unknown'}: sauHa not available, best effort reduction from ${unitAreaHa} to ${adjustedAreaHa.toFixed(4)} (buffer=${bufferAreaHa})`,
       );
     }
-
     result.push({
       ...unit,
       areaHa: adjustedAreaHa,
     });
   }
-
   return result;
 }
-
 /**
  * Svuota la cache delle fasce di rispetto (utile per testing)
  */

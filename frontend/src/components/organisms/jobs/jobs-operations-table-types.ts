@@ -1,4 +1,4 @@
-import type { JobOperationRow, JobRowDraft } from './types';
+import type { JobDraftEditableField, JobOperationRow, JobRowDraft } from './types';
 
 export interface MachineOption {
   readonly id: string;
@@ -21,6 +21,36 @@ export interface JobOperationsTableRow {
   readonly dataSortKey: string;
   /** Shown in filters / facets (aligned with date cell). */
   readonly dataLabel: string;
+}
+
+export interface JobOperationsColumnsParams {
+  readonly machineOptions: readonly MachineOption[];
+  readonly onSelectOperation: (operationId: string, checked: boolean) => void;
+  readonly onDraftChange: (
+    operationId: string,
+    field: JobDraftEditableField,
+    value: string | boolean,
+  ) => void;
+  readonly onRemoveDraft: (draftId: string) => void;
+}
+
+export interface JobsOperationsTableProps {
+  readonly operations: readonly JobOperationRow[];
+  readonly drafts: Readonly<Record<string, JobRowDraft>>;
+  readonly machineOptions: readonly MachineOption[];
+  readonly selectedOperationIds: readonly string[];
+  readonly hasUnsavedChanges: boolean;
+  readonly isSaving: boolean;
+  readonly saveMessage: string | null;
+  readonly onSelectOperation: (operationId: string, checked: boolean) => void;
+  readonly onDraftChange: (
+    operationId: string,
+    field: JobDraftEditableField,
+    value: string | boolean,
+  ) => void;
+  readonly onRemoveDraft: (draftId: string) => void;
+  readonly onSave: () => Promise<void>;
+  readonly onBulkVerifySelected: () => Promise<void>;
 }
 
 export function machineNameForId(

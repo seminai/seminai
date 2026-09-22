@@ -30,6 +30,15 @@ export interface ProductionUnitDraft {
   readonly allocations: readonly FieldAllocation[];
 }
 
+export interface ProductionUnitsWizardStepDetailProps {
+  readonly allocations: readonly FieldAllocation[];
+  readonly dateRange: DateRange;
+  readonly initialDraft: ProductionUnitDraft | null;
+  readonly disabled?: boolean;
+  readonly onBack: () => void;
+  readonly onSave: (draft: ProductionUnitDraft) => void;
+}
+
 export interface WorkingAllocationRow {
   readonly fieldId: string;
   readonly fieldName: string;

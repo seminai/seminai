@@ -1,51 +1,18 @@
 import { randomBytes } from 'node:crypto';
-import {
-  type EmailIngestionLimitsDto,
-  type ParsedInboundEmailDto,
-} from '../../../domain/dtos/email-inbound.dto';
+import { type ParsedInboundEmailDto } from '../../../domain/dtos/email-inbound.dto';
 import { type EmailIngestion } from '../../../domain/entities/EmailIngestion';
-import { type IEmailIngestionRepository } from '../../../domain/repositories/IEmailIngestionRepository';
-import { EmailIngestionAttachmentStorage } from '../../../infrastructure/services/email-ingestion/EmailIngestionAttachmentStorage';
-import { type DispatchToAgentUseCase } from './DispatchToAgentUseCase';
-import { type HandleDisambiguationReplyUseCase } from './HandleDisambiguationReplyUseCase';
-import { type ResolveSenderUseCase } from './ResolveSenderUseCase';
-import { type SendDisambiguationRequestEmailUseCase } from './SendDisambiguationRequestEmailUseCase';
-import { type SendIngestionConfirmationEmailUseCase } from './SendIngestionConfirmationEmailUseCase';
-import { type SendOptOutEmailUseCase } from './SendOptOutEmailUseCase';
-import { type SendUnknownSenderEmailUseCase } from './SendUnknownSenderEmailUseCase';
-import { type IUserRepository } from '../../../domain/repositories/IUserRepository';
-import { type ICompanyRepository } from '../../../domain/repositories/ICompanyRepository';
+import type {
+  DispatchSingleInput,
+  HandleMultipleInput,
+  ProcessInboundEmailDeps,
+  ProcessInboundEmailResult,
+  SendConfirmationSingleInput,
+} from './process-inbound-email.types';
 
-export interface ProcessInboundEmailDeps {
-  readonly emailIngestionRepository: IEmailIngestionRepository;
-  readonly userRepository: IUserRepository;
-  readonly companyRepository: ICompanyRepository;
-  readonly attachmentStorage: EmailIngestionAttachmentStorage;
-  readonly resolveSenderUseCase: ResolveSenderUseCase;
-  readonly dispatchToAgentUseCase: DispatchToAgentUseCase;
-  readonly handleDisambiguationReplyUseCase: HandleDisambiguationReplyUseCase;
-  readonly sendDisambiguationRequestEmailUseCase: SendDisambiguationRequestEmailUseCase;
-  readonly sendIngestionConfirmationEmailUseCase: SendIngestionConfirmationEmailUseCase;
-  readonly sendUnknownSenderEmailUseCase: SendUnknownSenderEmailUseCase;
-  readonly sendOptOutEmailUseCase: SendOptOutEmailUseCase;
-  readonly limits: EmailIngestionLimitsDto;
-}
-
-export interface ProcessInboundEmailResult {
-  readonly outcome:
-    | 'duplicate'
-    | 'unknown_sender'
-    | 'opt_out'
-    | 'no_companies'
-    | 'awaiting_disambiguation'
-    | 'dispatched'
-    | 'no_attachments'
-    | 'disambiguation_reply_resolved'
-    | 'disambiguation_reply_invalid'
-    | 'limit_exceeded';
-  readonly ingestionId?: string;
-  readonly threadId?: string;
-}
+export type {
+  ProcessInboundEmailDeps,
+  ProcessInboundEmailResult,
+} from './process-inbound-email.types';
 
 const TOKEN_REGEX = /\bINGEST-[a-zA-Z0-9_-]{4,}\b/;
 
@@ -296,26 +263,4 @@ export class ProcessInboundEmailUseCase {
       threadId: input.threadId,
     });
   }
-}
-
-interface HandleMultipleInput {
-  readonly parsedEmail: ParsedInboundEmailDto;
-  readonly ingestion: EmailIngestion;
-  readonly resolution: Extract<
-    Awaited<ReturnType<ResolveSenderUseCase['execute']>>,
-    { kind: 'multiple' }
-  >;
-}
-
-interface DispatchSingleInput {
-  readonly parsedEmail: ParsedInboundEmailDto;
-  readonly ingestion: EmailIngestion;
-  readonly resolution: Awaited<ReturnType<ResolveSenderUseCase['execute']>>;
-}
-
-interface SendConfirmationSingleInput {
-  readonly parsedEmail: ParsedInboundEmailDto;
-  readonly threadId: string;
-  readonly companyId: string;
-  readonly userId: string;
 }

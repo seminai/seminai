@@ -16,7 +16,7 @@ import { Field } from '../domain/entities/Field';
 import { ProductionUnit } from '../domain/entities/ProductionUnit';
 import { Warehouse } from '../domain/entities/Warehouse';
 import { Product } from '../domain/entities/Product';
-import { ProductCategory } from '@prisma/client';
+import { JobCategory, ProductCategory } from '@prisma/client';
 import { CreateJobUseCase } from '../application/use-cases/job/CreateJobUseCase';
 import { UpdateJobUseCase } from '../application/use-cases/job/UpdateJobUseCase';
 import { ListJobsForCurrentUserUseCase } from '../application/use-cases/job/ListJobsForCurrentUserUseCase';
@@ -131,7 +131,7 @@ describe('Job Integration', () => {
     const { job } = await createUseCase.execute({
       productionUnitId,
       dateOfOpeation: new Date(),
-      category: 'TREATMENT' as any,
+      category: JobCategory.TREATMENT,
       quantity: 3,
       unitOfMeasureQuantity: 'L',
       stocks: [
@@ -173,7 +173,7 @@ describe('Job Integration', () => {
     const { job } = await createUseCase.execute({
       productionUnitId,
       dateOfOpeation: new Date(),
-      category: 'TREATMENT' as any,
+      category: JobCategory.TREATMENT,
       quantity: 1,
       unitOfMeasureQuantity: 'L',
       stocks: [],
@@ -210,7 +210,7 @@ describe('Job Integration', () => {
     const { job } = await createUseCase.execute({
       productionUnitId,
       dateOfOpeation: new Date(),
-      category: 'TREATMENT' as any,
+      category: JobCategory.TREATMENT,
       quantity: 5,
       unitOfMeasureQuantity: 'L',
       stocks: [

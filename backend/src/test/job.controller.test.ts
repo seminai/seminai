@@ -64,6 +64,7 @@ describe('JobController', () => {
       id: 'job-1',
       jobId: '709662',
       productionUnitId: 'pu-1',
+      productionCycleId: null,
       dateOfOpeation: new Date('2026-06-16T00:00:00.000Z'),
       isVerified: false,
       conformityChecked: false,
@@ -81,6 +82,7 @@ describe('JobController', () => {
       note: null,
       alertNotes: null,
       history: null,
+      appliedRules: null,
       totalDistributedWaterL: null,
       machineId: null,
       createdAt: new Date(),
@@ -88,7 +90,7 @@ describe('JobController', () => {
     };
     jest
       .spyOn(BulkCreateProductAndJobUseCase.prototype, 'execute')
-      .mockResolvedValue({ jobs: [createdJob] as any });
+      .mockResolvedValue({ jobs: [createdJob] });
     const request = {
       user: { id: 'user-1' },
       body: [

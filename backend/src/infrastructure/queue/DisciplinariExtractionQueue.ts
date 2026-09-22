@@ -1,115 +1,20 @@
-import { Queue, Worker, Job } from 'bullmq';
+import { Queue, Worker } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
-import { prisma } from '../repositories/Prisma';
-import { FileUploadAdapter } from '../services/tool/fileUpload.adapter';
-import {
-  LangChainUsageCollector,
-  UsageAccumulator,
-  CostCalculator,
-  OpenAiPricingRegistry,
-} from '../services/llm_costs/usage';
-import { PrismaUserRepository } from '../repositories/PrismaUserRepository';
-import { DeductUserCreditsUseCase } from '../../application/use-cases/user/DeductUserCreditsUseCase';
-import {
-  compressIfNeeded,
-  decompressIfNeeded,
-  CompressedData,
-  calculateSizeInMB,
-} from '../utils/redis-compression.util';
-import {
-  extractStructuredDisciplinariData,
-  calculateFileHash,
-  extractValidityDatesFromText,
-  isDisciplinareExpired,
-} from '../services/tool/extractDataFromDisciplinari';
-import {
-  DisciplinariExtractedData,
-  DisciplinariExtractionResult,
-} from '../../domain/dtos/disciplinari.dto';
-import { pdfToText } from '../services/ocr/pdfToText';
-import { ensureUserOrSkip, skippedJobResult } from './helpers/userGuard';
+import { DisciplinariExtractionJobData, DisciplinariExtractionJobResult, QUEUE_NAME } from './disciplinari-extraction-queue.support';
+import type { DisciplinariExtractionQueueContext } from './disciplinari-extraction-queue.context';
+export { type DisciplinariExtractionJobData, type DisciplinariExtractionJobResult } from './disciplinari-extraction-queue.support';
+import { disciplinariExtractionQueueAddJob } from './disciplinari-extraction-queue.01-add-job';
+import { disciplinariExtractionQueueGetJobStatus } from './disciplinari-extraction-queue.02-get-job-status';
+import { disciplinariExtractionQueueStartWorker } from './disciplinari-extraction-queue.03-start-worker';
+import { disciplinariExtractionQueueStopWorker } from './disciplinari-extraction-queue.04-stop-worker';
+import { disciplinariExtractionQueueClose } from './disciplinari-extraction-queue.05-close';
 
-const MIN_USABLE_DISCIPLINARI_CONFIDENCE = 10;
-
-/**
- * Executes promises with controlled concurrency.
- */
-async function pMap<T, R>(
-  items: T[],
-  fn: (item: T, index: number) => Promise<R>,
-  concurrency: number,
-): Promise<R[]> {
-  const results: R[] = new Array(items.length);
-  let currentIndex = 0;
-
-  async function worker(): Promise<void> {
-    while (currentIndex < items.length) {
-      const index = currentIndex++;
-      results[index] = await fn(items[index], index);
-    }
-  }
-
-  const workers = Array.from({ length: Math.min(concurrency, items.length) }, () => worker());
-  await Promise.all(workers);
-  return results;
-}
-
-function isUsableDisciplinariExtraction(data: DisciplinariExtractedData): boolean {
-  const interventionCount = data.defenseTargets.reduce(
-    (sum, target) => sum + target.interventions.length,
-    0,
-  );
-  const rulesCount =
-    data.rules.generalPrinciples.length +
-    data.rules.prohibitions.length +
-    data.rules.mandatoryActions.length +
-    data.rules.definitions.length;
-  const hasMeaningfulContent =
-    data.scopeEntities.length > 0 || data.defenseTargets.length > 0 || interventionCount > 0;
-  return (
-    hasMeaningfulContent &&
-    (interventionCount > 0 ||
-      rulesCount > 0 ||
-      data.extractionConfidence >= MIN_USABLE_DISCIPLINARI_CONFIDENCE)
-  );
-}
-
-/**
- * Job data for disciplinari extraction queue.
- */
-export interface DisciplinariExtractionJobData {
-  files: Array<{
-    fileName: string;
-    pdfBuffer: Buffer | { type: 'Buffer'; data: number[] };
-  }>;
-  userId: string;
-  concurrency?: number;
-  forceReExtract?: boolean;
-}
-
-/**
- * Result of a disciplinari extraction job.
- */
-export interface DisciplinariExtractionJobResult {
-  results: ReadonlyArray<DisciplinariExtractionResult>;
-  totalProcessed: number;
-  totalExtracted: number;
-  totalCached: number;
-  totalFailed: number;
-  cost: {
-    inputTokens: number;
-    outputTokens: number;
-    totalCostUsd: number;
-    costWithMarginUsd: number;
-  };
-}
-
-const QUEUE_NAME = 'disciplinari-extraction';
 
 /**
  * Queue for asynchronous disciplinari extraction with deduplication support.
  */
 export class DisciplinariExtractionQueue {
+
   public readonly queue: Queue;
   public worker: Worker | null = null;
 
@@ -122,18 +27,7 @@ export class DisciplinariExtractionQueue {
    * Adds a new extraction job to the queue.
    */
   async addJob(data: DisciplinariExtractionJobData): Promise<string> {
-    const dataSize = calculateSizeInMB(data);
-    console.log(`[DISCIPLINARI-QUEUE] Job data size: ${dataSize.toFixed(2)}MB`);
-    const compressedData = compressIfNeeded(data);
-    const job = await this.queue.add('extract-disciplinari', compressedData, {
-      removeOnComplete: { age: 3600, count: 100 },
-      removeOnFail: { age: 7200, count: 500 },
-      attempts: 1,
-    });
-    console.log(
-      `[DISCIPLINARI-QUEUE] Job ${job.id} added to queue (compressed: ${compressedData.compressed})`,
-    );
-    return job.id!;
+    return disciplinariExtractionQueueAddJob.call(this as unknown as DisciplinariExtractionQueueContext, data);
   }
 
   /**
@@ -155,355 +49,35 @@ export class DisciplinariExtractionQueue {
     processedOn?: number;
     finishedOn?: number;
   }> {
-    const job = await this.queue.getJob(jobId);
-    if (!job) {
-      throw new Error(`Job ${jobId} not found`);
-    }
-    const state = await job.getState();
-    const progress = job.progress as number;
-    return {
-      id: job.id!,
-      state,
-      progress,
-      data: job.data
-        ? {
-            filesCount: job.data.files?.length ?? 0,
-            fileNames: job.data.files?.map((f: { fileName: string }) => f.fileName) ?? [],
-            userId: job.data.userId,
-            concurrency: job.data.concurrency,
-            forceReExtract: job.data.forceReExtract,
-          }
-        : undefined,
-      result: job.returnvalue,
-      failedReason: job.failedReason,
-      processedOn: job.processedOn,
-      finishedOn: job.finishedOn,
-    };
+    return disciplinariExtractionQueueGetJobStatus.call(this as unknown as DisciplinariExtractionQueueContext, jobId);
   }
 
   /**
    * Starts the worker to process jobs.
    */
   startWorker(): void {
-    if (this.worker) {
-      console.log('[DISCIPLINARI-QUEUE] Worker already running');
-      return;
-    }
-    const connection = getRedisConnection();
-    this.worker = new Worker(
-      QUEUE_NAME,
-      async (job: Job<CompressedData<DisciplinariExtractionJobData>>) => {
-        console.log(`[DISCIPLINARI-QUEUE] Processing job ${job.id}`);
-        try {
-          await job.updateProgress(0);
-          const jobData = decompressIfNeeded(job.data);
-          console.log(`[DISCIPLINARI-QUEUE] Job data decompressed, files: ${jobData.files.length}`);
-
-          const userExists = await ensureUserOrSkip(jobData.userId, prisma, {
-            jobId: job.id,
-            queueName: QUEUE_NAME,
-          });
-          if (!userExists) {
-            return skippedJobResult(`user ${jobData.userId} no longer exists`);
-          }
-
-          const fileService = new FileUploadAdapter();
-          const usage = new UsageAccumulator();
-          const collector = new LangChainUsageCollector(usage);
-          const model = process.env.OPENAI_MODEL || 'gpt-4o';
-          const pricing = OpenAiPricingRegistry.getPricing(model);
-
-          const totalFiles = jobData.files.length;
-          // Use concurrency from job data or default to 3
-          const FILE_CONCURRENCY = Math.min(jobData.concurrency ?? 3, 5);
-          let processedCount = 0;
-
-          console.log(
-            `[DISCIPLINARI-QUEUE] Processing ${totalFiles} files with concurrency ${FILE_CONCURRENCY}`,
-          );
-
-          // Process single file - extracted for parallel execution
-          const processFile = async (file: {
-            fileName: string;
-            pdfBuffer: Buffer | { type: 'Buffer'; data: number[] };
-          }): Promise<DisciplinariExtractionResult> => {
-            try {
-              const pdfBuffer = Buffer.isBuffer(file.pdfBuffer)
-                ? file.pdfBuffer
-                : Buffer.from(file.pdfBuffer.data);
-
-              const fileHash = calculateFileHash(pdfBuffer);
-              console.log(
-                `[DISCIPLINARI-QUEUE] Processing file: ${file.fileName}, hash: ${fileHash.substring(0, 16)}...`,
-              );
-
-              const existingExtraction = await prisma.disciplinariExtraction.findUnique({
-                where: { fileHash },
-              });
-
-              if (existingExtraction && !jobData.forceReExtract) {
-                const isExpiredCheck = isDisciplinareExpired(existingExtraction.validUntil);
-
-                if (!isExpiredCheck) {
-                  console.log(
-                    `[DISCIPLINARI-QUEUE] File ${file.fileName} already extracted and valid, skipping`,
-                  );
-                  processedCount++;
-                  await job.updateProgress(Math.round(10 + (processedCount / totalFiles) * 80));
-                  return {
-                    fileName: file.fileName,
-                    status: 'cached',
-                    fileHash,
-                    bucketUrl: existingExtraction.sourceUrl,
-                    data: existingExtraction.extractedData as never,
-                    error: null,
-                  };
-                } else {
-                  console.log(`[DISCIPLINARI-QUEUE] File ${file.fileName} expired, re-extracting`);
-                }
-              }
-
-              console.log(`[DISCIPLINARI-QUEUE] Uploading file ${file.fileName} to bucket`);
-              const bucketUrl = await fileService.uploadPdfToStorage(
-                pdfBuffer,
-                file.fileName,
-                jobData.userId,
-              );
-
-              console.log(`[DISCIPLINARI-QUEUE] Extracting text from ${file.fileName}`);
-              const textResult = await pdfToText(pdfBuffer);
-              const rawText = textResult.text;
-
-              if (!rawText || rawText.trim().length === 0) {
-                console.error(`[DISCIPLINARI-QUEUE] Failed to extract text from ${file.fileName}`);
-                processedCount++;
-                await job.updateProgress(Math.round(10 + (processedCount / totalFiles) * 80));
-                return {
-                  fileName: file.fileName,
-                  status: 'failed',
-                  fileHash,
-                  bucketUrl,
-                  data: null,
-                  error: 'Failed to extract text from PDF',
-                };
-              }
-
-              console.log(`[DISCIPLINARI-QUEUE] Extracting structured data from ${file.fileName}`);
-              const extractedData = await extractStructuredDisciplinariData(rawText, [collector], {
-                userId: jobData.userId,
-                jobId: String(job.id ?? 'unknown-job'),
-                jobGroupId: String(job.id ?? 'unknown-group'),
-              });
-              if (!isUsableDisciplinariExtraction(extractedData)) {
-                console.warn(
-                  `[DISCIPLINARI-QUEUE] Extraction for ${file.fileName} returned no usable rules - NOT saving`,
-                );
-                processedCount++;
-                await job.updateProgress(Math.round(10 + (processedCount / totalFiles) * 80));
-                return {
-                  fileName: file.fileName,
-                  status: 'failed',
-                  fileHash,
-                  bucketUrl,
-                  data: null,
-                  error: 'Extraction returned no usable disciplinari data',
-                };
-              }
-
-              const preExtractedDates = extractValidityDatesFromText(rawText);
-              if (preExtractedDates.validFrom && !extractedData.documentMetadata.validFrom) {
-                (extractedData.documentMetadata as unknown as Record<string, unknown>).validFrom =
-                  preExtractedDates.validFrom;
-              }
-              if (preExtractedDates.validUntil && !extractedData.documentMetadata.validUntil) {
-                (extractedData.documentMetadata as unknown as Record<string, unknown>).validUntil =
-                  preExtractedDates.validUntil;
-              }
-              if (preExtractedDates.year && !extractedData.documentMetadata.year) {
-                (extractedData.documentMetadata as unknown as Record<string, unknown>).year =
-                  preExtractedDates.year;
-              }
-
-              const validFrom = extractedData.documentMetadata.validFrom
-                ? new Date(extractedData.documentMetadata.validFrom)
-                : null;
-              const validUntil = extractedData.documentMetadata.validUntil
-                ? new Date(extractedData.documentMetadata.validUntil)
-                : null;
-              const isExpired = isDisciplinareExpired(validUntil);
-
-              console.log(`[DISCIPLINARI-QUEUE] Saving extraction for ${file.fileName}`);
-              const status: 'extracted' | 'expired_updated' = existingExtraction
-                ? 'expired_updated'
-                : 'extracted';
-
-              await prisma.disciplinariExtraction.upsert({
-                where: { fileHash },
-                create: {
-                  fileHash,
-                  fileName: file.fileName,
-                  sourceUrl: bucketUrl,
-                  region: extractedData.documentMetadata.region,
-                  year: extractedData.documentMetadata.year,
-                  version: extractedData.documentMetadata.version,
-                  title: extractedData.documentMetadata.title,
-                  validFrom,
-                  validUntil,
-                  isExpired,
-                  rawText,
-                  extractedData: extractedData as never,
-                  extractionConfidence: extractedData.extractionConfidence,
-                  extractionErrors: extractedData.extractionErrors as string[],
-                  createdById: jobData.userId,
-                },
-                update: {
-                  fileName: file.fileName,
-                  sourceUrl: bucketUrl,
-                  region: extractedData.documentMetadata.region,
-                  year: extractedData.documentMetadata.year,
-                  version: extractedData.documentMetadata.version,
-                  title: extractedData.documentMetadata.title,
-                  validFrom,
-                  validUntil,
-                  isExpired,
-                  rawText,
-                  extractedData: extractedData as never,
-                  extractionConfidence: extractedData.extractionConfidence,
-                  extractionErrors: extractedData.extractionErrors as string[],
-                },
-              });
-
-              processedCount++;
-              await job.updateProgress(Math.round(10 + (processedCount / totalFiles) * 80));
-              console.log(`[DISCIPLINARI-QUEUE] Successfully processed ${file.fileName}`);
-
-              return {
-                fileName: file.fileName,
-                status,
-                fileHash,
-                bucketUrl,
-                data: extractedData,
-                error: null,
-              };
-            } catch (fileError) {
-              console.error(`[DISCIPLINARI-QUEUE] Error processing ${file.fileName}:`, fileError);
-              processedCount++;
-              await job.updateProgress(Math.round(10 + (processedCount / totalFiles) * 80));
-              return {
-                fileName: file.fileName,
-                status: 'failed',
-                fileHash: null,
-                bucketUrl: null,
-                data: null,
-                error: fileError instanceof Error ? fileError.message : 'Unknown error',
-              };
-            }
-          };
-
-          // Process files in parallel with controlled concurrency
-          const results = await pMap(jobData.files, processFile, FILE_CONCURRENCY);
-
-          // Count results
-          let totalExtracted = 0;
-          let totalCached = 0;
-          let totalFailed = 0;
-          for (const r of results) {
-            if (r.status === 'cached') totalCached++;
-            else if (r.status === 'failed') totalFailed++;
-            else totalExtracted++;
-          }
-
-          await job.updateProgress(90);
-
-          const tokens = usage.getTotals();
-          const cost = CostCalculator.computeCost({
-            tokens,
-            pricing,
-            mistralOcrPages: 0,
-            margin: 0.2,
-          });
-
-          const userRepository = new PrismaUserRepository(prisma);
-          const deductCreditsUseCase = new DeductUserCreditsUseCase(userRepository);
-          try {
-            await deductCreditsUseCase.execute({
-              userId: jobData.userId,
-              amount: cost.costWithMarginUsd,
-            });
-            console.log(
-              `[DISCIPLINARI-QUEUE] Deducted ${cost.costWithMarginUsd} credits from user ${jobData.userId}`,
-            );
-          } catch (error) {
-            console.error(`[DISCIPLINARI-QUEUE] Failed to deduct credits:`, error);
-          }
-
-          await job.updateProgress(100);
-          console.log(`[DISCIPLINARI-QUEUE] Job ${job.id} completed successfully`);
-
-          return {
-            results,
-            totalProcessed: totalFiles,
-            totalExtracted,
-            totalCached,
-            totalFailed,
-            cost: {
-              inputTokens: cost.tokens.promptTokens,
-              outputTokens: cost.tokens.completionTokens,
-              totalCostUsd: cost.totalCostUsd,
-              costWithMarginUsd: cost.costWithMarginUsd,
-            },
-          };
-        } catch (error) {
-          console.error(`[DISCIPLINARI-QUEUE] Job ${job.id} failed:`, error);
-          throw error;
-        }
-      },
-      {
-        connection,
-        concurrency: 1,
-      },
-    );
-
-    this.worker.on('completed', (job) => {
-      console.log(`[DISCIPLINARI-QUEUE] Job ${job.id} completed`);
-    });
-
-    this.worker.on('failed', (job, err) => {
-      console.error(`[DISCIPLINARI-QUEUE] Job ${job?.id} failed with error:`, err);
-    });
-
-    console.log('[DISCIPLINARI-QUEUE] Worker started');
+    disciplinariExtractionQueueStartWorker.call(this as unknown as DisciplinariExtractionQueueContext);
   }
 
   /**
    * Stops the worker.
    */
   async stopWorker(): Promise<void> {
-    if (this.worker) {
-      await this.worker.close();
-      this.worker = null;
-      console.log('[DISCIPLINARI-QUEUE] Worker stopped');
-    }
+    return disciplinariExtractionQueueStopWorker.call(this as unknown as DisciplinariExtractionQueueContext);
   }
 
   /**
    * Closes the queue and worker.
    */
   async close(): Promise<void> {
-    await this.stopWorker();
-    await this.queue.close();
+    return disciplinariExtractionQueueClose.call(this as unknown as DisciplinariExtractionQueueContext);
   }
 }
 
 let queueInstance: DisciplinariExtractionQueue | null = null;
 
-/**
- * Gets or creates the singleton disciplinari extraction queue instance.
- */
 export function getDisciplinariExtractionQueue(): DisciplinariExtractionQueue {
-  if (!queueInstance) {
-    queueInstance = new DisciplinariExtractionQueue();
-    queueInstance.startWorker();
-  }
+  queueInstance ??= new DisciplinariExtractionQueue();
+  queueInstance.startWorker();
   return queueInstance;
 }

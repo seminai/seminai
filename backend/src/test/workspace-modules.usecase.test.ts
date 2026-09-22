@@ -2,6 +2,10 @@ import { UserRole, WorkspaceKind, WorkspaceModule } from '@prisma/client';
 import { resolveEnabledModules } from '../application/services/workspace/resolveEnabledModules';
 import { CreateWorkspaceUseCase } from '../application/use-cases/workspace/CreateWorkspaceUseCase';
 import { Workspace } from '../domain/entities/Workspace';
+import { ICompanyOnWorkspaceRepository } from '../domain/repositories/ICompanyOnWorkspaceRepository';
+import { ICompanyRepository } from '../domain/repositories/ICompanyRepository';
+import { IWorkspaceMemberRepository } from '../domain/repositories/IWorkspaceMemberRepository';
+import { IWorkspaceRepository } from '../domain/repositories/IWorkspaceRepository';
 
 describe('resolveEnabledModules', () => {
   it('always includes DCA when nothing is requested', () => {
@@ -38,17 +42,17 @@ describe('CreateWorkspaceUseCase enabledModules gating', () => {
     const mockWorkspaceRepository = {
       findBySlug: jest.fn().mockResolvedValue(null),
       create: jest.fn((workspace: Workspace) => Promise.resolve(workspace)),
-    } as any;
+    } as unknown as jest.Mocked<IWorkspaceRepository>;
     const mockWorkspaceMemberRepository = {
       create: jest.fn((member: unknown) => Promise.resolve(member)),
-    } as any;
+    } as unknown as jest.Mocked<IWorkspaceMemberRepository>;
     const mockCompanyOnWorkspaceRepository = {
       createMany: jest.fn(),
       findCompanyIdsByWorkspaceId: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<ICompanyOnWorkspaceRepository>;
     const mockCompanyRepository = {
       findManyByUserId: jest.fn(),
-    } as any;
+    } as unknown as jest.Mocked<ICompanyRepository>;
     const useCase = new CreateWorkspaceUseCase(
       mockWorkspaceRepository,
       mockWorkspaceMemberRepository,

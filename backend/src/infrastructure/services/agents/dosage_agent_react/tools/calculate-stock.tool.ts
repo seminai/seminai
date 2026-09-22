@@ -36,12 +36,12 @@ Salva il risultato in working memory (stockBalance).`,
         // Format report
         const report = printStockBalanceReport(stockBalance);
 
-        const overusedProducts = stockBalance.products.filter((p: any) => p.isOverused);
+        const overusedProducts = stockBalance.products.filter((product) => product.isOverused);
 
         return JSON.stringify({
           totalProducts: stockBalance.products.length,
           overusedCount: overusedProducts.length,
-          products: stockBalance.products.map((p: any) => ({
+          products: stockBalance.products.map((p) => ({
             name: p.productName,
             regNumber: p.regNumber,
             available: `${p.quantityAvailable} ${p.quantityUom}`,

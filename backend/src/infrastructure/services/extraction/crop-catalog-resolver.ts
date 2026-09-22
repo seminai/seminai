@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { BaseCallbackHandler } from '@langchain/core/callbacks/base';
 import { type CropCatalogEntry } from './production-unit-normalizer';
 
 export interface CropIdentificationInput {
@@ -95,7 +96,7 @@ export type BatchCropIdentificationResult = z.infer<typeof BatchCropIdentificati
 
 type BatchLlmInvoker = (
   messages: ReadonlyArray<{ role: 'system' | 'user'; content: string }>,
-  options?: { callbacks?: unknown[] },
+  options?: { callbacks?: BaseCallbackHandler[] },
 ) => Promise<BatchCropIdentificationResult>;
 
 /**
@@ -105,7 +106,7 @@ export async function resolveUnresolvedCropsWithLlm(params: {
   readonly inputs: readonly CropIdentificationInput[];
   readonly catalog: readonly CropCatalogEntry[];
   readonly invokeBatch: BatchLlmInvoker;
-  readonly callbacks?: unknown[];
+  readonly callbacks?: ReadonlyArray<BaseCallbackHandler>;
 }): Promise<readonly { input: CropIdentificationInput; identification: CropIdentification }[]> {
   const { inputs, catalog, invokeBatch, callbacks } = params;
   const unresolved = inputs.filter((input) => isUnresolvedCropName(input.cropName, catalog));
@@ -141,7 +142,7 @@ ${unresolved
   .join('\n')}`,
       },
     ],
-    { callbacks },
+    { callbacks: callbacks ? [...callbacks] : undefined },
   );
   for (let i = 0; i < llmResult.crops.length; i += 1) {
     const crop = llmResult.crops[i];

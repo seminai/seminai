@@ -122,6 +122,10 @@ const PUBLIC = [
 ];
 
 const toTestMatch = (names) =>
-  names.map((name) => `**/integration-test/${name}.integration.test.ts`);
+  names.flatMap((name) => [
+    `**/integration-test/${name}.integration.test.ts`,
+    `**/integration-test/${name}.case-*.integration.test.ts`,
+    `**/integration-test/${name}.part-*.integration.test.ts`,
+  ]);
 
 module.exports = { FAST, LLM, OCR, EXTERNAL, PUBLIC, toTestMatch };

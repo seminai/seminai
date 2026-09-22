@@ -8,7 +8,8 @@ services:
     env_file:
       - ./.env
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/auth-boiler-plate?schema=public
+      # Local-only development credential; never used outside this Compose network.
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/auth-boiler-plate?schema=public # trufflehog:ignore
       - JWT_SECRET=change-this-secret-in-production
       - JWT_EXPIRES_IN="1d"
       - SMTP_HOST=mailhog

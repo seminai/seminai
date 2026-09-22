@@ -41,28 +41,23 @@ CRITICAL COMPLETENESS RULE:
 The PDF may contain MULTIPLE invoices concatenated (several pages, several "FATTURA" blocks, several invoice numbers). You MUST enumerate EVERY product row from EVERY invoice on EVERY page. Do not stop at the first document. Do not deduplicate rows that legitimately repeat across invoices.
 
 Return one row per product line found in the document. Repeat shared fields (invoiceNumber, invoiceDate, invoiceDueDate, supplierName, supplierVat) on every row. When the PDF contains multiple invoices, update invoiceNumber / invoiceDate for each new document.
-
 Source priority:
 - Prefer the STRUCTURED TABLE ROWS for quantity, quantityUnitOfMeasure, unitPrice, totalPrice (these come from an OCR-validated markdown table). The "productCode" field on each structured row is the supplier's article SKU (e.g. "XSER03BS" for SERCADIS, "XFOR02" for FORCE ULTRA, "XCON04FPC" for CONC.ACTIVE). Its alphabetic prefix usually mirrors the productName brand — use it as an anchor to detect column-misalignment from OCR.
 - Always also scan the OCR FULL MARKDOWN section: tables after the first one are often missing from the structured rows because OCR corrupted their header. Extract those rows from the markdown directly.
 - Prefer the NATIVE PDF TEXT for productName spelling, registrationNumber, invoiceNumber and dates (low risk of OCR hallucination).
 - If a source is absent, rely on the other one.
-
 CRITICAL: SECTION-HEADER ROWS ARE NOT PRODUCTS
 Italian suppliers (Roverso Paolo, Phyto Service, similar) frequently print "Rif DT n.XXX del DD/MM/YY" markers INSIDE the product table to group rows by their source delivery note. These are metadata, never products:
 - If a row's descrizione is ONLY "Rif DT n.XXX del DD/MM/YY" (even when the OCR has filled its quantity/prezzo cells with values that look real), SKIP the entire row.
 - If "Rif DT n.XXX del DD/MM/YY" appears as the FIRST or LAST line of a multi-line descrizione cell, strip it and keep only the actual product description.
 - The same rule applies to "D.d.T. N. XXX Del: DD/MM/YY" prefixes (legacy DDT references).
 - "COPIA STAMPATA DI FATTURA ELETTRONICA, NON VALIDA AI FINI FISCALI." is invoice-footer boilerplate — never a product.
-
 CRITICAL: DETECT OCR ROW-SHIFT
 On scanned invoices with "Rif DT" section dividers, OCR may shift the productName column DOWN by one row (the section header's descrizione cell gets the next product's name, the next row's descrizione gets the row-after-next's name, etc.). Cross-check using:
 - productCode prefix vs productName brand (XSER + "SCHERMO" = mismatch — likely shift).
 - quantity × unitPrice ≈ totalPrice (within 3%). If the math doesn't hold for a row, the prices in that row probably belong to a different product.
 When you detect a shift, prefer the productName that matches the productCode brand, and pair it with the values whose math is internally consistent.
-
 ${PRODUCT_NAME_PROMPT_INSTRUCTIONS}
-
 Extraction rules:
 - quantity and unitPrice are numbers. Convert Italian decimal commas to dots. Use null only when the value is truly missing.
 - quantityUnitOfMeasure should use the canonical form when possible: KG, G, T, Q, L, LT, ML, NR, PZ, CF, SC, CT, CN. If the document uses a different abbreviation, keep it but write it in uppercase.
@@ -71,13 +66,10 @@ Extraction rules:
 - Skip discount lines (SCONTO, ABBUONO) and non-product lines (Spese Incasso, Bollo, Spese di trasporto, TOTALE FATTURA, IMPONIBILE).
 - Do NOT emit duplicate rows: if two adjacent rows have identical productName + identical values, keep only one.
 - Never invent values. If you cannot determine a field, return null.`;
-
 type ExtractedInvoiceEntry = Omit<InvoiceEntry, 'productCategory' | 'administrativeStatus'>;
-
 export interface InvoiceExtractionChain {
   invoke: (input: { content: string }) => Promise<{ rows: readonly InvoiceRow[] }>;
 }
-
 interface Dependencies {
   readonly chain?: InvoiceExtractionChain;
   readonly modelName?: string;
@@ -85,7 +77,6 @@ interface Dependencies {
   readonly fatturaPaParser?: FatturaPaParser;
   readonly deterministicFallbackParser?: InvoiceDeterministicFallbackParser;
 }
-
 /**
  * Service responsible for extracting structured product data from invoice documents.
  * Supports both PDF (via OCR + structured LLM call) and XML (FatturaPA direct parsing).
@@ -95,7 +86,6 @@ export class ExtractDataFromInvoiceService {
   private readonly classifier: InvoiceProductClassifier;
   private readonly fatturaPaParser: FatturaPaParser;
   private readonly deterministicFallbackParser: InvoiceDeterministicFallbackParser;
-
   constructor(dependencies?: Dependencies) {
     this.classifier = dependencies?.classifier ?? new InvoiceProductClassifier();
     this.fatturaPaParser = dependencies?.fatturaPaParser ?? new FatturaPaParser();
@@ -103,7 +93,6 @@ export class ExtractDataFromInvoiceService {
       dependencies?.deterministicFallbackParser ?? new InvoiceDeterministicFallbackParser();
     this.chain = dependencies?.chain ?? buildDefaultInvoiceChain(dependencies?.modelName);
   }
-
   public async execute(params: {
     filePath: string;
     ocrProvider?: OcrProvider;
@@ -146,7 +135,6 @@ export class ExtractDataFromInvoiceService {
     });
     return this.runExtractionPipeline(extraction, filePath, startedAt, companyKind);
   }
-
   private async extractFromXml(
     filePath: string,
     companyKind?: CompanyKind,
@@ -167,7 +155,6 @@ export class ExtractDataFromInvoiceService {
       throw new Error(`Failed to extract invoice data from XML file ${filePath}: ${reason}`);
     }
   }
-
   private async runExtractionPipeline(
     extraction: DualSourceExtractionResult,
     filePath: string,
@@ -217,7 +204,6 @@ export class ExtractDataFromInvoiceService {
     });
     return { entries: enriched, rawTextPath: extraction.rawTextPath };
   }
-
   private async extractEntriesWithFallback(
     payload: string,
     extraction: DualSourceExtractionResult,
@@ -249,7 +235,6 @@ export class ExtractDataFromInvoiceService {
     throw new Error('No entries could be extracted with primary or deterministic fallback.');
   }
 }
-
 function buildDefaultInvoiceChain(modelName?: string): InvoiceExtractionChain {
   const { model: llm } = createChatModel({
     modelName: modelName ?? process.env.OPENAI_MODEL ?? DEFAULT_MODEL_NAME,
@@ -268,7 +253,6 @@ function buildDefaultInvoiceChain(modelName?: string): InvoiceExtractionChain {
     },
   };
 }
-
 function toInvoiceEntry(row: InvoiceRow): ExtractedInvoiceEntry {
   const canonicalUnit = canonicalizeUnit(row.quantityUnitOfMeasure);
   return {
@@ -285,7 +269,6 @@ function toInvoiceEntry(row: InvoiceRow): ExtractedInvoiceEntry {
     totalPrice: row.totalPrice,
   };
 }
-
 /**
  * Filter out rows that are pure metadata (e.g. the LLM emitted a row whose
  * productName is only a DDT reference or "Rif DT" section header after
@@ -300,7 +283,6 @@ function hasMeaningfulProductName(entry: ExtractedInvoiceEntry): boolean {
   if (/^copia\s+stampata\b/i.test(name)) return false;
   return true;
 }
-
 function flagRow(entry: ExtractedInvoiceEntry): ExtractedInvoiceEntry {
   const verdict = validateRowCoherence({
     quantity: entry.quantity,
@@ -310,11 +292,9 @@ function flagRow(entry: ExtractedInvoiceEntry): ExtractedInvoiceEntry {
   });
   return withReviewReasons(entry, verdict.reasons);
 }
-
 function countReview(entries: ReadonlyArray<{ needsReview?: boolean }>): number {
   return entries.filter((entry) => entry.needsReview).length;
 }
-
 function isXmlFile(filePath: string): boolean {
   return filePath.toLowerCase().endsWith('.xml');
 }

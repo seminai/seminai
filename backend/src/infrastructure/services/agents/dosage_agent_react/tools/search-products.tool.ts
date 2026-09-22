@@ -199,12 +199,21 @@ Input: lista prodotti con nome/numero registrazione e unità produttive con colt
           cropName: unit.cropName,
           areaHa: unit.areaHa,
           matchedProductCount: unit.products?.length ?? 0,
-          products: (unit.products ?? []).map((p) => ({
-            name: (p as any).productName ?? (p as any).name,
-            regNumber: (p as any).registrationNumber ?? (p as any).regNumber,
-            hasLabel: !!(p as any).label,
-            category: (p as any).label?.categoria ?? 'N/A',
-          })),
+          products: (unit.products ?? []).map((product) => {
+            const value = product as {
+              readonly productName?: string;
+              readonly name?: string;
+              readonly registrationNumber?: string;
+              readonly regNumber?: string;
+              readonly label?: { readonly categoria?: string };
+            };
+            return {
+              name: value.productName ?? value.name,
+              regNumber: value.registrationNumber ?? value.regNumber,
+              hasLabel: Boolean(value.label),
+              category: value.label?.categoria ?? 'N/A',
+            };
+          }),
           excludedCount: unit.excludedProducts?.length ?? 0,
         }));
 

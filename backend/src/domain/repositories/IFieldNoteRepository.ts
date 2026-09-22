@@ -34,6 +34,20 @@ export interface UpdateFieldNoteData {
   notes?: string | null;
 }
 
+export type FieldNoteWithRelations = Prisma.FieldNoteGetPayload<{
+  include: {
+    field: { include: { company: { select: { id: true; name: true } } } };
+    product: {
+      include: { warehouse: { include: { company: { select: { id: true; name: true } } } } };
+    };
+    productionUnit: {
+      include: {
+        productionUnitsOnFields: { include: { field: { select: { id: true; name: true } } } };
+      };
+    };
+  };
+}>;
+
 export interface IFieldNoteRepository {
   create(fieldNote: FieldNote): Promise<FieldNote>;
 
@@ -41,11 +55,11 @@ export interface IFieldNoteRepository {
 
   findByIdWithRelations(id: string): Promise<FieldNote | null>;
 
-  findByIdWithRelationsForResponse(id: string): Promise<any | null>;
+  findByIdWithRelationsForResponse(id: string): Promise<FieldNoteWithRelations | null>;
 
   findAll(filters: FindFieldNotesFilters): Promise<FieldNote[]>;
 
-  findAllWithRelations(filters: FindFieldNotesFilters): Promise<any[]>;
+  findAllWithRelations(filters: FindFieldNotesFilters): Promise<FieldNoteWithRelations[]>;
 
   findByUser(userId: string): Promise<FieldNote[]>;
 

@@ -13,7 +13,6 @@ import { Warehouse } from '../domain/entities/Warehouse';
 import { Product } from '../domain/entities/Product';
 import { ProductCategory, JobCategory } from '@prisma/client';
 import { BulkCreateProductAndJobUseCase } from '../application/use-cases/job/BulkCreateProductAndJobUseCase';
-
 describe('Bulk Create Product and Job Integration', () => {
   let testUserId: string;
   let companyAId: string;
@@ -24,14 +23,12 @@ describe('Bulk Create Product and Job Integration', () => {
   let jobRepo: PrismaJobRepository;
   let stockRepo: PrismaStockRepository;
   let productRepo: PrismaProductRepository;
-
   let fieldAId: string;
   let fieldBId: string;
   let puAId: string;
   let puBId: string;
   let whAId: string;
   let whBId: string;
-
   beforeAll(async () => {
     jobRepo = new PrismaJobRepository(prisma);
     stockRepo = new PrismaStockRepository(prisma);
@@ -39,20 +36,15 @@ describe('Bulk Create Product and Job Integration', () => {
     fieldRepo = new PrismaFieldRepository(prisma);
     puRepo = new PrismaProductionUnitRepository(prisma);
     whRepo = new PrismaWarehouseRepository(prisma);
-
     const tu = await createTestUser();
     testUserId = tu.id!;
   });
-
   beforeEach(async () => {
     await deleteAllTestCompanies(testUserId);
-
     const companyA = await createTestCompany({ userId: testUserId, name: 'Company A' });
     const companyB = await createTestCompany({ userId: testUserId, name: 'Company B' });
     companyAId = companyA.id!;
     companyBId = companyB.id!;
-
-    // Field & ProductionUnit for A
     const fieldA = Field.create({
       companyId: companyAId,
       name: `Field-A-${Date.now()}`,
@@ -88,7 +80,6 @@ describe('Bulk Create Product and Job Integration', () => {
     });
     const createdFieldA = await fieldRepo.create(fieldA);
     fieldAId = createdFieldA.id;
-
     const puA = ProductionUnit.create({
       name: 'PU-A',
       cropName: 'Crop A',
@@ -107,8 +98,6 @@ describe('Bulk Create Product and Job Integration', () => {
     });
     const createdPuA = await puRepo.create(puA, [{ fieldId: fieldAId, areaHaOnField: 1 }]);
     puAId = createdPuA.id;
-
-    // Field & ProductionUnit for B
     const fieldB = Field.create({
       companyId: companyBId,
       name: `Field-B-${Date.now()}`,
@@ -144,7 +133,6 @@ describe('Bulk Create Product and Job Integration', () => {
     });
     const createdFieldB = await fieldRepo.create(fieldB);
     fieldBId = createdFieldB.id;
-
     const puB = ProductionUnit.create({
       name: 'PU-B',
       cropName: 'Crop B',
@@ -163,8 +151,6 @@ describe('Bulk Create Product and Job Integration', () => {
     });
     const createdPuB = await puRepo.create(puB, [{ fieldId: fieldBId, areaHaOnField: 1 }]);
     puBId = createdPuB.id;
-
-    // Warehouses for A and B
     const whA = Warehouse.create({
       companyId: companyAId,
       name: `WH-A-${Date.now()}`,
@@ -180,7 +166,6 @@ describe('Bulk Create Product and Job Integration', () => {
     });
     const createdWhA = await whRepo.create(whA);
     whAId = createdWhA.id;
-
     const whB = Warehouse.create({
       companyId: companyBId,
       name: `WH-B-${Date.now()}`,
@@ -196,8 +181,6 @@ describe('Bulk Create Product and Job Integration', () => {
     });
     const createdWhB = await whRepo.create(whB);
     whBId = createdWhB.id;
-
-    // Pre-existing product in Company A warehouse
     const existingProductA = Product.create({
       warehouseId: whAId,
       name: 'Chem A',
@@ -213,11 +196,9 @@ describe('Bulk Create Product and Job Integration', () => {
     });
     await productRepo.create(existingProductA);
   });
-
   afterAll(async () => {
     await cleanupTestData();
   });
-
   it('should bulk create jobs across two companies, reusing existing product and creating new one, with related stocks', async () => {
     const useCase = new BulkCreateProductAndJobUseCase(
       jobRepo,
@@ -227,7 +208,6 @@ describe('Bulk Create Product and Job Integration', () => {
       fieldRepo,
       whRepo,
     );
-
     const { jobs } = await useCase.execute({
       items: [
         {
@@ -286,20 +266,11 @@ describe('Bulk Create Product and Job Integration', () => {
         },
       ],
     });
-
     expect(jobs).toHaveLength(2);
-
-    // Assert jobs per production unit
     const jobsA = await jobRepo.findManyByProductionUnitId(puAId);
     expect(jobsA).toHaveLength(1);
     const jobsB = await jobRepo.findManyByProductionUnitId(puBId);
     expect(jobsB).toHaveLength(1);
-
-    // Verify product exists and is in the right warehouse (reused product).
-    // Stocks attached to the product through findManyByWarehouseId are filtered by
-    // VERIFIED_STOCK_WHERE (only jobs with isVerified=true). Jobs created by
-    // BulkCreateProductAndJobUseCase have isVerified=false, so we read stocks
-    // directly via Prisma to bypass that filter.
     const productsA = await productRepo.findManyByWarehouseId(whAId);
     const productA = productsA.find((p) => p.sku === 'SKU-EXIST');
     expect(productA).toBeDefined();
@@ -309,8 +280,6 @@ describe('Bulk Create Product and Job Integration', () => {
     });
     expect(stocksA.length).toBeGreaterThanOrEqual(1);
     expect(stocksA[0].quantity.toString()).toBe('-1');
-
-    // Same for Company B (new product created)
     const productsB = await productRepo.findManyByWarehouseId(whBId);
     const productB = productsB.find((p) => p.sku === 'SKU-NEW');
     expect(productB).toBeDefined();
@@ -320,7 +289,6 @@ describe('Bulk Create Product and Job Integration', () => {
     });
     expect(stocksB.length).toBeGreaterThanOrEqual(1);
     expect(stocksB[0].quantity.toString()).toBe('-2');
-
     const jobProductLinks = await jobRepo.findManyByIdsWithProducts(jobs.map((job) => job.id));
     expect(jobProductLinks).toHaveLength(2);
     expect(jobProductLinks.every((link) => link.stockCount >= 1)).toBe(true);

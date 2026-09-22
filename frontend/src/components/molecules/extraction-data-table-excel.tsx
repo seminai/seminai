@@ -74,7 +74,7 @@ export function ExtractionDataTableExcel({
   useEffect(() => {
     const next = data.map((row) => ({ ...row }));
     // Keep AG Grid row data and undo history aligned with the latest payload.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+
     setRows(next);
     setSelectedCells([]);
     reset(next);
@@ -204,17 +204,14 @@ export function ExtractionDataTableExcel({
     const ranges = api.getCellRanges();
     setSelectedCells(agGridRangesToInvoiceCells(ranges));
   }, [updateAggregates]);
-
   const selectedRows = useMemo(
     () => getRowsSelectedByCells(rows, selectedCells),
     [rows, selectedCells],
   );
-
   const getOcrBlockReason = useCallback(
     () => getAgGridOcrCorrectionBlockReason(gridRef.current?.api),
     [],
   );
-
   const {
     actions: ocrActions,
     confirmationDialog,
@@ -228,19 +225,16 @@ export function ExtractionDataTableExcel({
     applyRows,
     getExtraBlockReason: getOcrBlockReason,
   });
-
   useInvoiceOcrShortcuts({
     enabled: isEditable && !isSaving && selectedCellCount > 0,
     rootRef: tableRef,
     onAction: runOcrAction,
   });
-
   const exportFilename = useExportFilename();
   const getExportData = useCallback(
     () => buildInvoiceEntriesExportParams(selectedRows, exportFilename),
     [selectedRows, exportFilename],
   );
-
   const exportOptions = useMemo(
     () => [
       { label: "CSV", format: "csv" as const, onClick: () => exportCsv(getExportData()) },
@@ -249,13 +243,11 @@ export function ExtractionDataTableExcel({
     ],
     [getExportData],
   );
-
   const handleDeselect = useCallback(() => {
     gridRef.current?.api?.clearCellSelection();
     setSelectedCells([]);
     updateAggregates();
   }, [updateAggregates]);
-
   return (
     <div ref={tableRef} className="flex min-w-0 flex-col gap-2">
       <InvoiceProductTableToolbar
@@ -267,7 +259,6 @@ export function ExtractionDataTableExcel({
         onRestore={handleRestore}
         onSave={() => onSave(rows)}
       />
-
       <div className="h-[360px] overflow-hidden rounded-md border">
         <AgGridReact<ConfirmableStockEntry>
           ref={gridRef}
@@ -299,7 +290,6 @@ export function ExtractionDataTableExcel({
     </div>
   );
 }
-
 function getRowsSelectedByCells(
   rows: readonly ConfirmableStockEntry[],
   cells: readonly InvoiceCellCoord[],
@@ -307,5 +297,4 @@ function getRowsSelectedByCells(
   const rowIndexes = new Set(cells.map((cell) => cell.rowIndex));
   return rows.filter((_, rowIndex) => rowIndexes.has(rowIndex));
 }
-
 export default ExtractionDataTableExcel;

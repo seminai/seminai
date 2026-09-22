@@ -5,7 +5,7 @@ import { resolvePrismaPgSsl } from '../../src/infrastructure/repositories/prisma
 import { PUBLIC_SKILLS_SEED } from './data/public-skills.data';
 
 const SEMINAI_WORKSPACE_SLUG = 'seminai';
-const DEFAULT_AUTHOR_EMAIL = 'francemazzi@gmail.com';
+const DEFAULT_AUTHOR_EMAIL = 'contributors@seminai.local';
 
 /**
  * Idempotent, non-destructive seed for the official Seminai marketplace skills.

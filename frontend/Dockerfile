@@ -32,7 +32,7 @@ RUN npm run build
 
 FROM nginx:1.27-alpine AS runtime
 
-ENV API_PROXY_PASS=https://seminai-be-v2-661301438659.europe-west1.run.app
+ENV API_PROXY_PASS=http://localhost:8081
 
 COPY docker/nginx.conf /etc/nginx/default.conf.template
 COPY --from=build /app/dist /usr/share/nginx/html

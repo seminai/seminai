@@ -1,0 +1,7 @@
+Seminai
+Copyright 2024-2026 Seminai contributors.
+
+This distribution is offered under AGPL-3.0-or-later or separate commercial terms. See
+LICENSE and COMMERCIAL-LICENSE.md. Third-party packages and datasets retain their own
+copyright and licence terms. The processed phytosanitary data provenance is documented in
+backend/dataset/fitosanitari/PROVENANCE.md.

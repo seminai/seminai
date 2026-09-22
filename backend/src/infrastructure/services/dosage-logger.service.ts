@@ -1,25 +1,39 @@
 import { Server as SocketServer } from 'socket.io';
-import {
-  DosageLogEvent,
-  DosageLogEventType,
-  ProductMatchLogEvent,
-  LLMMatchLogEvent,
-  ProgressLogEvent,
-  TimingLogEvent,
-} from '../../domain/dtos/dosage-log-event.dto';
+import { DosageLogEvent } from '../../domain/dtos/dosage-log-event.dto';
+import type { DosageLoggerServiceContext } from './dosage-logger-service.context';
+import { dosageLoggerServiceInitialize } from './dosage-logger-service.01-initialize';
+import { dosageLoggerServiceIsInitialized } from './dosage-logger-service.02-is-initialized';
+import { dosageLoggerServiceBufferEvent } from './dosage-logger-service.03-buffer-event';
+import { dosageLoggerServiceReplayEvents } from './dosage-logger-service.04-replay-events';
+import { dosageLoggerServiceClearBuffer } from './dosage-logger-service.05-clear-buffer';
+import { dosageLoggerServiceEmitEvent } from './dosage-logger-service.06-emit-event';
+import { dosageLoggerServiceLogInfo } from './dosage-logger-service.07-log-info';
+import { dosageLoggerServiceLogProductMatch } from './dosage-logger-service.08-log-product-match';
+import { dosageLoggerServiceLogMatchFallback } from './dosage-logger-service.09-log-match-fallback';
+import { dosageLoggerServiceLogLLMMatch } from './dosage-logger-service.10-log-llmmatch';
+import { dosageLoggerServiceLogFlow } from './dosage-logger-service.11-log-flow';
+import { dosageLoggerServiceLogTiming } from './dosage-logger-service.12-log-timing';
+import { dosageLoggerServiceLogWarning } from './dosage-logger-service.13-log-warning';
+import { dosageLoggerServiceLogError } from './dosage-logger-service.14-log-error';
+import { dosageLoggerServiceLogProgress } from './dosage-logger-service.15-log-progress';
+import { dosageLoggerServiceLogLabelExtraction } from './dosage-logger-service.16-log-label-extraction';
+import { dosageLoggerServiceLogCompletion } from './dosage-logger-service.17-log-completion';
+import { dosageLoggerServiceLogSian } from './dosage-logger-service.18-log-sian';
+
 
 /**
  * Service for emitting dosage agent logs via Socket.IO
  * Manages real-time log streaming to connected clients
  */
 export class DosageLoggerService {
-  private static instance: DosageLoggerService | null = null;
-  private io: SocketServer | null = null;
-  private readonly eventBuffers: Map<string, DosageLogEvent[]> = new Map();
-  private readonly BUFFER_MAX_SIZE = 100;
-  private readonly BUFFER_TTL_MS = 60_000;
 
-  private constructor() {}
+  private static instance: DosageLoggerService | null = null;
+  io: SocketServer | null = null;
+  readonly eventBuffers: Map<string, DosageLogEvent[]> = new Map();
+  readonly BUFFER_MAX_SIZE = 100;
+  readonly BUFFER_TTL_MS = 60_000;
+
+  constructor() {}
 
   /**
    * Get singleton instance
@@ -35,62 +49,42 @@ export class DosageLoggerService {
    * Initialize the logger service with Socket.IO server
    */
   initialize(io: SocketServer): void {
-    this.io = io;
-    console.log('[DOSAGE-LOGGER] Service initialized');
+    dosageLoggerServiceInitialize.call(this as unknown as DosageLoggerServiceContext, io);
   }
 
   /**
    * Check if the service is initialized
    */
-  private isInitialized(): boolean {
-    return this.io !== null;
+  isInitialized(): boolean {
+    return dosageLoggerServiceIsInitialized.call(this as unknown as DosageLoggerServiceContext);
   }
 
   /**
    * Buffer an event for replay when clients join late
    */
-  private bufferEvent(event: DosageLogEvent): void {
-    const key = event.jobId;
-    if (!this.eventBuffers.has(key)) {
-      this.eventBuffers.set(key, []);
-      setTimeout(() => this.eventBuffers.delete(key), this.BUFFER_TTL_MS);
-    }
-    const buffer = this.eventBuffers.get(key)!;
-    if (buffer.length < this.BUFFER_MAX_SIZE) {
-      buffer.push(event);
-    }
+  bufferEvent(event: DosageLogEvent): void {
+    dosageLoggerServiceBufferEvent.call(this as unknown as DosageLoggerServiceContext, event);
   }
 
   /**
    * Replay buffered events to a specific socket (for late joiners)
    */
   replayEvents(jobId: string, socketId: string): void {
-    const buffer = this.eventBuffers.get(jobId);
-    if (!buffer || buffer.length === 0 || !this.io) return;
-    const socket = this.io.sockets.sockets.get(socketId);
-    if (!socket) return;
-    for (const event of buffer) {
-      socket.emit('dosage:log', event);
-    }
+    dosageLoggerServiceReplayEvents.call(this as unknown as DosageLoggerServiceContext, jobId, socketId);
   }
 
   /**
    * Clear buffered events for a completed job
    */
   clearBuffer(jobId: string): void {
-    this.eventBuffers.delete(jobId);
+    dosageLoggerServiceClearBuffer.call(this as unknown as DosageLoggerServiceContext, jobId);
   }
 
   /**
    * Emit a generic log event
    */
-  private emitEvent(event: DosageLogEvent): void {
-    this.bufferEvent(event);
-    if (!this.isInitialized()) {
-      return;
-    }
-    const room = `job:${event.jobId}`;
-    this.io?.to(room).emit('dosage:log', event);
+  emitEvent(event: DosageLogEvent): void {
+    dosageLoggerServiceEmitEvent.call(this as unknown as DosageLoggerServiceContext, event);
   }
 
   /**
@@ -102,15 +96,7 @@ export class DosageLoggerService {
     readonly message: string;
     readonly metadata?: Record<string, unknown>;
   }): void {
-    console.log(`[DOSAGE-LOGGER][${params.jobId}] ${params.message}`);
-    this.emitEvent({
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.INFO,
-      message: params.message,
-      metadata: params.metadata,
-    });
+    dosageLoggerServiceLogInfo.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -126,26 +112,7 @@ export class DosageLoggerService {
     readonly variety?: string;
     readonly quantity: number;
   }): void {
-    const unitLabel = params.variety ? `${params.cropName} (${params.variety})` : params.cropName;
-    const message = `Prodotto "${params.productName}" compatibile con ${unitLabel} - quantità: ${params.quantity}`;
-    console.log(`[MATCH] ${message}`);
-
-    const event: ProductMatchLogEvent = {
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.MATCH,
-      message,
-      metadata: {
-        productName: params.productName,
-        productId: params.productId,
-        unitName: params.unitName,
-        cropName: params.cropName,
-        variety: params.variety,
-        quantity: params.quantity,
-      },
-    };
-    this.emitEvent(event);
+    dosageLoggerServiceLogProductMatch.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -160,24 +127,7 @@ export class DosageLoggerService {
     readonly cropName: string;
     readonly variety?: string;
   }): void {
-    const unitLabel = params.variety ? `${params.cropName} (${params.variety})` : params.cropName;
-    const message = `${params.mechanicalMatches} prodotti compatibili, ${params.unmatchedProducts} da verificare per ${unitLabel}. Verifica semantica in corso...`;
-    console.log(`[MATCH-FALLBACK] ${message}`);
-
-    this.emitEvent({
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.MATCH_FALLBACK,
-      message,
-      metadata: {
-        mechanicalMatches: params.mechanicalMatches,
-        unmatchedProducts: params.unmatchedProducts,
-        unitName: params.unitName,
-        cropName: params.cropName,
-        variety: params.variety,
-      },
-    });
+    dosageLoggerServiceLogMatchFallback.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -192,29 +142,7 @@ export class DosageLoggerService {
     readonly confidence: number;
     readonly reason?: string;
   }): void {
-    const message = params.compatible
-      ? `Prodotto "${params.productName}" compatibile con "${params.cropName}" (affidabilità: ${params.confidence}%)`
-      : `Prodotto "${params.productName}" non compatibile con "${params.cropName}" (affidabilità: ${params.confidence}%)`;
-    console.log(`[LLM-MATCH] ${message}`);
-    if (params.reason) {
-      console.log(`[LLM-MATCH] Reason: ${params.reason}`);
-    }
-
-    const event: LLMMatchLogEvent = {
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.LLM_MATCH,
-      message,
-      metadata: {
-        productName: params.productName,
-        cropName: params.cropName,
-        compatible: params.compatible,
-        confidence: params.confidence,
-        reason: params.reason,
-      },
-    };
-    this.emitEvent(event);
+    dosageLoggerServiceLogLLMMatch.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -226,15 +154,7 @@ export class DosageLoggerService {
     readonly message: string;
     readonly metadata?: Record<string, unknown>;
   }): void {
-    console.log(`[FLOWS] ${params.message}`);
-    this.emitEvent({
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.FLOWS,
-      message: params.message,
-      metadata: params.metadata,
-    });
+    dosageLoggerServiceLogFlow.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -247,22 +167,7 @@ export class DosageLoggerService {
     readonly duration: number;
     readonly memoryUsage?: string;
   }): void {
-    const message = `${params.phase} took ${params.duration.toFixed(2)}ms${params.memoryUsage ? ` | ${params.memoryUsage}` : ''}`;
-    console.log(`[FLOWS][TIMING] ${message}`);
-
-    const event: TimingLogEvent = {
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.FLOWS_TIMING,
-      message,
-      metadata: {
-        phase: params.phase,
-        duration: params.duration,
-        memoryUsage: params.memoryUsage,
-      },
-    };
-    this.emitEvent(event);
+    dosageLoggerServiceLogTiming.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -274,15 +179,7 @@ export class DosageLoggerService {
     readonly message: string;
     readonly metadata?: Record<string, unknown>;
   }): void {
-    console.warn(`[DOSAGE-WARNING][${params.jobId}] ${params.message}`);
-    this.emitEvent({
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.WARNING,
-      message: params.message,
-      metadata: params.metadata,
-    });
+    dosageLoggerServiceLogWarning.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -295,19 +192,7 @@ export class DosageLoggerService {
     readonly error?: Error;
     readonly metadata?: Record<string, unknown>;
   }): void {
-    console.error(`[DOSAGE-ERROR][${params.jobId}] ${params.message}`, params.error);
-    this.emitEvent({
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.ERROR,
-      message: params.message,
-      metadata: {
-        ...params.metadata,
-        errorMessage: params.error?.message,
-        errorStack: params.error?.stack,
-      },
-    });
+    dosageLoggerServiceLogError.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -319,20 +204,7 @@ export class DosageLoggerService {
     readonly progress: number;
     readonly phase: string;
   }): void {
-    console.log(`[DOSAGE-PROGRESS][${params.jobId}] ${params.phase}: ${params.progress}%`);
-
-    const event: ProgressLogEvent = {
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.PROGRESS,
-      message: `${params.phase}: ${params.progress}%`,
-      metadata: {
-        progress: params.progress,
-        phase: params.phase,
-      },
-    };
-    this.emitEvent(event);
+    dosageLoggerServiceLogProgress.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -344,15 +216,7 @@ export class DosageLoggerService {
     readonly message: string;
     readonly metadata?: Record<string, unknown>;
   }): void {
-    console.log(`[LABEL_EXTRACTION] ${params.message}`);
-    this.emitEvent({
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.LABEL_EXTRACTION,
-      message: params.message,
-      metadata: params.metadata,
-    });
+    dosageLoggerServiceLogLabelExtraction.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -364,15 +228,7 @@ export class DosageLoggerService {
     readonly message: string;
     readonly metadata?: Record<string, unknown>;
   }): void {
-    console.log(`[DOSAGE-COMPLETED][${params.jobId}] ${params.message}`);
-    this.emitEvent({
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.COMPLETED,
-      message: params.message,
-      metadata: params.metadata,
-    });
+    dosageLoggerServiceLogCompletion.call(this as unknown as DosageLoggerServiceContext, params);
   }
 
   /**
@@ -384,14 +240,6 @@ export class DosageLoggerService {
     readonly message: string;
     readonly metadata?: Record<string, unknown>;
   }): void {
-    console.log(`[SIAN] ${params.message}`);
-    this.emitEvent({
-      jobId: params.jobId,
-      userId: params.userId,
-      timestamp: new Date(),
-      type: DosageLogEventType.SIAN,
-      message: params.message,
-      metadata: params.metadata,
-    });
+    dosageLoggerServiceLogSian.call(this as unknown as DosageLoggerServiceContext, params);
   }
 }

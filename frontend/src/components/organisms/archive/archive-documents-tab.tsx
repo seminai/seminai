@@ -227,7 +227,6 @@ export function ArchiveDocumentsTab({ companyId }: ArchiveDocumentsTabProps) {
     () => Math.max(Math.ceil(extractionTotal / pagination.pageSize), 1),
     [extractionTotal, pagination.pageSize],
   );
-
   const handlePaginationChange = (nextPagination: PaginationState) => {
     setPaginationState({
       pageIndex: nextPagination.pageIndex,
@@ -235,7 +234,6 @@ export function ArchiveDocumentsTab({ companyId }: ArchiveDocumentsTabProps) {
       scopeKey: currentScopeKey,
     });
   };
-
   return (
     <div className="flex h-full min-h-0 w-full flex-col">
       {pendingJobId && (
@@ -269,7 +267,6 @@ export function ArchiveDocumentsTab({ companyId }: ArchiveDocumentsTabProps) {
     </div>
   );
 }
-
 function archiveRowToTab(file: ArchiveRow): TabData {
   return {
     id: file.kind === "dosage-job" ? `job-${file.jobId}` : file.id,
@@ -279,7 +276,6 @@ function archiveRowToTab(file: ArchiveRow): TabData {
     source: "archivio",
   };
 }
-
 function statusLabelToApi(value: string): FileExtractionStatus | undefined {
   if (value === "In caricamento") return "LOADING";
   if (value === "Da confermare") return "PENDING_CONFIRMATION";
@@ -287,7 +283,6 @@ function statusLabelToApi(value: string): FileExtractionStatus | undefined {
   if (value === "Errore") return "ERROR";
   return undefined;
 }
-
 function categoryLabelToApi(value: string): ResolvedCategory | undefined {
   if (value === "Campi") return "fields";
   if (value === "Unità Produttive") return "production_units";
@@ -297,7 +292,6 @@ function categoryLabelToApi(value: string): ResolvedCategory | undefined {
   if (value === "Magazzino") return "stock";
   return undefined;
 }
-
 function sortingToApi(columnId: string): FileExtractionListSortBy {
   if (columnId === "titolo") return "fileName";
   if (columnId === "status") return "status";

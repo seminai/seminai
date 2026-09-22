@@ -19,16 +19,18 @@ function normalizeRegNumber(value: string): string {
   return withoutLeadingZeros.length > 0 ? withoutLeadingZeros : '0';
 }
 
-function mapToAgentInput(input: any): InputDosageAgent {
+type GroundTruthInput = Awaited<ReturnType<typeof getCompanyInputGroundTruthByYear>>;
+
+function mapToAgentInput(input: GroundTruthInput): InputDosageAgent {
   return {
-    products: input.products.map((p: any) => ({
+    products: input.products.map((p) => ({
       productName: p.name,
       registrationNumber: p.regNumber,
       quantity: parseFloat(String(p.quantity || '0').replace(',', '.')),
       quantityUnitOfMeasure: p.unit || 'N/A',
     })),
     unitOfProduction: normalizedUnits({
-      unitOfProduction: input.productionUnits.map((u: any) => ({
+      unitOfProduction: input.productionUnits.map((u) => ({
         id: u.idApp ?? u.name,
         cropName: u.coltura,
         variety: u.varieta,
@@ -88,8 +90,9 @@ export async function runDualScoreTest(
     const gtUnit = datasetPerUnit.find((u) => u.unitProductionId === aiUnit.unitProductionId);
 
     for (const aiProduct of aiUnit.products || []) {
-      const regNumber = (aiProduct as any).regNumber || '';
-      const productName = (aiProduct as any).name || '';
+      const productIdentity = aiProduct as { readonly regNumber?: string; readonly name?: string };
+      const regNumber = productIdentity.regNumber || '';
+      const productName = productIdentity.name || '';
       const normalizedReg = normalizeRegNumber(regNumber);
 
       // Estrai l'etichetta dal prodotto

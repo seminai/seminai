@@ -1,25 +1,17 @@
 import { Request, Response } from 'express';
 import { AppError } from '../../../domain/errors/AppError';
-import { Field } from '../../../domain/entities/Field';
-import { ProductionUnit } from '../../../domain/entities/ProductionUnit';
 import { IFieldRepository } from '../../../domain/repositories/IFieldRepository';
 import { IProductionUnitRepository } from '../../../domain/repositories/IProductionUnitRepository';
+import { ExtractFromFileUseCase } from '../../../application/use-cases/onboarding/ExtractFromFileUseCase';
 import {
-  ExtractFromFileUseCase,
-  type FieldPreview,
-  type ProductionUnitPreview,
-} from '../../../application/use-cases/onboarding/ExtractFromFileUseCase';
+  BulkCreateOnboardingDataUseCase,
+  type BulkCreateOnboardingDataInput,
+} from '../../../application/use-cases/onboarding/BulkCreateOnboardingDataUseCase';
 import { getOnboardingExtractionQueue } from '../../queue/OnboardingExtractionQueue';
 import {
   predictPhenologyDates,
   type PhenologyPredictionInput,
 } from '../../services/phenology/phenologyDatePredictor';
-
-interface BulkCreateBody {
-  companyId: string;
-  fields: FieldPreview[];
-  productionUnits: ProductionUnitPreview[];
-}
 
 export class OnboardingController {
   constructor(
@@ -143,149 +135,18 @@ export class OnboardingController {
       throw AppError.unauthorized('User not authenticated', 'USER_NOT_AUTHENTICATED');
     }
 
-    const body = request.body as BulkCreateBody;
-
-    if (!body.companyId) {
-      throw AppError.badRequest('Missing companyId', 'MISSING_COMPANY_ID');
-    }
-
-    if (!Array.isArray(body.fields) && !Array.isArray(body.productionUnits)) {
-      throw AppError.badRequest(
-        'Either fields or productionUnits must be provided',
-        'MISSING_DATA',
-      );
-    }
-
-    const fieldsInput = body.fields ?? [];
-    const productionUnitsInput = body.productionUnits ?? [];
-
-    // Step 1: Validate fields have minimal required data (name required; cadastral data optional)
-    for (let i = 0; i < fieldsInput.length; i++) {
-      const f = fieldsInput[i];
-      if (!f.name && !f.foglio && !f.particella) {
-        throw AppError.badRequest(
-          `Field at index ${i} is missing both name and cadastral references`,
-          'INVALID_FIELD_DATA',
-        );
-      }
-    }
-
-    // Step 2: Create and upsert Field entities
-    const fieldEntities = fieldsInput.map((f, idx) => {
-      const hasCadastral = f.foglio && f.particella;
-      const name = f.name || (hasCadastral ? `F${f.foglio} P${f.particella}` : `Campo ${idx + 1}`);
-      return Field.create({
-        companyId: body.companyId,
-        sourceFileId: f.sourceFileId ?? null,
-        name,
-        coordinates: f.coordinates ?? [],
-        coordinatesGaussBoaga: f.coordinatesGaussBoaga ?? [],
-        latitude: f.latitude ?? null,
-        longitude: f.longitude ?? null,
-        polygon: f.polygon ?? null,
-        polygonGaussBoaga: f.polygonGaussBoaga ?? null,
-        gisHa: f.gisHa ?? null,
-        sauHa: f.sauHa ?? null,
-        ph: f.ph ?? null,
-        nitrogen: f.nitrogen ?? null,
-        phosphorus: f.phosphorus ?? null,
-        potassium: f.potassium ?? null,
-        calcium: f.calcium ?? null,
-        magnesium: f.magnesium ?? null,
-        soilType: f.soilType ?? null,
-        uso: f.uso ?? null,
-        qualita: f.qualita ?? null,
-        superficieCatastaleMq: f.superficieCatastaleMq ?? null,
-        sezione: f.sezione ?? null,
-        foglio: f.foglio ?? null,
-        particella: f.particella ?? null,
-        subalterno: f.subalterno ?? null,
-        nation: f.nation ?? 'IT',
-        region: f.region ?? null,
-        city: f.city ?? null,
-        address: f.address ?? f.city ?? null,
-        cap: f.cap ?? null,
-        variazioneMq: f.variazioneMq ?? null,
-        inizioConduzione: f.inizioConduzione ? new Date(f.inizioConduzione) : null,
-        fineConduzione: f.fineConduzione ? new Date(f.fineConduzione) : null,
-        bufferZoneNotes: null,
-      });
-    });
-
-    const upsertedFields = await this.fieldRepository.upsertMany(fieldEntities);
-
-    // Step 3: Build field index by cadastral reference for allocation matching
-    const fieldIndex = new Map<string, { id: string; name: string }>();
-    for (const field of upsertedFields) {
-      const keys: string[] = [field.name];
-      if (field.foglio && field.particella) {
-        keys.push(
-          `${field.foglio}_${field.particella}`,
-          `${field.sezione || ''}_${field.foglio}_${field.particella}`,
-          `${field.sezione || ''}_${field.foglio}_${field.particella}_${field.subalterno || ''}`,
-        );
-      }
-      for (const key of keys) {
-        fieldIndex.set(key.toLowerCase(), { id: field.id, name: field.name });
-      }
-    }
-
-    // Step 4: Create production units with allocations
-    const productionUnitEntities: Array<{
-      productionUnit: ProductionUnit;
-      allocations: Array<{ fieldId: string; areaHaOnField: number }>;
-    }> = [];
-
-    for (const pu of productionUnitsInput) {
-      const primaryCycle = pu.cycles?.[0];
-      const totalAreaHa =
-        pu.areaHa ?? pu.fieldAllocations?.reduce((sum, a) => sum + (a.areaHa ?? 0), 0) ?? 0;
-
-      const productionUnit = ProductionUnit.create({
-        name: pu.name || 'Unità produttiva',
-        cropName: pu.cropName || primaryCycle?.cropName || '',
-        cropType: pu.cropType || primaryCycle?.cropType || '',
-        variety: pu.variety || primaryCycle?.variety || '',
-        protocoll: pu.protocoll || '',
-        areaHa: totalAreaHa,
-        protectionStructure: pu.protectionStructure || primaryCycle?.protectionStructure || '',
-        startDate: pu.startDate ? new Date(pu.startDate) : null,
-        floweringDate: pu.floweringDate ? new Date(pu.floweringDate) : null,
-        harvestingDate: pu.harvestingDate ? new Date(pu.harvestingDate) : null,
-        endDate: pu.endDate ? new Date(pu.endDate) : null,
-        occupazione: pu.occupazione ?? null,
-        destinazioneDiUso: pu.destinazioneDiUso ?? null,
-        acquaTotalePeridoL: 0,
-      });
-
-      // Resolve allocations to field IDs
-      const allocations: Array<{ fieldId: string; areaHaOnField: number }> = [];
-
-      if (pu.fieldAllocations && pu.fieldAllocations.length > 0) {
-        for (const alloc of pu.fieldAllocations) {
-          const field = this.resolveFieldFromAllocation(alloc, fieldIndex);
-          if (field) {
-            allocations.push({
-              fieldId: field.id,
-              areaHaOnField: alloc.areaHa,
-            });
-          }
-        }
-      }
-
-      productionUnitEntities.push({ productionUnit, allocations });
-    }
-
-    const createdProductionUnits =
-      await this.productionUnitRepository.createBulk(productionUnitEntities);
+    const result = await new BulkCreateOnboardingDataUseCase(
+      this.fieldRepository,
+      this.productionUnitRepository,
+    ).execute(request.body as BulkCreateOnboardingDataInput);
 
     return response.status(201).json({
       status: 'success',
       data: {
-        fields: upsertedFields,
-        productionUnits: createdProductionUnits,
-        fieldCount: upsertedFields.length,
-        productionUnitCount: createdProductionUnits.length,
+        fields: result.fields,
+        productionUnits: result.productionUnits,
+        fieldCount: result.fields.length,
+        productionUnitCount: result.productionUnits.length,
       },
     });
   }
@@ -326,32 +187,5 @@ export class OnboardingController {
       status: 'success',
       data: { predictions },
     });
-  }
-
-  /**
-   * Try to find a field from the index using the allocation's cadastral reference.
-   */
-  private resolveFieldFromAllocation(
-    alloc: {
-      fieldName: string;
-      sezione: string | null;
-      foglio: string | null;
-      particella: string | null;
-      subalterno: string | null;
-    },
-    fieldIndex: Map<string, { id: string; name: string }>,
-  ): { id: string; name: string } | null {
-    if (!alloc.foglio || !alloc.particella) return null;
-    const keys = [
-      `${alloc.sezione || ''}_${alloc.foglio}_${alloc.particella}_${alloc.subalterno || ''}`,
-      `${alloc.sezione || ''}_${alloc.foglio}_${alloc.particella}`,
-      `${alloc.foglio}_${alloc.particella}`,
-      alloc.fieldName,
-    ];
-    for (const key of keys) {
-      const found = fieldIndex.get(key.toLowerCase());
-      if (found) return found;
-    }
-    return null;
   }
 }

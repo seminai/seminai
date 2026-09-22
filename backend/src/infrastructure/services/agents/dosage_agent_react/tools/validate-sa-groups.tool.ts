@@ -4,6 +4,7 @@ import { flowValidateSAGroupLimits } from '../../dosage_agent/saGroupLimitsValid
 import { JobHistoryManager } from '../../dosage_agent/historyCollector';
 import { getWorkingMemory, updateWorkingMemory, hasWorkingMemoryData } from '../working-memory';
 import type { DosageAgentContext } from '../../dosage_agent/context';
+import type { RawUnitOfProduction } from '../../dosage_agent/types';
 
 /**
  * Tool: validate_sa_group_limits
@@ -31,7 +32,7 @@ Richiede dosageResults dalla working memory (eseguire prima calculate_dosage).`,
 
         const wm = getWorkingMemory(threadId);
         const dosageResults = [...(wm.dosageResults ?? [])];
-        const normalizedUnits = (wm.inputUnits ?? wm.expandedUnits ?? []) as any[];
+        const normalizedUnits = (wm.inputUnits ?? wm.expandedUnits ?? []) as RawUnitOfProduction[];
         const historyManager = new JobHistoryManager();
 
         const { units, diagnostics } = await flowValidateSAGroupLimits({

@@ -289,7 +289,6 @@ FORMATO COLTURA/VARIETA:
 
 "157 - USO NON AGRICOLO - FABBRICATI - 000 - - 000 - - 000 - NESSUNA VARIETA'"
 → codice: "157", nome: "USO NON AGRICOLO - FABBRICATI", varieta: null
-
 REGOLE CRITICHE:
 - Estrai TUTTE le particelle trovate nel testo, una per ogni header
 - Per ogni particella estrai TUTTE le colture

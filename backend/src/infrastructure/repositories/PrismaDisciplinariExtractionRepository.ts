@@ -3,27 +3,15 @@ import {
   DisciplinariExtractionSummary,
   DisciplinariValidityCheck,
 } from '../../domain/dtos/disciplinari.dto';
+import { DisciplinariExtractionInput } from './disciplinari-extraction-input';
+import {
+  checkDisciplinariValidity,
+  countDisciplinariByRegion,
+  getDisciplinariStats,
+  listDisciplinariSummary,
+} from './prisma-disciplinari-reporting';
 
-/**
- * Input for creating or updating a disciplinari extraction.
- */
-export interface DisciplinariExtractionInput {
-  readonly fileHash: string;
-  readonly fileName: string;
-  readonly sourceUrl?: string;
-  readonly region: string;
-  readonly year: number;
-  readonly version?: string;
-  readonly title: string;
-  readonly validFrom?: Date;
-  readonly validUntil?: Date;
-  readonly isExpired?: boolean;
-  readonly rawText: string;
-  readonly extractedData: unknown;
-  readonly extractionConfidence: number;
-  readonly extractionErrors: string[];
-  readonly createdById?: string;
-}
+export { DisciplinariExtractionInput } from './disciplinari-extraction-input';
 
 /**
  * Repository for disciplinari extraction operations.
@@ -268,36 +256,7 @@ export class PrismaDisciplinariExtractionRepository {
    * Lists all disciplinari extractions with summary info.
    */
   async listSummary(): Promise<DisciplinariExtractionSummary[]> {
-    const extractions = await this.prisma.disciplinariExtraction.findMany({
-      select: {
-        id: true,
-        fileName: true,
-        region: true,
-        year: true,
-        title: true,
-        validFrom: true,
-        validUntil: true,
-        isExpired: true,
-        extractionConfidence: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-      orderBy: [{ year: 'desc' }, { region: 'asc' }, { title: 'asc' }],
-    });
-
-    return extractions.map((e) => ({
-      id: e.id,
-      fileName: e.fileName,
-      region: e.region,
-      year: e.year,
-      title: e.title,
-      validFrom: e.validFrom,
-      validUntil: e.validUntil,
-      isExpired: e.isExpired,
-      extractionConfidence: e.extractionConfidence,
-      createdAt: e.createdAt,
-      updatedAt: e.updatedAt,
-    }));
+    return listDisciplinariSummary(this.prisma);
   }
 
   /**
@@ -306,51 +265,14 @@ export class PrismaDisciplinariExtractionRepository {
   async checkValidity(region: string, year: number): Promise<DisciplinariValidityCheck> {
     const extractions = await this.findByRegionAndYear(region, year);
 
-    if (extractions.length === 0) {
-      return {
-        exists: false,
-        isValid: false,
-        isExpired: false,
-        validUntil: null,
-        needsUpdate: true,
-        lastUpdated: null,
-      };
-    }
-
-    const latestExtraction = extractions[0];
-    const now = new Date();
-    const isExpired = latestExtraction.validUntil ? latestExtraction.validUntil < now : false;
-
-    return {
-      exists: true,
-      isValid: !isExpired,
-      isExpired,
-      validUntil: latestExtraction.validUntil,
-      needsUpdate: isExpired,
-      lastUpdated: latestExtraction.updatedAt,
-    };
+    return checkDisciplinariValidity(extractions);
   }
 
   /**
    * Counts total extractions by region.
    */
   async countByRegion(): Promise<Array<{ region: string; count: number }>> {
-    const result = await this.prisma.disciplinariExtraction.groupBy({
-      by: ['region'],
-      _count: {
-        id: true,
-      },
-      orderBy: {
-        _count: {
-          id: 'desc',
-        },
-      },
-    });
-
-    return result.map((r) => ({
-      region: r.region,
-      count: r._count.id,
-    }));
+    return countDisciplinariByRegion(this.prisma);
   }
 
   /**
@@ -364,29 +286,6 @@ export class PrismaDisciplinariExtractionRepository {
     byRegion: Array<{ region: string; count: number }>;
     byYear: Array<{ year: number; count: number }>;
   }> {
-    const [total, expired, byRegion, byYear, avgConfidence] = await Promise.all([
-      this.prisma.disciplinariExtraction.count(),
-      this.prisma.disciplinariExtraction.count({
-        where: { isExpired: true },
-      }),
-      this.countByRegion(),
-      this.prisma.disciplinariExtraction.groupBy({
-        by: ['year'],
-        _count: { id: true },
-        orderBy: { year: 'desc' },
-      }),
-      this.prisma.disciplinariExtraction.aggregate({
-        _avg: { extractionConfidence: true },
-      }),
-    ]);
-
-    return {
-      total,
-      expired,
-      valid: total - expired,
-      avgConfidence: avgConfidence._avg.extractionConfidence ?? 0,
-      byRegion,
-      byYear: byYear.map((y) => ({ year: y.year, count: y._count.id })),
-    };
+    return getDisciplinariStats(this.prisma);
   }
 }

@@ -179,7 +179,6 @@ export function useExtractionsByCompany(companyId: string | undefined) {
     enabled: !!companyId,
   });
 }
-
 /** GET /extractions/:id — single extraction detail. */
 export function useExtraction(id: string | undefined) {
   return useQuery({
@@ -194,7 +193,6 @@ export function useExtraction(id: string | undefined) {
     enabled: !!id,
   });
 }
-
 /** PATCH /extractions/:id — edit extracted data. */
 export function useUpdateExtraction() {
   const queryClient = useQueryClient();
@@ -222,7 +220,6 @@ export function useUpdateExtraction() {
     },
   });
 }
-
 /** POST /extractions/:id/confirm — confirm single extraction. */
 export function useConfirmExtraction() {
   const queryClient = useQueryClient();
@@ -251,7 +248,6 @@ export function useConfirmExtraction() {
     },
   });
 }
-
 /** POST /extractions/batch/:batchId/confirm — confirm entire batch. */
 export function useConfirmBatch() {
   const queryClient = useQueryClient();
@@ -267,7 +263,6 @@ export function useConfirmBatch() {
     },
   });
 }
-
 /** DELETE /extractions/:id — delete extraction record. */
 export function useDeleteExtraction() {
   const queryClient = useQueryClient();
@@ -292,7 +287,6 @@ export function useDeleteExtraction() {
     },
   });
 }
-
 function formatMutationError(error: unknown, fallback: string): string {
   if (error instanceof ApiError) {
     const code = error.body.code?.trim();

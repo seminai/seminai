@@ -1,0 +1,42 @@
+import { Request, Response } from 'express';
+import { ICompanyRepository } from '../../../domain/repositories/ICompanyRepository';
+import { CreateCompanyUseCase } from '../../../application/use-cases/company/CreateCompanyUseCase';
+import { IUserOnCompanyRepository } from '../../../domain/repositories/IUserOnCompanyRepository';
+import { IFieldRepository } from '../../../domain/repositories/IFieldRepository';
+import { IProductionUnitRepository } from '../../../domain/repositories/IProductionUnitRepository';
+import { IRuleOnCompanyRepository } from '../../../domain/repositories/IRuleOnCompanyRepository';
+import { IWorkspaceMemberRepository } from '../../../domain/repositories/IWorkspaceMemberRepository';
+import { IWorkspaceRepository } from '../../../domain/repositories/IWorkspaceRepository';
+import { ICompanyOnWorkspaceRepository } from '../../../domain/repositories/ICompanyOnWorkspaceRepository';
+import { CompanyKind } from '@prisma/client';
+import { CompanyDataExtractorAgent } from '../../services/agents/company/company_data_extractor_agent';
+import { VisuraCameralePdfAgent } from '../../services/agents/company/visura_camerale_pdf_agent';
+
+export interface CompanyControllerContext {
+  companyDataExtractorAgent: CompanyDataExtractorAgent | null;
+  visuraCameraleAgent: VisuraCameralePdfAgent | null;
+  readonly companyRepository: ICompanyRepository;
+  readonly userOnCompanyRepository: IUserOnCompanyRepository;
+  readonly createCompanyUseCase: CreateCompanyUseCase;
+  readonly ruleOnCompanyRepository: IRuleOnCompanyRepository;
+  readonly workspaceRepository: IWorkspaceRepository;
+  readonly workspaceMemberRepository: IWorkspaceMemberRepository;
+  readonly companyOnWorkspaceRepository: ICompanyOnWorkspaceRepository;
+  readonly fieldRepository: IFieldRepository;
+  readonly productionUnitRepository: IProductionUnitRepository;
+  create(request: Request, response: Response): Promise<Response>;
+  findById(request: Request, response: Response): Promise<Response>;
+  update(request: Request, response: Response): Promise<Response>;
+  updateBulk(request: Request, response: Response): Promise<Response>;
+  delete(request: Request, response: Response): Promise<Response>;
+  deleteBulkWithAllData(request: Request, response: Response): Promise<Response>;
+  deleteWithAllData(request: Request, response: Response): Promise<Response>;
+  createBulk(request: Request, response: Response): Promise<Response>;
+  listForCurrentUser(request: Request, response: Response): Promise<Response>;
+  extractFromCsv(request: Request, response: Response): Promise<Response>;
+  createWithData(request: Request, response: Response): Promise<Response>;
+  assertCompanyKindChangeAllowed(companyId: string, newKind: CompanyKind): Promise<void>;
+  getCompanyDataExtractorAgent(): CompanyDataExtractorAgent;
+  getVisuraCameraleAgent(): VisuraCameralePdfAgent;
+  extractFromVisura(request: Request, response: Response): Promise<Response>;
+}

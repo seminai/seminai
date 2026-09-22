@@ -39,8 +39,7 @@ import { resolveProductData } from '../../shared/resolveProductData';
 import { createEnsureLabelExistsUseCase } from '../../../../../application/use-cases/label/EnsureLabelExistsUseCase';
 import { prisma } from '../../../../repositories/Prisma';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const findFirstMock = (prisma as any).labelExtraction.findFirst as jest.Mock;
+const findFirstMock = prisma.labelExtraction.findFirst as unknown as jest.Mock;
 
 function makeLabel(overrides: Record<string, unknown> = {}) {
   return {

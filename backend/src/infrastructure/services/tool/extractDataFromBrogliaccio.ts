@@ -31,16 +31,12 @@ export interface BrogliaccioJobPayload {
     type: 'OUT';
   }>;
 }
-
 export interface BrogliaccioExtractionResult {
   rawEntries: BrogliaccioRawEntry[];
   payload: BrogliaccioJobPayload[];
 }
-
 const EXTRACTION_PROMPT = `Sei un esperto agronomo che legge brogliacci (registri cartacei manoscritti) di trattamenti fitosanitari italiani.
-
 Analizza l'immagine del brogliaccio e estrai OGNI riga di trattamento come un oggetto JSON.
-
 REGOLE DI ESTRAZIONE:
 1. **Date**: Formato DD/MM/YY o DD-MM. Estrai esattamente come scritto (es. "10/6/25", "15-6").
 2. **Unità produttive**: Se il brogliaccio ha colonne separate per diverse unità produttive (es. "Divetti 3HA", "Gavioli 1/2 HA"), crea un entry separato per OGNI unità produttiva per OGNI data. Il nome dell'unità produttiva è l'intestazione della colonna.
@@ -51,7 +47,6 @@ REGOLE DI ESTRAZIONE:
 7. **Acqua**: Se indicata la quantità d'acqua (es. "ql.20" = 20 quintali = 2000 litri, "ql 46" = 4600 litri), estraila in litri.
 8. **"X" o trattino**: Significa che quel trattamento NON è stato fatto per quella unità produttiva. NON creare un entry.
 9. Se NON ci sono colonne per unità produttive, usa null per productionUnitName.
-
 FORMATO OUTPUT - oggetto JSON con chiave "entries":
 {
   "entries": [
@@ -66,13 +61,11 @@ FORMATO OUTPUT - oggetto JSON con chiave "entries":
     }
   ]
 }
-
 IMPORTANTE:
 - Restituisci SOLO l'oggetto JSON con la chiave "entries", senza commenti o markdown.
 - Un entry per OGNI combinazione (data, unità produttiva, prodotto).
 - NON inventare dati. Se un valore non è leggibile, omettilo o usa null.
 - Converti SEMPRE le virgole decimali in punti.`;
-
 function getMimeType(fileName: string): string {
   const ext = fileName.toLowerCase().split('.').pop();
   switch (ext) {
@@ -86,15 +79,12 @@ function getMimeType(fileName: string): string {
       return 'image/jpeg';
   }
 }
-
 function parseDateToISO(dateStr: string): string {
   // Handle formats: DD/MM/YY, DD-MM-YY, DD/MM, DD-MM
   const cleaned = dateStr.replace(/\s+/g, '').trim();
   const parts = cleaned.split(/[/\-]/);
-
   const day = parseInt(parts[0], 10);
   const month = parseInt(parts[1], 10);
-
   let year: number;
   if (parts.length >= 3 && parts[2]) {
     const yearPart = parseInt(parts[2], 10);
@@ -102,11 +92,9 @@ function parseDateToISO(dateStr: string): string {
   } else {
     year = new Date().getFullYear();
   }
-
   const d = new Date(Date.UTC(year, month - 1, day));
   return d.toISOString();
 }
-
 function parseNumericValue(value: unknown): number | null {
   if (typeof value === 'number' && Number.isFinite(value)) {
     return value;
@@ -134,7 +122,6 @@ function parseNumericValue(value: unknown): number | null {
   }
   return null;
 }
-
 function normalizeRawEntries(entries: BrogliaccioRawEntry[]): BrogliaccioRawEntry[] {
   return entries
     .map((entry) => {
@@ -156,7 +143,6 @@ function normalizeRawEntries(entries: BrogliaccioRawEntry[]): BrogliaccioRawEntr
     })
     .filter((entry): entry is BrogliaccioRawEntry => entry !== null);
 }
-
 async function callGptVisionForBrogliaccio(
   imageBase64: string,
   mimeType: string,
@@ -164,10 +150,8 @@ async function callGptVisionForBrogliaccio(
   if (!hasChatLlmApiKey()) {
     throw new Error('OPENROUTER_API_KEY or OPENAI_API_KEY is required');
   }
-
   console.log('[BROGLIACCIO_EXTRACTION] Calling vision model...');
   const startTime = Date.now();
-
   const result = await fetchVisionCompletion({
     messages: [
       {
@@ -187,16 +171,12 @@ async function callGptVisionForBrogliaccio(
     temperature: 0.1,
     responseFormat: { type: 'json_object' },
   });
-
   const elapsed = Date.now() - startTime;
   console.log(`[BROGLIACCIO_EXTRACTION] Vision responded in ${elapsed}ms`);
-
   const rawContent = result.content;
-
   if (!rawContent) {
     throw new Error('Vision model returned empty response');
   }
-
   let parsed: unknown;
   try {
     parsed = JSON.parse(rawContent);
@@ -209,7 +189,6 @@ async function callGptVisionForBrogliaccio(
       throw new Error(`Failed to parse GPT response as JSON: ${rawContent.substring(0, 500)}`);
     }
   }
-
   // Handle multiple possible wrapper formats: { entries: [...] }, [...], { data: [...] }, etc.
   let entries: BrogliaccioRawEntry[];
   if (Array.isArray(parsed)) {
@@ -226,7 +205,6 @@ async function callGptVisionForBrogliaccio(
   } else {
     entries = [];
   }
-
   console.log(`[BROGLIACCIO_EXTRACTION] Extracted ${entries.length} raw entries`);
   const normalizedEntries = normalizeRawEntries(entries);
   const discardedEntriesCount = entries.length - normalizedEntries.length;
@@ -237,11 +215,9 @@ async function callGptVisionForBrogliaccio(
   }
   return normalizedEntries;
 }
-
 function transformToPayload(rawEntries: BrogliaccioRawEntry[]): BrogliaccioJobPayload[] {
   // Group by (date, productionUnitName)
   const groups = new Map<string, BrogliaccioRawEntry[]>();
-
   for (const entry of rawEntries) {
     const unitName = entry.productionUnitName ?? '__null__';
     const key = `${entry.date}___${unitName}`;
@@ -252,22 +228,17 @@ function transformToPayload(rawEntries: BrogliaccioRawEntry[]): BrogliaccioJobPa
       groups.set(key, [entry]);
     }
   }
-
   const payloads: BrogliaccioJobPayload[] = [];
-
   for (const [, entries] of groups) {
     const first = entries[0];
     const unitName = first.productionUnitName ?? null;
     const areaHa = first.areaHa ?? null;
-
     // Sum all product quantities for this group as the total job quantity
     const totalQuantity = entries.reduce((sum, e) => sum + e.quantity, 0);
     // Use the first entry's unit of measure for the job-level quantity
     const primaryUom = entries[0].unitOfMeasure || 'L';
-
     // Get water quantity (should be same for all entries in the group)
     const waterQuantityL = entries.find((e) => e.waterQuantityL != null)?.waterQuantityL ?? null;
-
     const stocks = entries.map((e) => ({
       product: {
         name: e.productName,
@@ -279,7 +250,6 @@ function transformToPayload(rawEntries: BrogliaccioRawEntry[]): BrogliaccioJobPa
       unitOfMeasureQuantity: e.unitOfMeasure || 'L',
       type: 'OUT' as const,
     }));
-
     let isoDate: string;
     try {
       isoDate = parseDateToISO(first.date);
@@ -289,7 +259,6 @@ function transformToPayload(rawEntries: BrogliaccioRawEntry[]): BrogliaccioJobPa
       );
       isoDate = new Date().toISOString();
     }
-
     payloads.push({
       productionUnitName: unitName,
       dateOfOpeation: isoDate,
@@ -301,17 +270,14 @@ function transformToPayload(rawEntries: BrogliaccioRawEntry[]): BrogliaccioJobPa
       stocks,
     });
   }
-
   // Sort by date, then by production unit name
   payloads.sort((a, b) => {
     const dateCompare = a.dateOfOpeation.localeCompare(b.dateOfOpeation);
     if (dateCompare !== 0) return dateCompare;
     return (a.productionUnitName ?? '').localeCompare(b.productionUnitName ?? '');
   });
-
   return payloads;
 }
-
 export class ExtractDataFromBrogliaccioService {
   async execute(params: {
     imageBuffer: Buffer;
@@ -320,19 +286,15 @@ export class ExtractDataFromBrogliaccioService {
     const { imageBuffer, fileName } = params;
     console.log(`[BROGLIACCIO_EXTRACTION] Starting extraction for: ${fileName}`);
     const startTime = Date.now();
-
     const mimeType = getMimeType(fileName);
     const imageBase64 = imageBuffer.toString('base64');
-
     const rawEntries = await callGptVisionForBrogliaccio(imageBase64, mimeType);
     const payload = transformToPayload(rawEntries);
-
     const elapsed = Date.now() - startTime;
     console.log(
       `[BROGLIACCIO_EXTRACTION] Extraction completed in ${elapsed}ms. ` +
         `${rawEntries.length} raw entries → ${payload.length} job payloads`,
     );
-
     return { rawEntries, payload };
   }
 }

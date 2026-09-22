@@ -291,7 +291,6 @@ describe('Product Integration Tests', () => {
           vatNumberSupplier: null,
         }),
       );
-
       const list = await productRepository.findManyByUserId(testUserId);
       expect(list.length).toBeGreaterThanOrEqual(1);
       const found = list.find((x) => x.id === created.id);
