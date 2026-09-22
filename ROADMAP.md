@@ -31,7 +31,7 @@ its complete gate is green.
 | 3. Scrub and compliance | DONE | 2026-09-22, tested code commit `7e8e78d`; complete gate green |
 | 4. Self-contained backend | DONE | 2026-09-22, tested code commit `1768abb`; complete gate green |
 | 5. Runtime setup wizard | DONE | 2026-09-22, tested code commit `0f00db0`; complete gate green |
-| 6. One-command install | NOT STARTED | Requires real hardware verification |
+| 6. One-command install | BLOCKED BY HARDWARE | 2026-09-22, tested code commit `7f8953a`; local image/Compose smoke green; NAS/Pi/Synology unverified |
 | 7. Remote access and invites | NOT STARTED | Requires a real tunnel account and mobile test |
 | 8. AI providers and models | NOT STARTED | Blocked by Phase 7 |
 | 9. CI, images, e2e, docs | NOT STARTED | Hosted CI deliberately remains unverified |
@@ -224,12 +224,32 @@ package, which would hoist Zod 4 into LangChain tool schemas.
 
 ## Phase 6 — one-command installation
 
-- [ ] Build one Node.js 22 Debian-slim image for API, worker, and SPA; do not use Bun.
-- [ ] Default Compose contains `app`, `postgres`, and `redis`, with all state under `./data`.
-- [ ] Add optional Ollama, Qdrant, Mailpit, Tailscale, and Cloudflare profiles.
-- [ ] Add installer, backup, restore, update, and offline source-build workflows.
+- [x] Build one Node.js 22 Debian-slim image for API, worker, and SPA; do not use Bun.
+- [x] Default Compose contains `app`, `postgres`, and `redis`, with all state under `./data`.
+- [x] Add optional Ollama, Qdrant, Mailpit, Tailscale, and Cloudflare profiles.
+- [x] Add installer, backup, restore, update, and offline source-build workflows.
 - [ ] Gate: real verification on macOS arm64, Linux amd64, Synology, QNAP, Unraid, and
   Raspberry Pi 5. Emulation does not satisfy this gate.
+
+Local software evidence (2026-09-22, tested code commit `7f8953a`):
+
+```text
+npm ci / codegen / build / type-check / lint
+                                             green; structural scan: 3,608 files
+npm test                                    BE 1,452 passed + 6 skipped; FE 88; MCP 82
+npm run test:integration:fast -- --silent --detectOpenHandles
+                                             71 suites, 214 tests, no open handles
+npm run test:integration:public -- --silent --detectOpenHandles
+                                             97 suites, 294 tests, no open handles
+npm run test:llm:smoke                      qwen3.5:4b tool call green; remote cost zero
+npm run privacy:scan:full                   passed
+docker compose -f compose.yaml build app    seminai:local (Node 22 bookworm-slim)
+docker compose -f compose.yaml up -d        app+postgres+redis healthy on this Mac
+GET /health and GET /config/public          200; SPA /setup 200; BullMQ workers started
+```
+
+Hardware gate remains **BLOCKED BY HARDWARE**. This machine is not a substitute for
+Synology, QNAP, Unraid, Raspberry Pi 5, or a second Linux amd64 host.
 
 ## Phase 7 — remote access and invitations
 
