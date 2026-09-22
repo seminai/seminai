@@ -48,3 +48,9 @@ Mobile-network invite and a real Tailscale/Cloudflare account were not executed.
 Structural 3,630. BE 1,468 + 6 skipped; FE 88; MCP 82. Fast 71/214. Public 97/294.
 LLM smoke: `qwen3.5:4b` tool calling; optional local models `qwen3.5:9b`, `llama3.1:8b`, vision present. Privacy scan clean.
 Cloud catalogs used injected mock HTTP only.
+
+## Phase 9 — `b8fae5e` (hosted CI unverified)
+
+Structural 3,634. BE 1,468 + 6 skipped; FE 88; MCP 82. Fast 71/214. Public 97/294.
+OpenAPI drift, privacy, SBOM (`artifacts/sbom.cdx.json`), e2e against Compose `:8081`, k6 health 1 VU, image `seminai:local` linux/arm64.
+GitHub Actions workflows added; no hosted green run recorded.
