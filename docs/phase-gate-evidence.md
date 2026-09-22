@@ -42,3 +42,9 @@ Hardware matrix (Synology, QNAP, Unraid, Raspberry Pi 5, Linux amd64) not execut
 Structural 3,619. BE 1,460 + 6 skipped; FE 88; MCP 82. Fast 71/214. Public 97/294. LLM smoke green. Privacy scan clean.
 LAN default, invite-only signup, `/access/status` + QR rotate, HSTS/trust-proxy when public.
 Mobile-network invite and a real Tailscale/Cloudflare account were not executed.
+
+## Phase 8 — `83f5fb0`
+
+Structural 3,630. BE 1,468 + 6 skipped; FE 88; MCP 82. Fast 71/214. Public 97/294.
+LLM smoke: `qwen3.5:4b` tool calling; optional local models `qwen3.5:9b`, `llama3.1:8b`, vision present. Privacy scan clean.
+Cloud catalogs used injected mock HTTP only.

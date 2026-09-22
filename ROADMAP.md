@@ -28,7 +28,7 @@ Command transcripts live in [`docs/phase-gate-evidence.md`](docs/phase-gate-evid
 | 5. Runtime setup wizard | DONE | Commit `0f00db0` |
 | 6. One-command install | BLOCKED BY HARDWARE | Commit `7f8953a`; local Compose green |
 | 7. Remote access and invites | BLOCKED BY ACCOUNT | Commit `633df16`; local LAN/invite green |
-| 8. AI providers and models | NOT STARTED | Local provider catalog next |
+| 8. AI providers and models | DONE | Commit `83f5fb0`; Ollama 4b/9b/8b + vision |
 | 9. CI, images, e2e, docs | NOT STARTED | Hosted CI unverified |
 | 10. Private release candidate | NOT STARTED | Requires third-party NAS install |
 | 11. Post-RC backlog | DEFERRED | Outside this release |
@@ -83,9 +83,9 @@ Command transcripts live in [`docs/phase-gate-evidence.md`](docs/phase-gate-evid
 
 ## Phase 8 — AI providers and model picker
 
-- [ ] `anthropic|openai|openrouter|ollama|openai-compatible`; reject unknown.
-- [ ] `GET /llm/providers/detect`, `GET /llm/models`, Ollama embeddings 768, Qdrant namespaces.
-- [ ] Gate: tool chat `qwen3.5:4b`/`9b`/`llama3.1:8b`; vision; zero Ollama cost.
+- [x] `anthropic|openai|openrouter|ollama|openai-compatible`; reject unknown.
+- [x] `GET /llm/providers/detect`, `GET /llm/models`, Ollama embeddings 768, Qdrant namespaces.
+- [x] Gate: tool chat `qwen3.5:4b`/`9b`/`llama3.1:8b`; vision; zero Ollama cost.
 
 ## Phase 9 — CI, e2e, images, and documentation
 
