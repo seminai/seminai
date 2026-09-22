@@ -9681,6 +9681,44 @@
         }
       }
     },
+    "/llm/providers/detect": {
+      "get": {
+        "summary": "Detect configured LLM providers",
+        "tags": [
+          "LLM"
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider catalog without secrets"
+          }
+        }
+      }
+    },
+    "/llm/models": {
+      "get": {
+        "summary": "List models for a catalog provider",
+        "tags": [
+          "LLM"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "provider",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Model ids for the selected provider"
+          },
+          "400": {
+            "description": "Unknown provider"
+          }
+        }
+      }
+    },
     "/machines/bulk": {
       "post": {
         "summary": "Create multiple Machines (bulk)",

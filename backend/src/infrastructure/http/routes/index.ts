@@ -60,6 +60,7 @@ import { extractionApiRouter } from './extraction-api.routes';
 import { publicConfigRouter } from './public-config.routes';
 import { setupRouter } from './setup.routes';
 import { accessRouter } from './access.routes';
+import { llmCatalogRouter } from './llm-catalog.routes';
 
 export const router = Router();
 
@@ -67,6 +68,7 @@ router.use('/', healthRouter);
 router.use('/', publicConfigRouter);
 router.use('/setup', setupRouter);
 router.use('/access', accessRouter);
+router.use('/llm', llmCatalogRouter);
 router.use('/', toolRouter);
 router.use('/files', fileRouter);
 router.use('/debug', debugRouter);

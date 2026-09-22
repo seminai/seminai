@@ -14,9 +14,9 @@ import {
 import {
   VectorizationJobData,
   VectorizationJobResult,
-  RULES_QDRANT_COLLECTION,
   RuleVectorMetadata,
 } from '../../domain/dtos/rule-rag.types';
+import { resolveRulesQdrantCollection } from '../services/llm/qdrantNamespace';
 import { ensureUserOrSkip } from './helpers/userGuard';
 
 const QUEUE_NAME = 'rule-pdf-vectorization';
@@ -136,7 +136,7 @@ export class RulePdfVectorizationQueue {
         return {
           ruleId,
           chunksCount: 0,
-          collectionName: RULES_QDRANT_COLLECTION,
+          collectionName: resolveRulesQdrantCollection(),
           processingTimeMs: Date.now() - startTime,
           parsingMethod: 'skipped-user-missing',
         } satisfies VectorizationJobResult;
@@ -227,7 +227,7 @@ export class RulePdfVectorizationQueue {
       }
       await job.updateProgress(50);
       await job.updateProgress(60);
-      const vectorService = createVectorSearchQdrantService(RULES_QDRANT_COLLECTION);
+      const vectorService = createVectorSearchQdrantService(resolveRulesQdrantCollection());
       await vectorService.addDocuments(documents);
       console.log(`[RULE-VECTORIZATION] Stored ${documents.length} vectors in Qdrant`);
       await job.updateProgress(80);
@@ -241,7 +241,7 @@ export class RulePdfVectorizationQueue {
       return {
         ruleId,
         chunksCount: documents.length,
-        collectionName: RULES_QDRANT_COLLECTION,
+        collectionName: resolveRulesQdrantCollection(),
         processingTimeMs,
         parsingMethod: parsedResult.metadata.method,
       };
@@ -262,7 +262,7 @@ export class RulePdfVectorizationQueue {
         isVectorized: true,
         vectorizedAt: new Date(),
         vectorizationError: null,
-        qdrantCollection: RULES_QDRANT_COLLECTION,
+        qdrantCollection: resolveRulesQdrantCollection(),
       },
     });
   }

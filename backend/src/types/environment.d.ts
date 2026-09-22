@@ -12,6 +12,10 @@ declare global {
       SETUP_COMPLETED?: string;
       LLM_GATEWAY?: string;
       OLLAMA_BASE_URL?: string;
+      OPENAI_COMPATIBLE_BASE_URL?: string;
+      OPENAI_COMPATIBLE_API_KEY?: string;
+      ANTHROPIC_API_KEY?: string;
+      LLM_EMBEDDING_MODEL?: string;
       ACCESS_MODE?: string;
       PUBLIC_BASE_URL?: string;
       TRUST_PROXY?: string;

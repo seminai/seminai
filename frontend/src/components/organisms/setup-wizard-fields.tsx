@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import type { SetupDraft } from '@/components/organisms/setup-draft';
 import type { SetupLlmProvider } from '@/lib/setup-api';
 
-const PROVIDERS: readonly SetupLlmProvider[] = ['ollama', 'openrouter', 'openai', 'anthropic'];
+const PROVIDERS: readonly SetupLlmProvider[] = ['ollama', 'openrouter', 'openai', 'anthropic', 'openai-compatible'];
 
 interface SetupWizardFieldsProps {
   readonly step: 'admin' | 'llm' | 'access' | 'email' | 'review';
@@ -55,7 +55,7 @@ export function SetupWizardFields({
           ))}
         </div>
         <Field id="setup-model" label={t('setup.model')} value={draft.model} onChange={(model) => patch({ model })} />
-        {draft.provider === 'ollama' ? (
+        {draft.provider === 'ollama' || draft.provider === 'openai-compatible' ? (
           <Field id="setup-base-url" label={t('setup.baseUrl')} value={draft.baseUrl} onChange={(baseUrl) => patch({ baseUrl })} />
         ) : (
           <Field id="setup-api-key" label={t('setup.apiKey')} type="password" value={draft.apiKey} onChange={(apiKey) => patch({ apiKey })} />

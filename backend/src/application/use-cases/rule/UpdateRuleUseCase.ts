@@ -5,7 +5,7 @@ import { UpdateRuleDTO } from '../../../domain/dtos/rule.dto';
 import { AppError } from '../../../domain/errors/AppError';
 import { getRulePdfVectorizationQueue } from '../../../infrastructure/queue/RulePdfVectorizationQueue';
 import { createVectorSearchQdrantService } from '../../../infrastructure/services/tool/vectorSearchQdrant';
-import { RULES_QDRANT_COLLECTION } from '../../../domain/dtos/rule-rag.types';
+import { resolveRulesQdrantCollection } from '../../../infrastructure/services/llm/qdrantNamespace';
 import { FileService } from '../../../infrastructure/services/FileService';
 
 interface UpdateRuleRequest {
@@ -72,7 +72,7 @@ export class UpdateRuleUseCase {
    */
   private async cleanupOldVectors(workspaceId: string, ruleId: string): Promise<void> {
     try {
-      const vectorService = createVectorSearchQdrantService(RULES_QDRANT_COLLECTION);
+      const vectorService = createVectorSearchQdrantService(resolveRulesQdrantCollection());
       await vectorService.deleteRulePdfVectors(workspaceId, ruleId);
       console.log(`[UpdateRuleUseCase] Deleted old vectors for rule ${ruleId}`);
     } catch (err) {

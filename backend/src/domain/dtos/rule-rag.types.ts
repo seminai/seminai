@@ -12,7 +12,7 @@ export const VECTORIZABLE_RULE_CATEGORIES: ReadonlyArray<RuleCategory> = [
 ];
 
 /**
- * Qdrant collection name for rule PDF vectors.
+ * Legacy Qdrant collection name. Prefer resolveRulesQdrantCollection().
  */
 export const RULES_QDRANT_COLLECTION = 'rules_knowledge_base';
 

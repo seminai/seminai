@@ -196,7 +196,7 @@ export function createVectorSearchQdrantService(
 ): VectorSearchQdrantService {
   const { url, apiKey } = resolveQdrantConnectionConfig();
   if (!hasEmbeddingsApiKey()) {
-    throw new Error('OPENAI_API_KEY is required for embeddings');
+    throw new Error('Embeddings are not configured for the active LLM provider');
   }
   return new VectorSearchQdrantService({ url, apiKey, collectionName });
 }

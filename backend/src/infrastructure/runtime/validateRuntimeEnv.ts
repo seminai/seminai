@@ -1,7 +1,7 @@
 import { AppError } from '../../domain/errors/AppError';
+import { LLM_PROVIDERS } from './llmProviders';
 
 const APP_MODES = ['all', 'api', 'worker'] as const;
-const LLM_GATEWAYS = ['ollama', 'openai', 'openrouter', 'anthropic', 'openai-compatible'] as const;
 const STORAGE_DRIVERS = ['local', 's3'] as const;
 const NODE_ENVS = ['development', 'production', 'test'] as const;
 
@@ -48,7 +48,7 @@ export function validateRuntimeEnv(
   if (storageDriver && !isOneOf(storageDriver, STORAGE_DRIVERS)) {
     throw AppError.badRequest('Invalid environment: STORAGE_DRIVER', 'INVALID_ENV');
   }
-  if (llmGateway && !isOneOf(llmGateway, LLM_GATEWAYS)) {
+  if (llmGateway && !isOneOf(llmGateway, LLM_PROVIDERS)) {
     throw AppError.badRequest('Invalid environment: LLM_GATEWAY', 'INVALID_ENV');
   }
   if (isTestRuntime(env)) return;

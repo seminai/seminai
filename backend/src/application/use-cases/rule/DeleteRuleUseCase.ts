@@ -2,7 +2,7 @@ import { IRuleRepository } from '../../../domain/repositories/IRuleRepository';
 import { IWorkspaceMemberRepository } from '../../../domain/repositories/IWorkspaceMemberRepository';
 import { AppError } from '../../../domain/errors/AppError';
 import { createVectorSearchQdrantService } from '../../../infrastructure/services/tool/vectorSearchQdrant';
-import { RULES_QDRANT_COLLECTION } from '../../../domain/dtos/rule-rag.types';
+import { resolveRulesQdrantCollection } from '../../../infrastructure/services/llm/qdrantNamespace';
 import { FileService } from '../../../infrastructure/services/FileService';
 
 interface DeleteRuleRequest {
@@ -54,7 +54,7 @@ export class DeleteRuleUseCase {
    */
   private async cleanupVectors(ruleId: string): Promise<void> {
     try {
-      const vectorService = createVectorSearchQdrantService(RULES_QDRANT_COLLECTION);
+      const vectorService = createVectorSearchQdrantService(resolveRulesQdrantCollection());
       const results = await vectorService.similaritySearch('', 1000, {
         must: [{ key: 'ruleId', match: { value: ruleId } }],
       });

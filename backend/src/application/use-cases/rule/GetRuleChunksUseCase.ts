@@ -2,7 +2,7 @@ import { IRuleRepository } from '../../../domain/repositories/IRuleRepository';
 import { IWorkspaceMemberRepository } from '../../../domain/repositories/IWorkspaceMemberRepository';
 import { AppError } from '../../../domain/errors/AppError';
 import { createVectorSearchQdrantService } from '../../../infrastructure/services/tool/vectorSearchQdrant';
-import { RULES_QDRANT_COLLECTION } from '../../../domain/dtos/rule-rag.types';
+import { resolveRulesQdrantCollection } from '../../../infrastructure/services/llm/qdrantNamespace';
 
 interface GetRuleChunksRequest {
   readonly ruleId: string;
@@ -54,7 +54,7 @@ export class GetRuleChunksUseCase {
     }
 
     const limit = clampLimit(request.limit);
-    const vectorService = createVectorSearchQdrantService(RULES_QDRANT_COLLECTION);
+    const vectorService = createVectorSearchQdrantService(resolveRulesQdrantCollection());
     const points = await vectorService.scrollByRuleId(rule.workspaceId, rule.id, limit);
 
     const chunks: RuleChunkPreview[] = points

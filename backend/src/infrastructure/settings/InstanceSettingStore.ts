@@ -81,9 +81,12 @@ export class InstanceSettingStore implements EncryptedSettingStore {
   }
 
   private copyProviderApiKey(env: Record<string, string | undefined>): void {
+    const provider = (env.LLM_GATEWAY || 'ollama').toLowerCase();
+    if (provider === 'openai-compatible' && !env.OPENAI_COMPATIBLE_BASE_URL && env.OLLAMA_BASE_URL) {
+      env.OPENAI_COMPATIBLE_BASE_URL = env.OLLAMA_BASE_URL;
+    }
     const apiKey = env.LLM_API_KEY;
     if (!apiKey) return;
-    const provider = (env.LLM_GATEWAY || 'ollama').toLowerCase();
     if (provider === 'openrouter' && !env.OPENROUTER_API_KEY) {
       env.OPENROUTER_API_KEY = apiKey;
     }
@@ -92,6 +95,12 @@ export class InstanceSettingStore implements EncryptedSettingStore {
     }
     if (provider === 'anthropic' && !env.CLAUDE_API_KEY) {
       env.CLAUDE_API_KEY = apiKey;
+    }
+    if (provider === 'openai-compatible') {
+      if (!env.OPENAI_COMPATIBLE_API_KEY) env.OPENAI_COMPATIBLE_API_KEY = apiKey;
+      if (!env.OPENAI_COMPATIBLE_BASE_URL && env.OLLAMA_BASE_URL) {
+        env.OPENAI_COMPATIBLE_BASE_URL = env.OLLAMA_BASE_URL;
+      }
     }
   }
 }

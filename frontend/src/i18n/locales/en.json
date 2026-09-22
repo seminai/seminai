@@ -288,7 +288,8 @@
       "ollama": "Ollama",
       "openrouter": "OpenRouter",
       "openai": "OpenAI",
-      "anthropic": "Anthropic"
+      "anthropic": "Anthropic",
+      "openai-compatible": "OpenAI compatible"
     },
     "steps": {
       "admin": "Create the first administrator",

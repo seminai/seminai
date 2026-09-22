@@ -4,7 +4,7 @@ import { IWorkspaceMemberRepository } from '../../../domain/repositories/IWorksp
 import { AppError } from '../../../domain/errors/AppError';
 import { getRulePdfVectorizationQueue } from '../../../infrastructure/queue/RulePdfVectorizationQueue';
 import { createVectorSearchQdrantService } from '../../../infrastructure/services/tool/vectorSearchQdrant';
-import { RULES_QDRANT_COLLECTION } from '../../../domain/dtos/rule-rag.types';
+import { resolveRulesQdrantCollection } from '../../../infrastructure/services/llm/qdrantNamespace';
 
 interface RetryRuleVectorizationRequest {
   readonly ruleId: string;
@@ -69,7 +69,7 @@ export class RetryRuleVectorizationUseCase {
 
   private async deleteExistingRuleVectors(rule: Rule): Promise<void> {
     try {
-      const vectorService = createVectorSearchQdrantService(RULES_QDRANT_COLLECTION);
+      const vectorService = createVectorSearchQdrantService(resolveRulesQdrantCollection());
       await vectorService.deleteRulePdfVectors(rule.workspaceId, rule.id);
       console.log(`[RetryRuleVectorizationUseCase] Deleted existing vectors for rule ${rule.id}`);
     } catch (err) {

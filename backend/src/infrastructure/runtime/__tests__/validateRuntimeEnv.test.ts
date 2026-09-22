@@ -11,6 +11,16 @@ describe('validateRuntimeEnv', () => {
     ).not.toThrow();
   });
 
+  it('rejects an unknown LLM_GATEWAY', () => {
+    try {
+      validateRuntimeEnv({ NODE_ENV: 'test', LLM_GATEWAY: 'mistral' });
+      throw new Error('expected validation to fail');
+    } catch (error) {
+      expect(error).toBeInstanceOf(AppError);
+      expect((error as AppError).code).toBe('INVALID_ENV');
+    }
+  });
+
   it('rejects an unknown APP_MODE', () => {
     try {
       validateRuntimeEnv({ NODE_ENV: 'test', APP_MODE: 'sidecar' });

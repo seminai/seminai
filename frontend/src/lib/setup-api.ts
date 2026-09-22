@@ -1,6 +1,6 @@
 import { customFetch } from '@/lib/api-client';
 
-export type SetupLlmProvider = 'ollama' | 'openrouter' | 'openai' | 'anthropic';
+export type SetupLlmProvider = 'ollama' | 'openrouter' | 'openai' | 'anthropic' | 'openai-compatible';
 
 export interface OllamaDetectResult {
   readonly reachable: boolean;

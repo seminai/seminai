@@ -67,3 +67,16 @@ if (plotId !== 'plot-test-001') {
 }
 
 console.log(`Ollama smoke passed: ${model}, tool calling, zero remote-provider cost.`);
+
+const optionalModels = ['qwen3.5:9b', 'llama3.1:8b'];
+const presentOptional = optionalModels.filter((name) =>
+  installedModels.some((installed) => installed === name || installed.startsWith(`${name}-`)),
+);
+const visionPresent = installedModels.some((name) => /vision|llava|minicpm-v/i.test(name));
+if (presentOptional.length || visionPresent) {
+  console.log(
+    `Optional local models present: ${[...presentOptional, visionPresent ? 'vision' : ''].filter(Boolean).join(', ')}`,
+  );
+} else {
+  console.log('Optional models qwen3.5:9b / llama3.1:8b / vision are not installed; skipped.');
+}

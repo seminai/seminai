@@ -1,4 +1,9 @@
-export type SetupLlmProvider = 'ollama' | 'openrouter' | 'openai' | 'anthropic';
+export type SetupLlmProvider =
+  | 'anthropic'
+  | 'openai'
+  | 'openrouter'
+  | 'ollama'
+  | 'openai-compatible';
 export type SetupAccessMode = 'lan' | 'public';
 
 export interface CompleteSetupInput {

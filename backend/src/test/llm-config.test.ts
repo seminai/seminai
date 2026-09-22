@@ -11,12 +11,15 @@ describe('llm-config Claude native support', () => {
   const previousOpenAiKey = process.env.OPENAI_API_KEY;
   const previousClaudeKey = process.env.CLAUDE_API_KEY;
   const previousOpenRouterKey = process.env.OPENROUTER_API_KEY;
+  const previousCompatibleUrl = process.env.OPENAI_COMPATIBLE_BASE_URL;
 
   afterEach(() => {
     process.env.LLM_GATEWAY = previousGateway;
     process.env.OPENAI_API_KEY = previousOpenAiKey;
     process.env.CLAUDE_API_KEY = previousClaudeKey;
     process.env.OPENROUTER_API_KEY = previousOpenRouterKey;
+    if (previousCompatibleUrl === undefined) delete process.env.OPENAI_COMPATIBLE_BASE_URL;
+    else process.env.OPENAI_COMPATIBLE_BASE_URL = previousCompatibleUrl;
   });
 
   it('normalizes OpenRouter Claude model names for native Anthropic API', () => {
@@ -85,5 +88,23 @@ describe('llm-config Claude native support', () => {
     expect(config.gateway).toBe('openai');
     expect(config.baseUrl).toContain('11434');
     expect(config.modelName).toBe('qwen3.5:4b');
+  });
+
+  it('resolves Anthropic as a first-class gateway', () => {
+    process.env.LLM_GATEWAY = 'anthropic';
+    process.env.CLAUDE_API_KEY = 'claude-test-key';
+    const config = resolveChatModelConfig('claude-sonnet-4-20250514');
+    expect(config.provider).toBe('claude');
+    expect(config.apiKey).toBe('claude-test-key');
+  });
+
+  it('resolves openai-compatible base URLs without a cloud key', () => {
+    process.env.LLM_GATEWAY = 'openai-compatible';
+    process.env.OPENAI_COMPATIBLE_BASE_URL = 'http://127.0.0.1:8080/v1';
+    delete process.env.OPENAI_API_KEY;
+    expect(hasChatLlmApiKey()).toBe(true);
+    const config = resolveChatModelConfig('local-model');
+    expect(config.baseUrl).toBe('http://127.0.0.1:8080/v1');
+    expect(config.provider).toBe('openai');
   });
 });
