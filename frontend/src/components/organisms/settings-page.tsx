@@ -1,9 +1,10 @@
 import { lazy, Suspense, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
-import { Building2, CircleDollarSign, CreditCard, FileText, PlugZap, User } from 'lucide-react';
+import { Building2, CircleDollarSign, CreditCard, FileText, Globe, PlugZap, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SettingsUserSection } from '@/components/organisms/settings-user-section';
+import { SettingsAccessSection } from '@/components/organisms/settings-access-section';
 import { SettingsIntegrationsSection } from '@/components/organisms/settings-integrations-section';
 const SettingsCostsSection = lazy(() => import('@/components/organisms/settings-costs-section').then((m) => ({ default: m.SettingsCostsSection })));
 import { SettingsWorkspaceSection } from '@/components/organisms/settings-workspace-section';
@@ -11,7 +12,7 @@ import { SettingsRulesSection } from '@/components/organisms/settings-rules-sect
 import { SettingsPlanSection } from '@/components/organisms/settings-plan-section';
 import { useAuth } from '@/hooks/use-auth';
 
-export type SettingsSection = 'user' | 'users' | 'costs' | 'integrations' | 'workspace' | 'rules' | 'plan';
+export type SettingsSection = 'user' | 'users' | 'access' | 'costs' | 'integrations' | 'workspace' | 'rules' | 'plan';
 
 const sections: ReadonlyArray<{
   readonly id: SettingsSection;
@@ -21,6 +22,7 @@ const sections: ReadonlyArray<{
 }> = [
   { id: 'user', labelKey: 'settings.sections.user', icon: User, group: 'account' },
   { id: 'users', labelKey: 'settings.sections.users', icon: User, group: 'account' },
+  { id: 'access', labelKey: 'settings.sections.access', icon: Globe, group: 'account' },
   { id: 'costs', labelKey: 'settings.sections.costs', icon: CircleDollarSign, group: 'account' },
   { id: 'integrations', labelKey: 'settings.sections.integrations', icon: PlugZap, group: 'account' },
   { id: 'workspace', labelKey: 'common.workspace', icon: Building2, group: 'workspace' },
@@ -40,9 +42,10 @@ export function SettingsPage({ initialSection, ruleId }: SettingsPageProps) {
   const [activeSection, setActiveSection] = useState<SettingsSection>(initialSection ?? 'user');
   const canManageUsers = user?.role === 'ADMIN' || user?.role === 'GOD';
 
-  const accountSections = sections.filter((section) =>
-    section.id === 'users' ? canManageUsers : section.group === 'account',
-  );
+  const accountSections = sections.filter((section) => {
+    if (section.id === 'users' || section.id === 'access') return canManageUsers;
+    return section.group === 'account';
+  });
   const workspaceSections = sections.filter((s) => s.group === 'workspace');
 
   const handleSelectSection = (section: SettingsSection) => {
@@ -68,6 +71,7 @@ export function SettingsPage({ initialSection, ruleId }: SettingsPageProps) {
 
         <div className="min-w-0 flex-1 overflow-auto">
           {activeSection === 'user' && <SettingsUserSection />}
+          {activeSection === 'access' && <SettingsAccessSection />}
           {activeSection === 'costs' && <Suspense fallback={null}><SettingsCostsSection /></Suspense>}
           {activeSection === 'integrations' && <SettingsIntegrationsSection />}
           {activeSection === 'workspace' && <SettingsWorkspaceSection />}

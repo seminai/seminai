@@ -20,7 +20,8 @@ services:
       DATABASE_URL: postgresql://seminai:seminai@postgres:5432/seminai?schema=public&sslmode=disable
       DIRECT_URL: postgresql://seminai:seminai@postgres:5432/seminai?schema=public&sslmode=disable
       REDIS_URL: redis://redis:6379
-      FRONTEND_URL: http://localhost:8081
+      ACCESS_MODE: lan
+      PUBLIC_BASE_URL: http://localhost:8081
       BACKEND_URL: http://localhost:8081
       LLM_GATEWAY: ollama
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}

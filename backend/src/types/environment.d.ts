@@ -13,6 +13,11 @@ declare global {
       LLM_GATEWAY?: string;
       OLLAMA_BASE_URL?: string;
       ACCESS_MODE?: string;
+      PUBLIC_BASE_URL?: string;
+      TRUST_PROXY?: string;
+      TAILSCALE_FUNNEL_URL?: string;
+      CLOUDFLARE_TUNNEL_URL?: string;
+      INVITE_CODE?: string;
       SMTP_HOST: string;
       SMTP_PORT: string;
       FRONTEND_URL: string;

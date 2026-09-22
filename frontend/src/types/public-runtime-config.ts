@@ -4,6 +4,9 @@ export interface PublicRuntimeConfig {
   readonly setupCompleted: boolean;
   readonly llmProvider: string | null;
   readonly accessMode: string;
+  readonly publicBaseUrl: string;
+  readonly inviteRequired: boolean;
+  readonly tunnelProvider: string;
   readonly features: {
     readonly qdrant: boolean;
     readonly ocr: boolean;
@@ -19,6 +22,9 @@ export const EMPTY_PUBLIC_RUNTIME_CONFIG: PublicRuntimeConfig = {
   setupCompleted: true,
   llmProvider: null,
   accessMode: 'lan',
+  publicBaseUrl: 'http://127.0.0.1:8081',
+  inviteRequired: true,
+  tunnelProvider: 'none',
   features: {
     qdrant: false,
     ocr: false,

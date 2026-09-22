@@ -50,6 +50,9 @@ describe('optional local-first features', () => {
     });
     expect(config.setupCompleted).toBe(false);
     expect(config.llmProvider).toBeNull();
+    expect(config.accessMode).toBe('lan');
+    expect(config.inviteRequired).toBe(true);
+    expect(config.tunnelProvider).toBe('none');
     expect(config.features).toEqual({
       qdrant: false,
       ocr: false,

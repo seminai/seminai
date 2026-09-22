@@ -77,17 +77,22 @@ export class RegisterUseCase {
       },
     );
 
-    try {
-      await this.emailService.sendWelcomeEmail(
-        createdUser.email,
-        createdUser.name,
-        verificationToken,
-      );
-    } catch (error) {
-      console.error(
-        '[RegisterUseCase] Failed to send welcome email:',
-        error instanceof Error ? error.message : error,
-      );
+    const hasSmtp = Boolean(
+      process.env.SMTP_HOST || (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD),
+    );
+    if (hasSmtp) {
+      try {
+        await this.emailService.sendWelcomeEmail(
+          createdUser.email,
+          createdUser.name,
+          verificationToken,
+        );
+      } catch (error) {
+        console.error(
+          '[RegisterUseCase] Failed to send welcome email:',
+          error instanceof Error ? error.message : error,
+        );
+      }
     }
 
     return createdUser;

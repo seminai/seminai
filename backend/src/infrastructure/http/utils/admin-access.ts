@@ -15,6 +15,7 @@ interface AdminAccessTokenPayload {
 
 export function getIsSecureRequest(request: Request): boolean {
   return (
+    process.env.ACCESS_MODE === 'public' ||
     process.env.NODE_ENV === 'production' ||
     request.secure ||
     request.headers?.['x-forwarded-proto'] === 'https'

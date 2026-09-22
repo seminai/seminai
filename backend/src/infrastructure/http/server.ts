@@ -6,7 +6,6 @@ import { createCorsMiddleware, createCorsOptions } from './middlewares/corsPolic
 import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import compression from 'compression';
-import helmet from 'helmet';
 import { router } from './routes';
 import { errorHandler } from './middlewares/error';
 import { multerErrorHandler } from '../services/Multer';
@@ -37,6 +36,7 @@ import { getAnalyticsService } from '../services/analytics/analytics-service.sin
 import { initializeQueuesAndSockets } from './server-queue-runtime';
 import { applyPersistedInstanceSettings } from '../settings/instanceSettingSingleton';
 import { applyLargeJsonBodyParsers } from './jsonBodyLimits';
+import { applyAccessHardening } from './applyAccessHardening';
 import { mountSpaFallback } from './spaStatic';
 
 logger.info('All modules loaded');
@@ -49,9 +49,7 @@ const port = Number(process.env.PORT) || 8081;
 const host = process.env.HOST || '0.0.0.0';
 logger.info(`Will listen on ${host}:${port}`);
 
-// Enable compression for all responses (gzip/deflate)
-// Note: This compresses RESPONSES only, not request bodies
-// Request body compression would require custom implementation
+applyAccessHardening(app);
 app.use(
   compression({
     filter: (req: Request, res: Response) => {
@@ -63,13 +61,6 @@ app.use(
     },
     level: 6, // Compression level (1-9, default 6)
     threshold: 1024, // Only compress responses > 1KB
-  }),
-);
-
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
   }),
 );
 

@@ -32,7 +32,11 @@ function createRegisterSchema(t: TFunction) {
 
 type RegisterForm = z.infer<ReturnType<typeof createRegisterSchema>>;
 
-export function RegisterPage() {
+interface RegisterPageProps {
+  readonly initialInviteCode?: string;
+}
+
+export function RegisterPage({ initialInviteCode }: RegisterPageProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { register: registerMutation } = useAuth();
@@ -47,6 +51,7 @@ export function RegisterPage() {
     setError,
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
+    defaultValues: { inviteCode: initialInviteCode ?? '' },
   });
 
   const onSubmit = async (data: RegisterForm) => {

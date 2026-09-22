@@ -224,12 +224,24 @@
       "plan": "Plan",
       "rules": "Rules",
       "user": "User",
-      "users": "Users"
+      "users": "Users",
+      "access": "Access"
     },
     "sidebar": {
       "collapse": "Collapse sidebar",
       "expand": "Expand sidebar",
       "logout": "Logout"
+    },
+    "access": {
+      "mode": "Access mode",
+      "publicUrl": "Public URL",
+      "tunnel": "Tunnel",
+      "healthy": "healthy",
+      "unhealthy": "not verified",
+      "inviteUrl": "Invite link",
+      "qrAlt": "Invite QR code",
+      "rotate": "Rotate invite",
+      "loadError": "I could not load access settings."
     },
     "user": {
       "avatarHint": "Click the avatar to change your profile photo.",
