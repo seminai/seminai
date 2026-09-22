@@ -29,7 +29,7 @@ its complete gate is green.
 | 1. Monorepo import | DONE | 2026-09-22, code commit `82d1ed8`; complete root gate green |
 | 2. Synthetic fixtures | DONE | 2026-09-22, code commit `f176b66`; complete gate green |
 | 3. Scrub and compliance | DONE | 2026-09-22, tested code commit `7e8e78d`; complete gate green |
-| 4. Self-contained backend | IN PROGRESS | Phase 3 gate is green |
+| 4. Self-contained backend | DONE | 2026-09-22, tested code commit `1768abb`; complete gate green |
 | 5. Runtime setup wizard | NOT STARTED | Blocked by Phase 4 |
 | 6. One-command install | NOT STARTED | Requires real hardware verification |
 | 7. Remote access and invites | NOT STARTED | Requires a real tunnel account and mobile test |
@@ -162,15 +162,34 @@ metadata and retained examples use neutral project identities. The tag is local 
 
 ## Phase 4 — self-contained backend
 
-- [ ] Add `IFileStorage` with `upload`, `delete`, `getReadUrl`, `exists`, and `list`.
-- [ ] Implement tenant-scoped local storage and optional S3; remove GCS, its credentials,
+- [x] Add `IFileStorage` with `upload`, `delete`, `getReadUrl`, `exists`, and `list`.
+- [x] Implement tenant-scoped local storage and optional S3; remove GCS, its credentials,
   dependency, and public storage URLs.
-- [ ] Add expiring signed downloads and cross-tenant coverage.
-- [ ] Implement `APP_MODE=all|api|worker`, with inline worker as the default.
-- [ ] Remove MongoDB. Return `feature_not_configured` for optional Qdrant, OCR, Tavily,
+- [x] Add expiring signed downloads and cross-tenant coverage.
+- [x] Implement `APP_MODE=all|api|worker`, with inline worker as the default.
+- [x] Remove MongoDB. Return `feature_not_configured` for optional Qdrant, OCR, Tavily,
   Google login, and email features.
-- [ ] Expose `GET /config/public`.
-- [ ] Gate: API, worker, queue, and signed upload/download work with only PostgreSQL and Redis.
+- [x] Expose `GET /config/public`.
+- [x] Gate: API, worker, queue, and signed upload/download work with only PostgreSQL and Redis.
+
+Evidence (2026-09-22, tested code commit `1768abb`):
+
+```text
+npm ci                                      added 2,621 packages from the root lockfile
+npm run codegen / build / type-check / lint green; structural scan: 3,571 files
+npm test                                    BE 1,437 passed + 6 skipped; FE 86; MCP 82
+npm run test:integration:fast -- --silent --detectOpenHandles
+                                             70 suites, 213 tests, no open handles
+npm run test:integration:public -- --silent --detectOpenHandles
+                                             96 suites, 293 tests, no open handles
+npm run test:llm:smoke                      qwen3.5:4b tool call green; remote cost zero
+npm run privacy:scan:full                   passed
+```
+
+File persistence uses `IFileStorage` with a tenant-scoped local adapter and optional S3.
+Signed local downloads are HMAC-expiring; unconfigured Qdrant, OCR, Tavily, Google login,
+and email return HTTP 503 `feature_not_configured`. `APP_MODE=all` remains the default
+inline-worker process. Prisma migrations are now versioned; dumps stay ignored.
 
 ## Phase 5 — runtime settings and setup wizard
 
