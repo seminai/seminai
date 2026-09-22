@@ -110,7 +110,7 @@ master use-case routes to `HandleDisambiguationReplyUseCase` which:
   bodies. The reply always points to the webapp.
 - ZIP attachments are accepted but **not auto-unzipped** — the agent
   receives the raw buffer.
-- Plus-aliases (`francesco+inbox@gmail.com`) are not matched to the
+- Plus-aliases (`user+inbox@example.com`) are not matched to the
   base address; the sender is treated as unknown.
 - SPF/DKIM pass status is not enforced — only `From == draft.from`
   guard for disambiguation replies.

@@ -164,7 +164,7 @@ L'email Google non corrisponde a nessun utente nel DB. Il backend crea un nuovo 
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "user": {
       "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "email": "nuovo.utente@gmail.com",
+      "email": "new.user@example.com",
       "name": "Nuovo Utente",
       "role": "BASIC",
       "credits": 10

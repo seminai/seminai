@@ -1,8 +1,7 @@
 import { ContactEmailDTO } from '../../domain/dtos/contact-email.dto';
+import { AppError } from '../../domain/errors/AppError';
 import { IEmailRepository } from '../../domain/repositories/IEmailRepository';
 import { EmailService } from '../services/EmailService';
-
-const CONTACT_TARGET_EMAIL = process.env.CONTACT_FORM_TARGET_EMAIL || 'get.seminai@gmail.com';
 
 const escapeHtml = (value: string): string =>
   value
@@ -23,6 +22,10 @@ export class EmailRepository implements IEmailRepository {
   constructor(private readonly emailService: EmailService) {}
 
   async sendContactEmail({ name, email, body, attachments }: ContactEmailDTO): Promise<void> {
+    const targetEmail = process.env.CONTACT_FORM_TARGET_EMAIL;
+    if (!targetEmail) {
+      throw new AppError(503, 'Contact email is not configured', 'FEATURE_NOT_CONFIGURED');
+    }
     const subject = `New contact request from ${name}`;
     const attachmentInfo =
       attachments && attachments.length > 0
@@ -59,7 +62,7 @@ export class EmailRepository implements IEmailRepository {
       </html>
     `;
     await this.emailService.sendRawEmail({
-      to: CONTACT_TARGET_EMAIL,
+      to: targetEmail,
       subject,
       text: plainTextBody,
       html: htmlBody,

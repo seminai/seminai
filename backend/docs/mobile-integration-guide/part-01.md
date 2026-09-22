@@ -190,7 +190,7 @@ const response = await fetch(`${BASE_URL}/auth/google/login`, {
     "token": "eyJhbGciOiJIUzI1NiIs...",
     "user": {
       "id": "uuid-utente",
-      "email": "utente@gmail.com",
+      "email": "user@example.com",
       "name": "Mario Rossi",
       "role": "BASIC",
       "credits": 10
