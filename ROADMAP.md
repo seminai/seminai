@@ -27,8 +27,8 @@ its complete gate is green.
 | Preliminary | DONE | 2026-09-22: 30/30 suites, 220/220 tests, no open handles |
 | 0. Safety bootstrap | DONE | Commit `20e292f`; privacy scan and syntax checks green |
 | 1. Monorepo import | DONE | 2026-09-22, code commit `ec73481`; complete root gate green |
-| 2. Synthetic fixtures | IN PROGRESS | Phase 1 gate is green |
-| 3. Scrub and compliance | NOT STARTED | Blocked by Phase 2 |
+| 2. Synthetic fixtures | DONE | 2026-09-22, code commit `dcf3431`; complete gate green |
+| 3. Scrub and compliance | IN PROGRESS | Phase 2 gate is green |
 | 4. Self-contained backend | NOT STARTED | Blocked by Phase 3 |
 | 5. Runtime setup wizard | NOT STARTED | Blocked by Phase 4 |
 | 6. One-command install | NOT STARTED | Requires real hardware verification |
@@ -104,11 +104,31 @@ TanStack, build, and coverage output remain untracked.
 
 ## Phase 2 — synthetic and local-only fixtures
 
-- [ ] Replace customer-coupled tests with synthetic fixtures or open data.
-- [ ] Add a fixture harness reading optional real data only from `SEMINAI_FIXTURES_DIR`.
-- [ ] Keep real fixture contents, identifiers, and filenames out of output and artifacts.
-- [ ] Gate: full suite green without external fixtures; optional local suite runnable when the
+- [x] Replace customer-coupled tests with synthetic fixtures or open data.
+- [x] Add a fixture harness reading optional real data only from `SEMINAI_FIXTURES_DIR`.
+- [x] Keep real fixture contents, identifiers, and filenames out of output and artifacts.
+- [x] Gate: full suite green without external fixtures; optional local suite runnable when the
   directory exists; customer-name and private-data scans clean.
+
+Evidence (2026-09-22, tested code commit `dcf3431`):
+
+```text
+npm ci                                      added 2,595 packages from the root lockfile
+npm run codegen / build / type-check / lint green; lint errors: 0
+npm test                                    BE 1,417 + FE 86 + MCP 82 passed
+npm run test:int:fast:env -- --silent --detectOpenHandles
+                                             29 suites, 210 tests, no open handles
+npm run test:int:public:env -- --silent --detectOpenHandles
+                                             48 suites, 290 tests, no open handles
+SEMINAI_FIXTURES_DIR=<external synthetic temp> npm run test:int:private:env -- --silent --detectOpenHandles
+                                             1 suite, 1 test, no open handles
+npm run privacy:scan                        passed; known customer identifiers absent
+```
+
+The tracked fixture tree contains only fabricated FatturaPA and Lombardia-shaped samples.
+The optional harness requires an absolute real path outside the repository, rejects escaping
+symlinks, and reports only aggregate counts and bytes. Its configured gate used a temporary
+fabricated external file that was removed immediately afterward; no user dataset was accessed.
 
 ## Phase 3 — scrub, licensing, and structural compliance
 
