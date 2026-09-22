@@ -1,0 +1,25 @@
+{
+  "name": "@seminai/telegram-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for SeminAI - Agricultural AI Assistant",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "grammy": "1.39.3",
+    "axios": "1.13.4",
+    "form-data": "4.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "20.19.30",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=22 <23"
+  }
+}

@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /hub/
+Allow: /try-seminai/
+Disallow: /chat
+Disallow: /archivio
+Disallow: /settings
+Disallow: /add-data
+Disallow: /login
+Disallow: /register
+Disallow: /auth/
+
+Sitemap: https://app.seminai.app/sitemap.xml
+Sitemap: https://app.seminai.app/hub/sitemap-index.xml

@@ -1,0 +1,31 @@
+# Layer 4 — Dosage ReAct Agent: Multi-Turn Conversational Flows
+# Tests realistic user conversations where context is discovered incrementally
+# across multiple turns (company → products, company → fields, etc.).
+# Validates tool intent, contextual coherence, and approval gates.
+
+description: "Dosage ReAct Agent — Multi-Turn Flows (Layer 4)"
+
+prompts:
+  - "{{question}}"
+
+providers:
+  - id: file://./providers/multi-turn.provider.ts
+    label: "GPT-4o + Multi-Turn System Prompt"
+    config:
+      model: gpt-4o
+      temperature: 0
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+  assert:
+    - type: llm-rubric
+      value: "The response is written in Italian language."
+    - type: javascript
+      value: "output.length > 50"
+
+tests:
+  - file://./datasets/multi-turn-flow-a.yaml
+  - file://./datasets/multi-turn-flow-b.yaml
+  - file://./datasets/multi-turn-flow-c.yaml
+  - file://./datasets/multi-turn-flow-d.yaml

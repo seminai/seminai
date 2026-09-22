@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FatturaElettronica>
+  <FatturaElettronicaHeader>
+    <CedentePrestatore>
+      <DatiAnagrafici>
+        <IdFiscaleIVA><IdPaese>IT</IdPaese><IdCodice>00000000000</IdCodice></IdFiscaleIVA>
+        <Anagrafica><Denominazione>EXAMPLE AGRICULTURAL SUPPLY SRL</Denominazione></Anagrafica>
+      </DatiAnagrafici>
+    </CedentePrestatore>
+  </FatturaElettronicaHeader>
+  <FatturaElettronicaBody>
+    <DatiGenerali>
+      <DatiGeneraliDocumento>
+        <Data>2026-09-01</Data>
+        <Numero>SYN-2026-001</Numero>
+      </DatiGeneraliDocumento>
+    </DatiGenerali>
+    <DatiBeniServizi>
+      <DettaglioLinee>
+        <NumeroLinea>1</NumeroLinea>
+        <Descrizione>SYNTHETIC COPPER PRODUCT</Descrizione>
+        <Quantita>3.00</Quantita><UnitaMisura>L</UnitaMisura>
+        <PrezzoUnitario>12.50</PrezzoUnitario><PrezzoTotale>37.50</PrezzoTotale>
+        <CodiceArticolo><CodiceTipo>TEST</CodiceTipo><CodiceValore>SYN-001</CodiceValore></CodiceArticolo>
+      </DettaglioLinee>
+      <DettaglioLinee>
+        <NumeroLinea>2</NumeroLinea>
+        <Descrizione>SYNTHETIC FERTILIZER</Descrizione>
+        <Quantita>2.00</Quantita><UnitaMisura>KG</UnitaMisura>
+        <PrezzoUnitario>8.00</PrezzoUnitario><PrezzoTotale>16.00</PrezzoTotale>
+      </DettaglioLinee>
+      <DettaglioLinee>
+        <NumeroLinea>3</NumeroLinea><Descrizione>SCONTO TEST</Descrizione>
+        <Quantita>1.00</Quantita><PrezzoUnitario>-1.00</PrezzoUnitario><PrezzoTotale>-1.00</PrezzoTotale>
+      </DettaglioLinee>
+    </DatiBeniServizi>
+    <DatiPagamento>
+      <DettaglioPagamento><DataScadenzaPagamento>2026-10-01</DataScadenzaPagamento></DettaglioPagamento>
+    </DatiPagamento>
+  </FatturaElettronicaBody>
+</FatturaElettronica>

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "LlmUsage" ADD COLUMN "cachedTokens" INTEGER NOT NULL DEFAULT 0;

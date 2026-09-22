@@ -1,0 +1,359 @@
+{
+  "models": {
+    "claude-4-opus": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 75,
+      "cachedInputDiscount": 0.1
+    },
+    "claude-4-sonnet": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.1
+    },
+    "claude-4-sonnet-1m": {
+      "inputPerMillionTokens": 6,
+      "outputPerMillionTokens": 22.5,
+      "cachedInputDiscount": 0.1
+    },
+    "claude-4.1-opus": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 75,
+      "cachedInputDiscount": 0.1
+    },
+    "claude-4.5-haiku": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 5,
+      "cachedInputDiscount": 0.1
+    },
+    "claude-4.5-opus": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.1
+    },
+    "claude-4.5-sonnet": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.1
+    },
+    "composer-1": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10
+    },
+    "deepseek-r1": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 8
+    },
+    "deepseek-v3.1": {
+      "inputPerMillionTokens": 0.56,
+      "outputPerMillionTokens": 1.68
+    },
+    "gemini-2.5-flash": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 2.5
+    },
+    "gemini-3-pro": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10
+    },
+    "gemini-3-pro-extended": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 12
+    },
+    "grok-4": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15
+    },
+    "grok-4-fast": {
+      "inputPerMillionTokens": 0.2,
+      "outputPerMillionTokens": 0.5
+    },
+    "grok-code": {
+      "inputPerMillionTokens": 0.2,
+      "outputPerMillionTokens": 1.5
+    },
+    "gpt-5.2": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14
+    },
+    "gpt-5.1": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-5": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-5-mini": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 2
+    },
+    "gpt-5-nano": {
+      "inputPerMillionTokens": 0.05,
+      "outputPerMillionTokens": 0.4
+    },
+    "gpt-5.2-chat-latest": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14
+    },
+    "gpt-5.1-chat-latest": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-5-chat-latest": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-5.2-codex": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14
+    },
+    "gpt-5.1-codex-max": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-5.1-codex": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-5-codex": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-5.1-codex-mini": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 2
+    },
+    "codex-mini-latest": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 6
+    },
+    "gpt-5.2-pro": {
+      "inputPerMillionTokens": 21,
+      "outputPerMillionTokens": 168
+    },
+    "gpt-5-pro": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 120
+    },
+    "gpt-4.1": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8
+    },
+    "gpt-4.1-mini": {
+      "inputPerMillionTokens": 0.4,
+      "outputPerMillionTokens": 1.6
+    },
+    "gpt-4.1-nano": {
+      "inputPerMillionTokens": 0.1,
+      "outputPerMillionTokens": 0.4
+    },
+    "4o": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "4o-mini": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6
+    },
+    "gpt-4o": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-4o-mini": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6
+    },
+    "text-embedding-3-small": {
+      "inputPerMillionTokens": 0.02,
+      "outputPerMillionTokens": 0
+    },
+    "openai/text-embedding-3-small": {
+      "inputPerMillionTokens": 0.02,
+      "outputPerMillionTokens": 0
+    },
+    "gpt-4o-2024-05-13": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 15
+    },
+    "o1": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 60
+    },
+    "o1-mini": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4
+    },
+    "o1-pro": {
+      "inputPerMillionTokens": 150,
+      "outputPerMillionTokens": 600
+    },
+    "o3": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8
+    },
+    "o3-mini": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4
+    },
+    "o3-pro": {
+      "inputPerMillionTokens": 20,
+      "outputPerMillionTokens": 80
+    },
+    "o3-deep-research": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 40
+    },
+    "o4-mini": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4
+    },
+    "o4-mini-deep-research": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8
+    },
+    "gpt-realtime": {
+      "inputPerMillionTokens": 4,
+      "outputPerMillionTokens": 16
+    },
+    "gpt-realtime-mini": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.4
+    },
+    "gpt-4o-realtime-preview": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 20
+    },
+    "gpt-4o-mini-realtime-preview": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.4
+    },
+    "gpt-audio": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-audio-mini": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.4
+    },
+    "gpt-4o-audio-preview": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-4o-mini-audio-preview": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6
+    },
+    "computer-use-preview": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 12
+    },
+    "gpt-image-1.5": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 10
+    },
+    "chatgpt-image-latest": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-image-1": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-image-1-mini": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8
+    },
+    "gpt-5-search-api": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-4o-mini-search-preview": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6
+    },
+    "gpt-4o-search-preview": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-3.5-turbo": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 1.5
+    },
+    "gpt-3.5-turbo-0125": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 1.5
+    },
+    "gpt-3.5-turbo-1106": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 2
+    },
+    "gpt-3.5-turbo-0613": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 2
+    },
+    "gpt-3.5-turbo-instruct": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 2
+    },
+    "gpt-3.5-turbo-16k-0613": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 4
+    },
+    "chatgpt-4o-latest": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 15
+    },
+    "gpt-4": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 60
+    },
+    "gpt-4-turbo": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "gpt-4-turbo-2024-04-09": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "gpt-4-0125-preview": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "gpt-4-1106-preview": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "gpt-4-1106-vision-preview": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "gpt-4-0613": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 60
+    },
+    "gpt-4-0314": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 60
+    },
+    "gpt-4-32k": {
+      "inputPerMillionTokens": 60,
+      "outputPerMillionTokens": 120
+    },
+    "davinci-002": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 2
+    },
+    "babbage-002": {
+      "inputPerMillionTokens": 0.4,
+      "outputPerMillionTokens": 0.4
+    }
+  },
+  "services": {
+    "tavily": {
+      "costPerCall": 0.008
+    },
+    "mistral-ocr": {
+      "costPer1000Pages": 1.0
+    }
+  }
+}

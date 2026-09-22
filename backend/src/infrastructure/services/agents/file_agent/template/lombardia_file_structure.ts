@@ -1,0 +1,3 @@
+export { LombardiaColumnMapping, LOMBARDIA_COLUMN_MAPPING, SiscoCropCode, SiscoCropDescription } from './lombardia_file_structure.part-01-lombardia-column-mapping';
+export { isLombardiaFormat, parseSiscoCropCode, parseUsoSuoloFromTipoUtilizzo, parseLombardiaDate, getRegioneFromProvincia, parseCropCodeFromTipoUtilizzo, parseCropFromTipoUtilizzo, isNonAgriculturalUse } from './lombardia_file_structure.part-02-is-lombardia-format';
+export { parseVarieta, parseIsBiologico, parseCodiceIrrigazione, hasPotenzialitaIrrigua, parseColtivazioneCycle, isOrganicFromBiolConv, getBestAreaMq } from './lombardia_file_structure.part-03-parse-varieta';

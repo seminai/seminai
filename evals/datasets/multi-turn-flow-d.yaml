@@ -1,0 +1,106 @@
+# Layer 4 — Flow D: Field Agent CRUD
+# Multi-turn tests for entity creation chains.
+# Verifies: parameter echo, approval communication, context continuity.
+
+# ── Scenario D1: Context request → Field creation → PU creation ──
+
+- description: "Flow D1 — T1: Richiesta creazione campi (senza contesto)"
+  vars:
+    question: "Devo creare dei nuovi campi per la mia azienda."
+  metadata:
+    conversationId: flow-d1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should recognize the user wants to create fields.
+        It should ask for clarification or context (which company, field
+        details) OR proceed to verify the user's companies first.
+        It must NOT claim fields have been created.
+
+- description: "Flow D1 — T2: Creazione campo con dettagli"
+  vars:
+    question: >
+      L'azienda è Seminai Fruit. Crea un campo chiamato 'Vigna Alta'
+      di 3 ettari a Montalcino, foglio 8, particella 120.
+  metadata:
+    conversationId: flow-d1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand this is a field creation request for
+        company Seminai Fruit. It should acknowledge at least some of
+        the parameters (Vigna Alta, Montalcino, foglio 8, particella 120).
+        Asking for confirmation or indicating intent to proceed is
+        acceptable. It must NOT claim the field has already been
+        successfully created (e.g., "creato con successo").
+    - type: not-icontains
+      value: "creato con successo"
+    - type: icontains
+      value: "Montalcino"
+
+- description: "Flow D1 — T3: Creazione UP sul campo"
+  vars:
+    question: >
+      Ora crea un'unità produttiva 'Sangiovese 2026' su quel campo,
+      superficie 2.5 ettari, inizio ciclo 1 marzo.
+  metadata:
+    conversationId: flow-d1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to create a production
+        unit on a field from the conversation. It should echo back
+        some of the parameters (Sangiovese 2026, 2.5 ettari, 1 marzo).
+        It must NOT claim the unit has been successfully created.
+    - type: not-icontains
+      value: "creata con successo"
+
+# ── Scenario D2: Field listing → PU creation → Date update ──
+
+- description: "Flow D2 — T1: Elenco campi dell'azienda"
+  vars:
+    question: "Mostrami i campi dell'azienda Seminai Fruit."
+  metadata:
+    conversationId: flow-d2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should indicate it will retrieve the fields for the
+        company 'Seminai Fruit'. It should use the company name directly
+        from the user's message, not restart a generic company discovery.
+        It must NOT invent field data.
+    - type: icontains
+      value: "Seminai Fruit"
+
+- description: "Flow D2 — T2: Creazione UP sul primo campo"
+  vars:
+    question: >
+      Crea un'unità produttiva di Merlot di 1.8 ettari sul primo campo
+      della lista.
+  metadata:
+    conversationId: flow-d2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to create a production
+        unit (Merlot, 1.8 hectares). It should echo back at least the
+        crop type and surface area. It must NOT claim the unit was created.
+    - type: not-icontains
+      value: "creata con successo"
+
+- description: "Flow D2 — T3: Aggiornamento date fenologiche UP"
+  vars:
+    question: >
+      Aggiorna le date fenologiche dell'unità appena creata:
+      dal 15 marzo al 15 ottobre 2026, fioritura 20 maggio.
+  metadata:
+    conversationId: flow-d2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand this is a request to update phenological
+        dates for a production unit. It should acknowledge the user's intent
+        to update dates. It must NOT claim dates have been
+        successfully updated and saved.
+    - type: not-icontains
+      value: "aggiornate con successo"

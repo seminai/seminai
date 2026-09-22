@@ -1,0 +1,152 @@
+# Layer 2 — Crop Matcher: tests the LLM crop-to-product matching prompt.
+# Validates that the LLM correctly determines product-crop compatibility.
+
+- description: "Match diretto — Vite su Vite"
+  vars:
+    productName: "Rame Caffaro Blu"
+    categoria: "Fungicida"
+    principioAttivo: "Ossicloruro di rame"
+    crops: "Vite, Melo, Pero, Pesco, Olivo"
+    targetCrop: "Vite"
+    targetVariety: "N/A"
+    targetCommonName: "Vite"
+    targetCategory: "Arboree da frutto"
+    targetFamily: "Vitaceae"
+    targetSpecies: "Vitis vinifera"
+    targetGenus: "Vitis"
+    targetClass: "Magnoliopsida"
+    targetOrder: "Vitales"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isCompatible === true"
+    - type: javascript
+      value: "JSON.parse(output).confidence >= 90"
+
+- description: "Match per sinonimo — Frumento vs Triticum aestivum"
+  vars:
+    productName: "Prosaro"
+    categoria: "Fungicida"
+    principioAttivo: "Protioconazolo + Tebuconazolo"
+    crops: "Frumento, Orzo, Triticale"
+    targetCrop: "Triticum aestivum"
+    targetVariety: "N/A"
+    targetCommonName: "Grano tenero"
+    targetCategory: "Cereali"
+    targetFamily: "Poaceae"
+    targetSpecies: "Triticum aestivum"
+    targetGenus: "Triticum"
+    targetClass: "Liliopsida"
+    targetOrder: "Poales"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isCompatible === true"
+    - type: javascript
+      value: "JSON.parse(output).confidence >= 85"
+
+- description: "Match per categoria — Cereali include Orzo"
+  vars:
+    productName: "Amistar Extra"
+    categoria: "Fungicida"
+    principioAttivo: "Azoxystrobin + Ciproconazolo"
+    crops: "Cereali, Riso"
+    targetCrop: "Orzo"
+    targetVariety: "N/A"
+    targetCommonName: "Orzo"
+    targetCategory: "Cereali"
+    targetFamily: "Poaceae"
+    targetSpecies: "Hordeum vulgare"
+    targetGenus: "Hordeum"
+    targetClass: "Liliopsida"
+    targetOrder: "Poales"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isCompatible === true"
+    - type: javascript
+      value: "JSON.parse(output).confidence >= 75"
+
+- description: "No match — Pomacee vs Vite"
+  vars:
+    productName: "Delan Pro"
+    categoria: "Fungicida"
+    principioAttivo: "Ditianon + Fosfonato di potassio"
+    crops: "Pomacee, Melo, Pero"
+    targetCrop: "Vite"
+    targetVariety: "N/A"
+    targetCommonName: "Vite"
+    targetCategory: "Arboree da frutto"
+    targetFamily: "Vitaceae"
+    targetSpecies: "Vitis vinifera"
+    targetGenus: "Vitis"
+    targetClass: "Magnoliopsida"
+    targetOrder: "Vitales"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isCompatible === false"
+
+- description: "Match ambiguo — Orticole include Pomodoro da industria"
+  vars:
+    productName: "Ridomil Gold MZ Pepite"
+    categoria: "Fungicida"
+    principioAttivo: "Metalaxil-M + Mancozeb"
+    crops: "Orticole, Patata, Tabacco"
+    targetCrop: "Pomodoro da industria"
+    targetVariety: "N/A"
+    targetCommonName: "Pomodoro"
+    targetCategory: "Orticole"
+    targetFamily: "Solanaceae"
+    targetSpecies: "Solanum lycopersicum"
+    targetGenus: "Solanum"
+    targetClass: "Magnoliopsida"
+    targetOrder: "Solanales"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isCompatible === true"
+    - type: javascript
+      value: "JSON.parse(output).confidence >= 60"
+
+- description: "Falso positivo — Mais vs Sorgo (specie diverse)"
+  vars:
+    productName: "Lumax"
+    categoria: "Erbicida"
+    principioAttivo: "Mesotrione + S-metolaclor + Terbutilazina"
+    crops: "Mais, Granturco"
+    targetCrop: "Sorgo"
+    targetVariety: "N/A"
+    targetCommonName: "Sorgo"
+    targetCategory: "Cereali"
+    targetFamily: "Poaceae"
+    targetSpecies: "Sorghum bicolor"
+    targetGenus: "Sorghum"
+    targetClass: "Liliopsida"
+    targetOrder: "Poales"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isCompatible === false"
+
+- description: "Match sinonimo italiano — Granturco = Mais"
+  vars:
+    productName: "Elatus Era"
+    categoria: "Fungicida"
+    principioAttivo: "Benzovindiflupyr + Azoxystrobin"
+    crops: "Mais, Soia, Girasole"
+    targetCrop: "Granturco"
+    targetVariety: "N/A"
+    targetCommonName: "Granturco"
+    targetCategory: "Cereali"
+    targetFamily: "Poaceae"
+    targetSpecies: "Zea mays"
+    targetGenus: "Zea"
+    targetClass: "Liliopsida"
+    targetOrder: "Poales"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isCompatible === true"
+    - type: javascript
+      value: "JSON.parse(output).confidence >= 90"

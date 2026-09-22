@@ -1,0 +1,26 @@
+# Layer 6 — Multi-Agent Coordination Evaluation
+# Tests how the agent behaves when it's aware of other active agents.
+# The multi-agent context is injected via the provider into the user message.
+
+description: "Dosage ReAct Agent — Multi-Agent Coordination Eval (Layer 6)"
+
+prompts:
+  - "{{input_prompt}}"
+
+providers:
+  - id: file://./providers/multi-agent.provider.ts
+    label: "GPT-4o + Multi-Agent"
+    config:
+      model: gpt-4o
+      temperature: 0
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+  assert:
+    - type: llm-rubric
+      value: "The response is written in Italian language."
+    - type: javascript
+      value: "output.length > 50"
+
+tests: file://./datasets/multi-agent-coordination.yaml

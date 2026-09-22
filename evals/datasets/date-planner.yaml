@@ -1,0 +1,99 @@
+# Layer 2 — Date Planner: tests the LLM phenological date estimation prompt.
+# Validates that the LLM returns chronologically correct and agronomically plausible dates.
+
+- description: "Cereale autunno-vernino — Frumento tenero, Emilia-Romagna"
+  vars:
+    cropName: "Frumento tenero"
+    variety: ""
+    location: "Emilia-Romagna"
+    year: "2025"
+    prevYear: "2024"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        d.startDate.startsWith('2024') && d.harvestingDate.startsWith('2025')
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        new Date(d.startDate) < new Date(d.floweringDate) &&
+        new Date(d.floweringDate) < new Date(d.harvestingDate)
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        const startMonth = new Date(d.startDate).getMonth();
+        startMonth >= 8 && startMonth <= 11
+
+- description: "Coltura primaverile — Mais, Veneto"
+  vars:
+    cropName: "Mais"
+    variety: ""
+    location: "Veneto"
+    year: "2025"
+    prevYear: "2024"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        d.startDate.startsWith('2025') && d.harvestingDate.startsWith('2025')
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        new Date(d.startDate) < new Date(d.floweringDate) &&
+        new Date(d.floweringDate) < new Date(d.harvestingDate)
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        const startMonth = new Date(d.startDate).getMonth();
+        startMonth >= 2 && startMonth <= 4
+
+- description: "Coltura perenne — Vite, Toscana"
+  vars:
+    cropName: "Vite"
+    variety: "Sangiovese"
+    location: "Toscana"
+    year: "2025"
+    prevYear: "2024"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        d.startDate.startsWith('2025')
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        new Date(d.startDate) < new Date(d.floweringDate) &&
+        new Date(d.floweringDate) < new Date(d.harvestingDate)
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        const startMonth = new Date(d.startDate).getMonth();
+        startMonth >= 1 && startMonth <= 3
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        const harvestMonth = new Date(d.harvestingDate).getMonth();
+        harvestMonth >= 7 && harvestMonth <= 10
+
+- description: "Coltura perenne — Olivo, Puglia"
+  vars:
+    cropName: "Olivo"
+    variety: ""
+    location: "Puglia"
+    year: "2025"
+    prevYear: "2024"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        new Date(d.startDate) < new Date(d.floweringDate) &&
+        new Date(d.floweringDate) < new Date(d.harvestingDate)
+    - type: javascript
+      value: >
+        const d = JSON.parse(output);
+        const harvestMonth = new Date(d.harvestingDate).getMonth();
+        harvestMonth >= 8 && harvestMonth <= 11

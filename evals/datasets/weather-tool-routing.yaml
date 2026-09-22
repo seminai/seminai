@@ -1,0 +1,122 @@
+# Layer 3 — Weather Tool Routing
+# Tests that the LLM picks the right Open-Meteo tool given natural prompts.
+#
+# Outputs from the provider follow the pattern "TOOL_SELECTED: <tool_name>" or
+# "NO_TOOL: <text>". A model that asks the user for clarification (e.g.
+# coordinates) is acceptable for ambiguous prompts; for unambiguous prompts the
+# correct meteo tool must be invoked.
+
+# ─── evaluate_treatment_window: trattamento con tutto il contesto necessario ───
+
+- description: 'Trattamento con jobId + plannedDate espliciti'
+  vars:
+    input_prompt: >
+      Per il job ID "ABC-123-2026" programmato il 2026-05-15 alle 08:00, valuta
+      se la finestra meteo è adatta. Hai tutto il contesto necessario.
+  assert:
+    - type: contains
+      value: 'evaluate_treatment_window'
+
+- description: 'Trattamento con fieldId + plannedDate espliciti'
+  vars:
+    input_prompt: >
+      Valuta la finestra di applicazione meteo per il field con id
+      "field-uuid-789" pianificata per 2026-05-16T07:00:00. Procedi senza
+      richiedere altri dati.
+  assert:
+    - type: contains
+      value: 'evaluate_treatment_window'
+
+- description: 'Verifica rischi meteo trattamento job specifico'
+  vars:
+    input_prompt: >
+      Il job "JOB-2026-04-15" è schedulato per le prossime 24 ore. Verifica i
+      rischi meteo (pioggia, vento, gelate). jobId fornito, procedi direttamente.
+  assert:
+    - type: contains
+      value: 'evaluate_treatment_window'
+
+- description: 'Finestra ottimale per job esistente'
+  vars:
+    input_prompt: >
+      Qual è la finestra ottimale meteo per il trattamento del job
+      "F1-2026-04-15" previsto venerdì 2026-05-15? Hai jobId e data, valuta.
+  assert:
+    - type: contains
+      value: 'evaluate_treatment_window'
+
+# ─── get_weather_forecast: previsioni con coordinate esplicite ───
+
+- description: 'Previsioni meteo per coordinate esplicite, no contesto job'
+  vars:
+    input_prompt: >
+      Quali sono le previsioni meteo orarie per latitudine 45.4 e longitudine
+      11.9 nei prossimi 3 giorni? Non c'è un job di riferimento, restituisci il forecast.
+  assert:
+    - type: contains
+      value: 'get_weather_forecast'
+
+- description: 'Forecast vento per coordinate'
+  vars:
+    input_prompt: >
+      Mostrami previsioni di vento orarie per le coordinate 45.4064, 11.8768
+      nelle prossime 48 ore. Sono dati grezzi per analisi, non legati a un trattamento.
+  assert:
+    - type: contains
+      value: 'get_weather_forecast'
+
+- description: 'Probabilità pioggia per coordinate dirette'
+  vars:
+    input_prompt: >
+      Probabilità di pioggia oraria per latitudine 45.0, longitudine 11.0 nelle
+      prossime 48 ore. Solo forecast meteo, nessun trattamento associato.
+  assert:
+    - type: contains
+      value: 'get_weather_forecast'
+
+- description: 'Forecast generico località + coordinate'
+  vars:
+    input_prompt: >
+      Che meteo è previsto a Verona (45.4384, 10.9916) nei prossimi 2 giorni?
+      Solo forecast generico.
+  assert:
+    - type: contains
+      value: 'get_weather_forecast'
+
+# ─── Casi che ammettono ragionamento "raccogli contesto prima" ───
+
+- description: 'Trattamento campo con nome + meteo: tool meteo OK, oppure context discovery valido'
+  vars:
+    input_prompt: >
+      Programma trattamento per il campo Vigna Nord dopodomani mattina. Valuta meteo.
+  assert:
+    - type: javascript
+      value: "output.includes('evaluate_treatment_window') || output.includes('list_user_fields') || output.includes('list_production_units') || output.includes('list_user_companies')"
+
+- description: 'Domanda meteo generica senza contesto: meteo tool oppure NO_TOOL con richiesta coordinate'
+  vars:
+    input_prompt: >
+      Sto valutando se trattare il vigneto questa settimana. C'è rischio pioggia?
+  assert:
+    - type: javascript
+      value: "output.includes('evaluate_treatment_window') || output.includes('get_weather_forecast') || (output.includes('NO_TOOL') && /coordinat|locali|comune|campo|field/i.test(output))"
+
+- description: 'Domanda generica meteo+agricoltura: meteo tool oppure richiesta location'
+  vars:
+    input_prompt: >
+      Il meteo dei prossimi giorni è adatto per attività in campo?
+  assert:
+    - type: javascript
+      value: "output.includes('evaluate_treatment_window') || output.includes('get_weather_forecast') || (output.includes('NO_TOOL') && /coordinat|locali|comune|campo|field/i.test(output))"
+
+# ─── Multi-Field: trattamento su Job che tocca più campi ───
+
+- description: 'Job multi-field: deve comunque scegliere evaluate_treatment_window'
+  vars:
+    input_prompt: >
+      Il job "MULTI-2026-05" copre più campi (Vigna A, Vigna B, Vigna C). Valuta
+      la finestra di trattamento per domani 2026-05-15 alle 08:00. Procedi:
+      jobId fornito, il tool gestisce i multi-campi.
+  assert:
+    - type: contains
+      value: 'evaluate_treatment_window'

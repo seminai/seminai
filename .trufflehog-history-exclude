@@ -1,0 +1,3 @@
+# Deterministic local development DSNs audited separately by gitleaks and the privacy scanner.
+(^|.*/)backend/\.env\.example$
+(^|.*/)backend/docker-compose\.yml$

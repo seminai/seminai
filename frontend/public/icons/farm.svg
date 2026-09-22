@@ -1,0 +1,25 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Casa principale (dietro al silos) -->
+  <path d="M30 56L48 40L66 56V72H30V56Z" fill="#2F5C3F"/>
+  
+  <!-- Tetto della casa -->
+  <path d="M48 36L26 56H30L48 40L66 56H70L48 36Z" fill="#85BFA1"/>
+
+  <!-- Porta e finestre -->
+  <rect x="44" y="60" width="8" height="12" rx="1" fill="#EEF5ED"/>
+  <rect x="34" y="60" width="6" height="6" rx="1" fill="#EEF5ED"/>
+  <rect x="56" y="60" width="6" height="6" rx="1" fill="#EEF5ED"/>
+  
+  <!-- Silos (in primo piano) -->
+  <g>
+    <!-- Corpo silos -->
+    <rect x="62" y="42" width="12" height="32" rx="3" fill="#85BFA1"/>
+    <!-- Cupola silos -->
+    <path d="M62 42C62 38 68 34 74 38V42H62Z" fill="#2F5C3F"/>
+    <!-- Dettaglio linea verticale -->
+    <path d="M68 44V72" stroke="#2F5C3F" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Linea del terreno -->
+  <path d="M20 72H86" stroke="#85BFA1" stroke-width="3" stroke-linecap="round"/>
+</svg>

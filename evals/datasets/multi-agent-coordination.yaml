@@ -1,0 +1,76 @@
+# Layer 6 — Multi-Agent Coordination
+# Tests agent behavior when informed about other active agents.
+# The system prompt is augmented with a [MULTI-AGENT CONTEXT] block.
+
+- description: "Altro agente sta pianificando — deve informare l'utente"
+  vars:
+    input_prompt: "Pianifica i trattamenti per il vigneto nord."
+    multi_agent_context: >
+      [MULTI-AGENT CONTEXT] Un altro agente (thread abc-123) sta attualmente
+      pianificando trattamenti sulle stesse unità produttive del vigneto nord.
+      Stato: 'planning'. Risorse occupate: UP-001, UP-002.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should inform the user that another agent is already
+        planning treatments on the same production units. It should
+        either wait, ask the user how to proceed, or propose working
+        on different production units.
+
+- description: "Contesto scoperto da altro agente — deve riutilizzare"
+  vars:
+    input_prompt: "Quali prodotti ha la mia azienda?"
+    multi_agent_context: >
+      [MULTI-AGENT CONTEXT] Un altro agente ha già scoperto che l'utente
+      ha l'azienda 'Agri Toscana' (ID: company-456) con 15 prodotti nel
+      magazzino. Questi dati sono disponibili nella working memory condivisa.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should acknowledge the shared context and reference
+        the already-discovered company data rather than making a new
+        API call to list companies.
+
+- description: "Conflitto su stesse UP — deve proporre alternativa"
+  vars:
+    input_prompt: "Crea i job di trattamento per le unità produttive del vigneto."
+    multi_agent_context: >
+      [MULTI-AGENT CONTEXT] ATTENZIONE: Le unità produttive UP-001 e UP-002
+      sono attualmente bloccate da un altro agente (thread xyz-789) che sta
+      eseguendo un piano di trattamento. Lock scade tra 3 minuti.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should NOT proceed with creating jobs on locked resources.
+        It should either wait for the lock to expire, ask the user to
+        confirm proceeding despite the conflict, or work on other
+        non-locked production units.
+
+- description: "Dashboard multi-agente — deve descrivere stato agenti"
+  vars:
+    input_prompt: "Cosa stanno facendo i miei altri agenti?"
+    multi_agent_context: >
+      [MULTI-AGENT CONTEXT] Agenti attivi per questo utente:
+      - Thread abc-123: stato 'executing_tool', tool corrente 'calculate_dosage', 5 step completati
+      - Thread def-456: stato 'awaiting_approval', tool pendente 'create_treatment_jobs'
+      - Thread ghi-789: stato 'idle', nessuna attività in corso
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should provide a clear summary of all active agents,
+        their states, and what they are doing. It should mention that
+        one agent is awaiting approval for job creation.
+
+- description: "Coordinazione implicita — evitare lavoro duplicato"
+  vars:
+    input_prompt: "Verifica la conformità dei trattamenti."
+    multi_agent_context: >
+      [MULTI-AGENT CONTEXT] Un altro agente (thread abc-123) ha appena
+      completato una verifica conformità sulle stesse unità produttive
+      5 minuti fa. Risultato: 2 violazioni trovate su prodotti con rame.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should reference the recent conformity check results
+        and ask the user if they want a new check or if they want to
+        review the existing violations found by the other agent.

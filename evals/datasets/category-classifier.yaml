@@ -1,0 +1,107 @@
+# P1 — CategoryClassifierService: file routing for chat extraction.
+# Provider calls CategoryClassifierService.classifyAuto with real LLM.
+
+- description: "CSV agricultural with foglio/particella"
+  vars:
+    fileContent: "Foglio;Particella;Comune\n10;25;Ravenna"
+    mimeType: "text/csv"
+    fileName: "campi.csv"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).category === 'agricultural'"
+
+- description: "CSV stock with product + quantity + ddt"
+  vars:
+    fileContent: "Nome prodotto;Quantità stock;Numero DDT;Data DDT\nUrea;10;DDT-22;2026-03-01"
+    mimeType: "text/csv"
+    fileName: "magazzino.csv"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).category === 'stock'"
+
+- description: "PDF invoice with strong text clues"
+  vars:
+    fileContent: "pdf"
+    mimeType: "application/pdf"
+    fileName: "fattura.pdf"
+    pdfText: "FATTURA imponibile totale documento partita iva codice fiscale"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).category === 'invoice'"
+
+- description: "PDF DDT with transport clues"
+  vars:
+    fileContent: "pdf"
+    mimeType: "application/pdf"
+    fileName: "ddt.pdf"
+    pdfText: "Documento di Trasporto con destinazione merce e DDT 123"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).category === 'ddt'"
+
+- description: "PDF unknown content falls back to agricultural"
+  vars:
+    fileContent: "pdf"
+    mimeType: "application/pdf"
+    fileName: "doc.pdf"
+    pdfText: "Documento senza indicatori chiari"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).category === 'agricultural'"
+
+- description: "PDF invoice filename-only edge case"
+  vars:
+    fileContent: "pdf"
+    mimeType: "application/pdf"
+    fileName: "fattura_cliente_2026.pdf"
+    pdfText: "Allegato generico senza intestazione fiscale"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).category === 'invoice'"
+
+- description: "ZIP shapefile magic bytes"
+  vars:
+    preset: "zip-shapefile"
+    mimeType: "application/zip"
+    fileName: "campi.zip"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).category === 'fields'"
+
+- description: "XML invoice"
+  vars:
+    fileContent: "<xml/>"
+    mimeType: "application/xml"
+    fileName: "fattura.xml"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).category === 'invoice'"
+
+- description: "Image scan routed to invoice"
+  vars:
+    fileContent: "img"
+    mimeType: "image/png"
+    fileName: "scan.png"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).category === 'invoice'"
+
+- description: "PDF piano colturale agricultural document"
+  vars:
+    fileContent: "pdf"
+    mimeType: "application/pdf"
+    fileName: "piano_colturale.pdf"
+    pdfText: "Piano colturale aziendale appezzamento coltura varieta superficie ettari campagna 2025"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).category === 'agricultural'"

@@ -1,0 +1,35 @@
+# Layer 7 — Agronomic Guardrails (behavioral)
+# Verifies that the agent, given the system prompt, (a) intends to run the
+# deterministic agronomic validation (dose max / PHI / revoche) before creating
+# jobs, and (b) when a BLOCKING violation is reported, presents it and requires
+# an EXPLICIT per-code override instead of silently bypassing it.
+#
+# NOTE: the provider runs a single completion (no real tool execution), so this
+# tests the agent's STATED behavior. The deterministic gate itself is covered by
+# the integration test create-jobs-agronomic-gate.integration.test.ts.
+#
+# Uses multi-turn.provider.ts: cases without `_conversation` behave as
+# single-turn; cases with `_conversation` replay prior turns.
+
+description: "Dosage ReAct Agent — Agronomic Guardrails Eval (Layer 7)"
+
+prompts:
+  - "{{question}}"
+
+providers:
+  - id: file://./providers/multi-turn.provider.ts
+    label: "GPT-4o + Agronomic Guardrails"
+    config:
+      model: gpt-4o
+      temperature: 0
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+  assert:
+    - type: llm-rubric
+      value: "The response is written in Italian language."
+    - type: javascript
+      value: "output.length > 50"
+
+tests: file://./datasets/agronomic-guardrails.yaml

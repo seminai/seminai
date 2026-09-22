@@ -1,0 +1,91 @@
+# Layer 4 — Flow C: Azienda → Unità Produttive → Operazioni
+# Multi-turn tests for production unit discovery and management.
+# Verifies: parameter echo for dates, workflow understanding.
+
+# ── Scenario C1: Discovery → PU listing → Date update ──
+
+- description: "Flow C1 — T1: Scoperta aziende"
+  vars:
+    question: "Quali aziende ho?"
+  metadata:
+    conversationId: flow-c1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should indicate it will retrieve the user's companies.
+        It must NOT fabricate company data.
+
+- description: "Flow C1 — T2: Elenco unità produttive"
+  vars:
+    question: "Mostrami le unità produttive."
+  metadata:
+    conversationId: flow-c1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to see their production
+        units. It should convey intent to list them.
+        It must NOT invent production unit data.
+
+- description: "Flow C1 — T3: Aggiornamento date fenologiche"
+  vars:
+    question: >
+      Aggiorna le date della prima unità produttiva:
+      inizio 1 marzo, fioritura 15 maggio, raccolta 15 settembre,
+      fine ciclo 30 novembre.
+  metadata:
+    conversationId: flow-c1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand this is a request to update phenological
+        dates for a production unit. It should acknowledge the user's intent
+        to update dates. It must NOT claim the dates have been
+        successfully updated and saved.
+    - type: not-icontains
+      value: "aggiornate con successo"
+
+# ── Scenario C2: Discovery → Filtered PU → Treatment planning ──
+
+- description: "Flow C2 — T1: Scoperta aziende"
+  vars:
+    question: "Le mie aziende."
+  metadata:
+    conversationId: flow-c2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should indicate it will retrieve the user's companies.
+        It must NOT fabricate company data.
+
+- description: "Flow C2 — T2: Unità produttive filtrate per coltura"
+  vars:
+    question: "Mostrami solo le unità produttive di vite."
+  metadata:
+    conversationId: flow-c2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to see production units
+        filtered by grapevine (vite) crop type. Any response that mentions
+        "vite" and indicates intent to retrieve or check production units
+        is acceptable. It must NOT invent data.
+    - type: icontains
+      value: "vite"
+
+- description: "Flow C2 — T3: Pianificazione trattamento su UP"
+  vars:
+    question: >
+      Crea un piano di trattamento per queste unità produttive
+      per la stagione 2026.
+  metadata:
+    conversationId: flow-c2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to plan treatments for
+        the 2026 season. It should mention gathering information about
+        products, phenological dates, or compliance checks before planning.
+        It must NOT present a complete fabricated plan.
+    - type: javascript
+      value: "output.length > 80"

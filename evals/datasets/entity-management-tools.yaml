@@ -1,0 +1,59 @@
+# Deep dataset — Entity Management Tools
+# Tests onboarding flows, file import edge cases, and entity creation.
+
+- description: "Onboarding completo da file Excel"
+  vars:
+    input_prompt: >
+      Ho caricato un file Excel con tutti i dati della mia azienda agricola,
+      campi e colture. Estrailo e importa tutto nel sistema.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should propose a two-step approach: first EXTRACT for
+        preview, then IMPORT after user confirmation. It must NOT import
+        directly without preview.
+
+- description: "Shapefile multi-file"
+  vars:
+    input_prompt: >
+      Ho caricato uno shapefile con i confini dei miei campi (file .shp, .dbf, .prj).
+      Importa i campi con le coordinate catastali.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should recognize the shapefile format and explain it will
+        extract geographic boundaries. It should mention cadastral references.
+
+- description: "Creazione azienda con dati incompleti"
+  vars:
+    input_prompt: >
+      Devo registrare la mia azienda. Si chiama 'Azienda Verde' ed è a Firenze.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should ask for missing required fields like VAT number,
+        fiscal code (CUAA), address, and other mandatory data before
+        proceeding with creation.
+
+- description: "Import fattura magazzino"
+  vars:
+    input_prompt: >
+      Ho caricato una fattura di acquisto prodotti fitosanitari.
+      Importa i prodotti nel magazzino dell'azienda.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should recognize this as a warehouse/invoice import,
+        propose extraction first, and mention that stock import will
+        require approval.
+
+- description: "Aggiornamento unità produttive — date ciclo"
+  vars:
+    input_prompt: >
+      Le unità produttive del vigneto nord hanno il ciclo colturale sbagliato.
+      Il semina è il 15 marzo e la raccolta il 30 settembre.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should propose to update the production units' crop cycle
+        dates and mention that this modification requires user approval.

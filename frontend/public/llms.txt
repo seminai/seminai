@@ -1,0 +1,24 @@
+# Seminai
+
+> Seminai is an AI-assisted agronomic management platform for Italian agriculture. It turns invoices, DDT (transport documents), field notebooks and agronomic disciplinari (compliance rulebooks) into structured data via OCR and domain-specialized language models, and gives agronomists and farms a chat agent for dosage, compliance and field operations.
+
+Seminai serves two audiences: agricultural businesses and agronomist consultants who need document automation and compliance support, and developers/software houses who integrate document extraction via API.
+
+## Product
+
+- [Try Seminai](https://app.seminai.app/try-seminai): free invoice-to-Excel extraction for fitofarmaci (phytosanitary product) invoices.
+- [Seminai App](https://app.seminai.app): full platform — document upload, AI chat agent, job tracking, compliance and rules marketplace.
+
+## Knowledge Hub
+
+- [Rules catalog](https://app.seminai.app/hub/rules): public catalog of agronomic disciplinari and best-practice rules shared by the Seminai community, filterable by category and region.
+- [Blog](https://app.seminai.app/hub/blog): articles on document intelligence, agronomic compliance and API integration.
+
+## Developer
+
+- [Developer portal](http://localhost:8081/developer): API keys, usage dashboard, OpenAPI documentation.
+- [OCR landing & API docs](https://seminai.github.io/seminai-be-v2/): product overview and Extraction API usage.
+
+## Contact
+
+- Email: info@seminai.tech

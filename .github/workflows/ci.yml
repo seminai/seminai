@@ -1,0 +1,60 @@
+name: ci
+
+on:
+  push:
+    branches: [main, feat/local-first-monorepo]
+  pull_request:
+
+jobs:
+  check:
+    name: lint-test-privacy
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-bookworm
+        env:
+          POSTGRES_USER: seminai
+          POSTGRES_PASSWORD: seminai
+          POSTGRES_DB: seminai
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U seminai"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-bookworm
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      LLM_GATEWAY: ollama
+      OLLAMA_BASE_URL: http://127.0.0.1:11434
+      OPENAI_API_KEY: ''
+      OPENROUTER_API_KEY: ''
+      CLAUDE_API_KEY: ''
+      DATABASE_URL: postgresql://seminai:seminai@127.0.0.1:5432/seminai?schema=public&sslmode=disable
+      DIRECT_URL: postgresql://seminai:seminai@127.0.0.1:5432/seminai?schema=public&sslmode=disable
+      REDIS_URL: redis://127.0.0.1:6379
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run codegen
+      - run: npm run build
+      - run: npm run type-check
+      - run: npm run lint
+      - run: npm run lint:structure
+      - run: npm test
+      - run: npm run openapi:drift
+      - run: npm run privacy:scan:full
+      - run: npm run test:integration:fast -- --silent --detectOpenHandles
+      - run: npm run test:integration:public -- --silent --detectOpenHandles
+      - run: echo "Hosted GitHub Actions remain unverified until a green run is recorded."

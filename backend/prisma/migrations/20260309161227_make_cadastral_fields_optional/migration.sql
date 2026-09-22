@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Field" ALTER COLUMN "superficieCatastaleMq" DROP NOT NULL,
+ALTER COLUMN "sezione" DROP NOT NULL,
+ALTER COLUMN "foglio" DROP NOT NULL,
+ALTER COLUMN "particella" DROP NOT NULL,
+ALTER COLUMN "address" DROP NOT NULL;

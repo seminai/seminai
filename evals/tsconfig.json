@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "baseUrl": "..",
+    "paths": {
+      "@prisma/client": ["backend/src/generated/prisma/client"]
+    },
+    "types": ["node"]
+  },
+  "include": ["./**/*.ts", "../backend/src/types/**/*.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

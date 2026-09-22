@@ -1,0 +1,3 @@
+export { PiemonteColumnMapping, PIEMONTE_COLUMN_MAPPING } from './piemonte_file_structure.part-01-piemonte-column-mapping';
+export { isPiemonteFormat, parseUsoSuoloFromOccupazione, extractCropCode, parsePiemonteDate, parsePiemonteSuperficie, parseComuneDescrizione, parseUnitaProduttiva, isNonAgriculturalUse, isOrganicFromBio } from './piemonte_file_structure.part-02-is-piemonte-format';
+export { getRegioneFromProvincia, getRegioneFromComune, parseEpocaSemina, parseTipoSemina, parseZonaAltimetrica, isIrrigable, parseRotazioneColturale } from './piemonte_file_structure.part-03-get-regione-from-provincia';

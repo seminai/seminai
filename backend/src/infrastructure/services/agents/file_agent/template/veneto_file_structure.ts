@@ -1,0 +1,5 @@
+export { VenetoColumnMapping, VENETO_COLUMN_MAPPING } from './veneto_file_structure.part-01-veneto-column-mapping';
+export { isVenetoFormat, parseUsoSuoloFromOccupazione, extractCropCode, parseVenetoDate, parseVenetoSuperficie, parseComuneDescrizione, parseUnitaProduttiva } from './veneto_file_structure.part-02-is-veneto-format';
+export { isNonAgriculturalUse, isOrganicFromBio, getRegioneFromProvincia, getRegioneFromComune, parseEpocaSemina, parseTipoSemina, parseZonaAltimetrica, isIrrigable, parseRotazioneColturale, VenetoAVEPAColumnMapping } from './veneto_file_structure.part-03-is-non-agricultural-use';
+export { VENETO_AVEPA_COLUMN_MAPPING, PianoUtilizzoMetadata, isVenetoAVEPAFormat, extractPianoUtilizzoMetadata, findAVEPAHeaderRowIndex, parsePacCodeFromColumn, parsePrimaColturaColumn } from './veneto_file_structure.part-04-veneto-avepa-column-mapping';
+export { parseAVEPASuperficie, isValidAVEPARow, isAVEPANonAgriculturalUse, findPacCodeColumnIndex } from './veneto_file_structure.part-05-parse-avepasuperficie';

@@ -1,0 +1,17 @@
+.git
+.gitignore
+node_modules
+dist
+dist-ssr
+.tanstack
+.env
+.env.*
+!.env.production
+*.log
+.DS_Store
+.vscode
+.idea
+README.md
+CLAUDE.md
+src/generated
+src/routeTree.gen.ts

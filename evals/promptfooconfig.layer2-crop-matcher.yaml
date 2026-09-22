@@ -1,0 +1,30 @@
+# Layer 2 — Crop Matcher: Task-specific prompt evaluation.
+# Tests the crop-to-product matching prompt from dosage_agent/llmCropMatcher.ts.
+
+description: "Dosage Agent — Crop Matcher Eval (Layer 2)"
+
+prompts:
+  - "unused-prompt-vars-injected-by-provider"
+
+providers:
+  - id: file://./providers/task-prompt.provider.ts
+    label: "GPT-4o-mini — Crop Matcher"
+    config:
+      model: gpt-4o-mini
+      temperature: 0
+      maxTokens: 500
+      promptFile: prompts/crop-matcher.txt
+
+  - id: file://./providers/task-prompt.provider.ts
+    label: "GPT-4o — Crop Matcher"
+    config:
+      model: gpt-4o
+      temperature: 0
+      maxTokens: 500
+      promptFile: prompts/crop-matcher.txt
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+
+tests: file://./datasets/crop-matcher.yaml

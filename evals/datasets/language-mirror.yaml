@@ -1,0 +1,91 @@
+# Language mirroring tests — verify the agent responds in the SAME language
+# as the user's input (IT or EN) per the new soul-prompt directive.
+# Default behavior on ambiguous/very short input is Italian.
+
+- description: "IT input → IT output (richiesta dosaggio)"
+  vars:
+    input_prompt: >
+      Devo trattare il mio vigneto contro la peronospora.
+      Quale dosaggio di rame mi consigli per ettaro?
+  assert:
+    - type: llm-rubric
+      value: >
+        The response is written entirely in Italian.
+        It must NOT contain English sentences or paragraphs.
+        Technical product names (e.g. "rame", "Bordeaux") may stay in their original form.
+
+- description: "EN input → EN output (dosage request)"
+  vars:
+    input_prompt: >
+      I need to treat my vineyard against downy mildew.
+      What copper dosage per hectare would you recommend?
+  assert:
+    - type: llm-rubric
+      value: >
+        The response is written entirely in English.
+        It must NOT contain Italian sentences or paragraphs.
+        Technical terms like "rame metallico" or product names may stay in Italian
+        (this is correct behavior per the prompt's "do not translate technical terms" rule),
+        but the surrounding explanatory prose must be English.
+
+- description: "EN input → EN output (compliance question)"
+  vars:
+    input_prompt: >
+      Is captan at 2.5 kg/ha on apple compliant with the Emilia-Romagna 2025
+      regional protocol? Please explain how to verify.
+  assert:
+    - type: llm-rubric
+      value: >
+        The response is written in English. The agent should explain that
+        verifying compliance requires checking BOTH the product label and
+        the regional disciplinary, and that it needs to consult official sources.
+        Italian-only response is a FAILURE.
+
+- description: "EN input → EN output (regulatory question, was previously IT-locked)"
+  vars:
+    input_prompt: >
+      What is the maximum dose of copper on grapes according to EU regulation?
+  assert:
+    - type: llm-rubric
+      value: >
+        The response is written in English (mirroring the user's input language).
+        The agent should engage with the regulatory question, not decline it.
+        It is acceptable to mention the EU ~4 kg Cu/ha/year limit, offer to verify
+        with tools, or give general guidance. A response in Italian is a FAILURE.
+
+- description: "Default IT — messaggio cortissimo ambiguo"
+  vars:
+    input_prompt: "ok grazie"
+  assert:
+    - type: llm-rubric
+      value: >
+        The response is written in Italian. (The user sent a very short message
+        with the Italian word "grazie", which the agent should recognize as
+        Italian and respond accordingly. Response length is irrelevant — only
+        the LANGUAGE of the response matters: it must be Italian.)
+
+- description: "EN input agronomica complessa → EN output con termini tecnici preservati"
+  vars:
+    input_prompt: >
+      Calculate the dosage of copper sulfate for 5 hectares of vineyard
+      assuming a treatment plan from March to September. The product is
+      "Rame Caffaro Blu" — should I worry about the EU 4 kg/ha annual limit?
+  assert:
+    - type: llm-rubric
+      value: >
+        The response is in English. Product names ("Rame Caffaro Blu") and
+        regulatory references ("disciplinare", "ossicloruro di rame") MAY appear
+        in their original Italian form per the no-translate rule. The
+        EXPLANATORY PROSE must be English. Italian explanatory prose = FAILURE.
+
+- description: "Mixed EN/IT prevalence EN → EN output"
+  vars:
+    input_prompt: >
+      Hi, I have a vineyard in Emilia-Romagna, can you help me check if
+      my treatment with rame metallico complies with the regional protocol?
+  assert:
+    - type: llm-rubric
+      value: >
+        The response is in English (English markers dominate the input).
+        Italian technical terms (rame metallico, disciplinare) may be preserved.
+        Italian explanatory prose = FAILURE.

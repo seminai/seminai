@@ -1,0 +1,67 @@
+# Layer 2 — Product Selection: tests the LLM product filtering prompt.
+# Validates correct filtering of products based on priority targets.
+
+- description: "Filtro semplice — target peronospora, include solo antiperonosporici"
+  vars:
+    cropName: "Vite"
+    variety: "Sangiovese"
+    priorityTargets: "peronospora"
+    agronomicNotes: ""
+    productList: >
+      1. Rame Caffaro Blu (Fungicida, ossicloruro di rame) - Target: peronospora, batteriosi
+      2. Zolfo Bagnabile (Fungicida, zolfo) - Target: oidio
+      3. Ridomil Gold MZ (Fungicida, metalaxil-M + mancozeb) - Target: peronospora
+      4. Confidor (Insetticida, imidacloprid) - Target: cicaline, afidi
+      5. Mancozeb 80 WP (Fungicida, mancozeb) - Target: peronospora, alternaria
+  assert:
+    - type: is-json
+    - type: javascript
+      value: >
+        const r = JSON.parse(output);
+        r.selectedIndices.includes(1) && r.selectedIndices.includes(3) && r.selectedIndices.includes(5)
+    - type: javascript
+      value: >
+        const r = JSON.parse(output);
+        !r.selectedIndices.includes(2) && !r.selectedIndices.includes(4)
+    - type: javascript
+      value: >
+        const r = JSON.parse(output);
+        r.excludedProducts && r.excludedProducts.length >= 2
+
+- description: "Tutti i prodotti coprono il target — nessuna esclusione"
+  vars:
+    cropName: "Melo"
+    variety: ""
+    priorityTargets: "ticchiolatura"
+    agronomicNotes: ""
+    productList: >
+      1. Delan Pro (Fungicida, ditianon) - Target: ticchiolatura
+      2. Captan 80 WG (Fungicida, captano) - Target: ticchiolatura
+      3. Mancozeb 80 WP (Fungicida, mancozeb) - Target: ticchiolatura, alternaria
+  assert:
+    - type: is-json
+    - type: javascript
+      value: >
+        const r = JSON.parse(output);
+        r.selectedIndices.length === 3
+
+- description: "Nota esclusione — evitare rame"
+  vars:
+    cropName: "Vite"
+    variety: ""
+    priorityTargets: "peronospora"
+    agronomicNotes: "evitare prodotti a base di rame"
+    productList: >
+      1. Rame Caffaro Blu (Fungicida, ossicloruro di rame) - Target: peronospora, batteriosi
+      2. Ridomil Gold MZ (Fungicida, metalaxil-M + mancozeb) - Target: peronospora
+      3. Poltiglia Bordolese (Fungicida, solfato di rame) - Target: peronospora
+  assert:
+    - type: is-json
+    - type: javascript
+      value: >
+        const r = JSON.parse(output);
+        r.selectedIndices.includes(2)
+    - type: javascript
+      value: >
+        const r = JSON.parse(output);
+        !r.selectedIndices.includes(1) && !r.selectedIndices.includes(3)

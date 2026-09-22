@@ -1,0 +1,16 @@
+{
+  "name": "@seminai/evals",
+  "version": "0.1.0-alpha.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "tsx scripts/generate-prompt.ts",
+    "eval": "npm run generate && NODE_OPTIONS='--import tsx' promptfoo eval -c promptfooconfig.yaml",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "promptfoo": "^0.120.27",
+    "tsx": "^4.21.0",
+    "typescript": "~5.9"
+  }
+}

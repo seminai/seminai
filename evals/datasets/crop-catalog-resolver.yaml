@@ -1,0 +1,54 @@
+# P1 — crop-catalog-resolver: Melo vs Melone and AGEA label resolution.
+
+- description: "Melo must map to Malus domestica, not melone"
+  vars:
+    cropName: "MELO"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).species.toLowerCase().includes('malus')"
+    - type: javascript
+      value: "!JSON.parse(output).species.toLowerCase().includes('cucumis melo')"
+
+- description: "Melone maps to Cucumis melo"
+  vars:
+    cropName: "MELONE"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).species.toLowerCase().includes('cucumis melo')"
+
+- description: "AGEA label COLZA maps to Brassica napus"
+  vars:
+    cropName: "COLZA"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).species.toLowerCase().includes('brassica napus')"
+
+- description: "Frumento maps to Triticum"
+  vars:
+    cropName: "GRANO (FRUMENTO) TENERO"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).species.toLowerCase().includes('triticum')"
+
+- description: "Latin binomial already resolved — skipped by resolver"
+  vars:
+    cropName: "Malus domestica"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).skipped === true"
+
+- description: "Melo with variety stays apple"
+  vars:
+    cropName: "MELO"
+    variety: "Golden Delicious"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).species.toLowerCase().includes('malus')"
+    - type: javascript
+      value: "!JSON.parse(output).species.toLowerCase().includes('cucumis')"

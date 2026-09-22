@@ -1,0 +1,7 @@
+(^|.*/)\.git/.*
+(^|.*/)node_modules/.*
+(^|.*/)dist/.*
+(^|.*/)coverage/.*
+(^|.*/)backend/src/generated/.*
+(^|.*/)frontend/src/generated/.*
+(^|.*/)frontend/src/routeTree\.gen\.ts$

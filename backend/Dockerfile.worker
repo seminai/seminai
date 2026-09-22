@@ -1,0 +1,45 @@
+FROM oven/bun:1.2-alpine
+
+# Build-time dependencies (canvas needs native deps + Node headers to avoid remote download)
+# poppler-utils provides pdftoppm for PDF to image conversion (needed for OCR with GPT Vision)
+RUN apk add --no-cache \
+  build-base \
+  git \
+  python3 \
+  cairo-dev \
+  jpeg-dev \
+  pango-dev \
+  giflib-dev \
+  pkgconf \
+  openssl \
+  nodejs-dev \
+  pixman-dev \
+  freetype-dev \
+  libpng-dev \
+  poppler-utils
+
+WORKDIR /usr/src/app
+
+# Copy package files
+COPY package*.json ./
+COPY prisma ./prisma/
+COPY prisma.config.ts ./
+
+# Install dependencies
+RUN bun install
+
+# Copy source code
+COPY . .
+
+# Generate Prisma Client
+RUN bunx prisma generate
+
+# Build TypeScript
+RUN bunx tsc
+
+# Expose port (for health checks if needed)
+EXPOSE 8080
+
+# Start the worker process
+CMD ["bun", "./dist/infrastructure/worker/worker.js"]
+

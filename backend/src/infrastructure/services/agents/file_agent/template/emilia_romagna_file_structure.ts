@@ -1,0 +1,2 @@
+export { EmiliaRomagnaColumnMapping, EMILIA_ROMAGNA_COLUMN_MAPPING, isEmiliaRomagnaFormat } from './emilia_romagna_file_structure.part-01-emilia-romagna-column-mapping';
+export { parseUsoSuoloFromOccupazione, parseEmiliaRomagnaDate, parseEmiliaRomagnaSuperficie, isNonAgriculturalUse, isSauRow, isOrganicFromBiologico, normalizeRegione, normalizeParticella, normalizeFoglio } from './emilia_romagna_file_structure.part-02-parse-uso-suolo-from-occupazione';

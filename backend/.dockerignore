@@ -1,0 +1,45 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+coverage
+*.log
+
+# Test files
+/test
+*.test.ts
+*.spec.ts
+/integration-test
+
+# Development files
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+
+# Documentation
+README.md
+*.md
+!ASYNC_JOBS_SETUP.md
+
+# Dataset and extraction
+/extraction
+/ground-test
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Temporary files
+*.tmp
+.DS_Store

@@ -1,0 +1,26 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sole -->
+  <circle cx="16" cy="16" r="3" fill="#85BFA1"/>
+  <path d="M16 8V4M16 28V24M8 16H4M28 16H24M23.5 23.5L26 26M8.5 8.5L6 6M8.5 23.5L6 26M23.5 8.5L26 6" stroke="#85BFA1" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Campo (colline curve) -->
+  <path d="M12 64C24 54 40 52 48 56C56 60 72 62 84 58V84H12V64Z" fill="#85BFA1"/>
+
+  <!-- Solchi arati con prospettiva -->
+  <path d="M20 64C24 72 24 80 24 84" stroke="#2F5C3F" stroke-width="3" stroke-linecap="round"/>
+  <path d="M32 62C36 70 36 80 36 84" stroke="#2F5C3F" stroke-width="3" stroke-linecap="round"/>
+  <path d="M44 60C48 70 48 80 48 84" stroke="#2F5C3F" stroke-width="3" stroke-linecap="round"/>
+  <path d="M56 60C60 70 60 80 60 84" stroke="#2F5C3F" stroke-width="3" stroke-linecap="round"/>
+  <path d="M68 60C72 70 72 80 72 84" stroke="#2F5C3F" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Alberi radicati sul terreno -->
+  <!-- Albero sinistra -->
+  <circle cx="28" cy="46" r="8" fill="#2F5C3F"/>
+  <rect x="27" y="46" width="2" height="10" rx="1" fill="#2F5C3F"/>
+  <!-- Albero centro -->
+  <circle cx="48" cy="44" r="8" fill="#2F5C3F"/>
+  <rect x="47" y="44" width="2" height="10" rx="1" fill="#2F5C3F"/>
+  <!-- Albero destra -->
+  <circle cx="68" cy="46" r="8" fill="#2F5C3F"/>
+  <rect x="67" y="46" width="2" height="10" rx="1" fill="#2F5C3F"/>
+</svg>

@@ -1,0 +1,30 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Testa (quasi attaccata) -->
+  <circle cx="48" cy="36" r="8" stroke="#2F5C3F" stroke-width="2" fill="none"/>
+
+  <!-- Corpo (busto) -->
+  <path d="M36 44C36 54 60 54 60 44" stroke="#2F5C3F" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+  <!-- Cappello di paglia -->
+  <!-- Tesa larga -->
+  <ellipse cx="48" cy="30" rx="10" ry="3" fill="#85BFA1"/>
+  <!-- Cupola -->
+  <path d="M42 27C42 25 44 23 48 23C52 23 54 25 54 27V30H42V27Z" fill="#2F5C3F"/>
+</svg>
+
+
+<!-- OLD -->
+<!-- <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Testa -->
+  <circle cx="48" cy="48" r="8" stroke="#2F5C3F" stroke-width="2" fill="none"/>
+
+  <!-- Corpo pieno (busto con spalle) -->
+  <path d="M36 68C36 56 60 56 60 68V72H36V68Z" fill="#85BFA1" stroke="#2F5C3F" stroke-width="2"/>
+
+  <!-- Cappello di paglia -->
+  <!-- Tesa -->
+  <ellipse cx="48" cy="39" rx="10" ry="3" fill="#85BFA1"/>
+  
+  <!-- Cupola attaccata -->
+  <path d="M42 35C42 33 44 31 48 31C52 31 54 33 54 35V39H42V35Z" fill="#2F5C3F"/>
+</svg> -->

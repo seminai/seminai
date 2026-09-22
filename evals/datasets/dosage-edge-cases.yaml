@@ -1,0 +1,79 @@
+# Layer 1 — Dosage ReAct Agent: edge case scenarios for the system prompt.
+# Tests more advanced and nuanced interactions.
+
+- description: "Contesto aziendale implicito — context discovery"
+  vars:
+    input_prompt: >
+      Devo pianificare i trattamenti per i miei campi, quali prodotti ho in magazzino?
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should recognize the user is referring to their own farm
+        context. Acceptable responses include: proceeding directly to
+        discover companies/products (e.g., "procedo a verificare"),
+        asking clarifying questions, or explaining intent to search.
+        Any response that acknowledges the user's context and moves
+        toward discovery is acceptable.
+        It must NOT fabricate specific company or product data.
+
+- description: "Domanda tecnica — PHI (Pre-Harvest Interval)"
+  vars:
+    input_prompt: >
+      Qual è il tempo di carenza del mancozeb su pomodoro?
+  assert:
+    - type: icontains
+      value: "carenza"
+    - type: llm-rubric
+      value: >
+        The agent should address the pre-harvest interval (tempo di carenza/PHI)
+        question as a legitimate agronomic topic.
+        It may provide general knowledge about mancozeb PHI or indicate
+        it needs to check the product label for the exact value.
+
+- description: "Richiesta ambigua su prodotto"
+  vars:
+    input_prompt: >
+      Posso usare il Prosper sulla vite?
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should recognize that the product name may be ambiguous
+        or need verification. It should explain it needs to search/verify
+        the product before giving advice. It must NOT fabricate compatibility data.
+
+- description: "Confronto prodotti — mancozeb vs metiram"
+  vars:
+    input_prompt: >
+      Per la ticchiolatura del melo, è meglio usare il mancozeb o il metiram?
+      Confrontali.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should attempt to compare the two active ingredients
+        in terms of their use against apple scab (ticchiolatura).
+        It may discuss mechanism of action, efficacy, or limitations.
+        It should convey that exact data needs tool verification.
+    - type: javascript
+      value: "output.length > 150"
+
+- description: "Errore ortografico — glifosate scritto male"
+  vars:
+    input_prompt: >
+      Come si usa il glyofsate sull'ulivo?
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should interpret "glyofsate" as "glifosate" (glyphosate)
+        and respond about its use on olive trees.
+        It should address the question rather than being confused by the typo.
+
+- description: "Domanda su storico trattamenti"
+  vars:
+    input_prompt: >
+      Quanti trattamenti con rame ho già fatto quest'anno sulla vite?
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should explain that it needs to consult the treatment
+        history or job records to answer this question.
+        It must NOT invent a number of past treatments.

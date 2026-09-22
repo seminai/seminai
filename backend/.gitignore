@@ -1,0 +1,75 @@
+# Environment variables
+.env
+
+# Node
+node_modules/
+dist/
+coverage/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.temp
+.cache/
+
+# Build
+build/
+dist/
+out/
+
+# Debug
+.debug/
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Local database
+*.sqlite
+*.db
+
+# Prisma
+prisma/*.db
+
+# Prisma generated client (regenerated via `prisma generate`)
+src/generated/
+
+# extraction output (top-level only)
+/extraction/
+
+# Generated reports written by integration tests on every run
+# (overwritten on each execution — versioning them produces churn-only diffs).
+test-output/
+
+# Promptfoo
+.promptfoo/
+llm-test/.generated/
+src/infrastructure/services/llm_costs/openrouter-models.snapshot.json
+
+# Database backups
+backups/
+
+# Generated audit/report output (e.g. audit:workspace-kinds)
+reports/
+
+# LangGraph API
+.langgraph_api

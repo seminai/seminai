@@ -1,0 +1,91 @@
+# Layer 4 — Flow A: Azienda → Magazzino → Prodotti → Operazioni
+# Multi-turn tests for the discovery-then-action pattern.
+# Verifies: parameter echo, tool intent, no data fabrication.
+
+# ── Scenario A1: Discovery → Product listing → Treatment planning ──
+
+- description: "Flow A1 — T1: Scoperta aziende"
+  vars:
+    question: "Quali aziende ho?"
+  metadata:
+    conversationId: flow-a1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should indicate it will look up or retrieve the user's
+        companies. It must NOT invent specific company names or data.
+
+- description: "Flow A1 — T2: Prodotti a magazzino"
+  vars:
+    question: "Mostrami i prodotti fitosanitari a magazzino dell'azienda."
+  metadata:
+    conversationId: flow-a1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to see warehouse products.
+        It should convey intent to list or search products in the company stock,
+        or explain it needs to identify the company first.
+        It must NOT fabricate product names or quantities.
+
+- description: "Flow A1 — T3: Pianificazione trattamento con prodotto"
+  vars:
+    question: >
+      Pianifica un trattamento con uno di questi prodotti sulla vite
+      contro la peronospora.
+  metadata:
+    conversationId: flow-a1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to plan a grapevine
+        treatment against downy mildew (peronospora). It should mention
+        gathering information about products, production units, or
+        phenological data. It must NOT present a complete fabricated plan.
+    - type: javascript
+      value: "output.length > 80"
+
+# ── Scenario A2: Discovery → Stock search → Treatment registration ──
+
+- description: "Flow A2 — T1: Scoperta aziende (variante)"
+  vars:
+    question: "Fammi vedere le mie aziende."
+  metadata:
+    conversationId: flow-a2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should indicate it will retrieve the user's companies.
+        It must NOT invent company data.
+
+- description: "Flow A2 — T2: Ricerca prodotti rame in magazzino"
+  vars:
+    question: "Cerca i prodotti a base di rame nel mio magazzino."
+  metadata:
+    conversationId: flow-a2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to search for copper-based
+        (rame) products in their warehouse. It must NOT invent product names.
+    - type: icontains
+      value: "rame"
+
+- description: "Flow A2 — T3: Registrazione trattamento effettuato"
+  vars:
+    question: >
+      Ho dato 2 litri di quel prodotto ieri in campo vite,
+      registralo come trattamento.
+  metadata:
+    conversationId: flow-a2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to register a past
+        treatment for grapevine. It may indicate intent to proceed with
+        registration (e.g., "procedo a registrare" is acceptable).
+        It must NOT claim the treatment has been successfully saved
+        or completed. Phrases like "registrato con successo" or
+        "operazione completata" are NOT acceptable.
+    - type: not-icontains
+      value: "registrato con successo"

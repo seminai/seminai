@@ -1,0 +1,19 @@
+# P1 — disciplinari-chunk-limits-extractor eval.
+
+description: "P1 Extraction — Disciplinari Chunk Limits Eval"
+
+prompts:
+  - "unused-vars-injected-by-provider"
+
+providers:
+  - id: file://./providers/disciplinari-limits.provider.ts
+    label: "DisciplinariChunkLimitsExtractor (gpt-4o-mini)"
+
+defaultTest:
+  options:
+    provider: file://./providers/disciplinari-limits.provider.ts
+
+tests: file://./datasets/disciplinari-chunk-limits.yaml
+
+evaluateOptions:
+  maxConcurrency: 2

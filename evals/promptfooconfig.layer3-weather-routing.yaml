@@ -1,0 +1,27 @@
+# Layer 3 — Weather Tool Routing
+# Tests selection of get_weather_forecast vs evaluate_treatment_window via function calling.
+# The provider returns "TOOL_SELECTED: <tool_name>" for assertion matching.
+
+description: 'Dosage ReAct Agent — Weather Tool Routing (Layer 3)'
+
+prompts:
+  - '{{input_prompt}}'
+
+providers:
+  - id: file://./providers/tool-routing.provider.ts
+    label: 'GPT-4o + Weather Routing'
+    config:
+      model: gpt-4o
+      temperature: 0
+
+  - id: file://./providers/tool-routing.provider.ts
+    label: 'GPT-4o-mini + Weather Routing'
+    config:
+      model: gpt-4o-mini
+      temperature: 0
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+
+tests: file://./datasets/weather-tool-routing.yaml
