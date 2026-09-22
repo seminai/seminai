@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Pre-push runs ONLY unit tests (fast).
+# Integration tests are on-demand only — invoke manually when needed:
+#   npm run test:int:fast:env       # DB-only fast bucket
+#   npm run test:int:changed        # smart: only tests for changed files
+#   npm run test:integration        # full integration suite
+#
+# Bypass everything:
+#   SKIP_TESTS=1 git push
+#
+if [ "${SKIP_TESTS:-0}" = "1" ]; then
+  echo "pre-push: SKIP_TESTS=1, skipping all tests"
+  exit 0
+fi
+
+set -e
+
+echo "pre-push: unit tests (backend)"
+npm run test:unit -- --forceExit
+
+echo "pre-push: unit tests (seminai-mcp)"
+(cd seminai-mcp && npm run test:unit -- --forceExit)

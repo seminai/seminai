@@ -1,0 +1,22 @@
+# Layer 2 — Compliance Validator: Task-specific prompt evaluation.
+# Tests the treatment adjustment prompt from dosage_agent/flowValidateRulesCompliance.ts.
+
+description: "Dosage Agent — Compliance Validator Eval (Layer 2)"
+
+prompts:
+  - "unused-prompt-vars-injected-by-provider"
+
+providers:
+  - id: file://./providers/task-prompt.provider.ts
+    label: "GPT-4o-mini — Compliance Validator"
+    config:
+      model: gpt-4o-mini
+      temperature: 0
+      maxTokens: 600
+      promptFile: prompts/compliance-validator.txt
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+
+tests: file://./datasets/compliance-validator.yaml

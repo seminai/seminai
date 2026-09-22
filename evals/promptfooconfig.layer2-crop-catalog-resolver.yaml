@@ -1,0 +1,21 @@
+# P1 — crop-catalog-resolver: crop name disambiguation eval.
+
+description: "P1 Extraction — Crop Catalog Resolver Eval"
+
+prompts:
+  - "unused-vars-injected-by-provider"
+
+providers:
+  - id: file://./providers/crop-catalog-resolver.provider.ts
+    label: "CropCatalogResolver (gpt-4o-mini)"
+    config:
+      model: gpt-4o-mini
+
+defaultTest:
+  options:
+    provider: file://./providers/crop-catalog-resolver.provider.ts
+
+tests: file://./datasets/crop-catalog-resolver.yaml
+
+evaluateOptions:
+  maxConcurrency: 2

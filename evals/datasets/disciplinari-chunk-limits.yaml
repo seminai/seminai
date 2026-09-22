@@ -1,0 +1,76 @@
+# P1 — disciplinari-chunk-limits-extractor: structured limit extraction from RAG chunks.
+
+- description: "Applications limits — max treatments and interval"
+  vars:
+    kind: "applications"
+    productName: "Folpet"
+    cropName: "Vite"
+    variety: "Chardonnay"
+    epoca: "pre fioritura"
+    region: "Piemonte"
+    text: "Per la vite è consentito un massimo di 2 trattamenti per anno. Intervallo minimo tra trattamenti: 14 giorni."
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).found === true"
+    - type: javascript
+      value: "JSON.parse(output).maxApplications === 2"
+    - type: javascript
+      value: "JSON.parse(output).minIntervalDays === 14"
+
+- description: "Dosage limits — max dose per hectare"
+  vars:
+    kind: "dosage"
+    productName: "Rame Caffaro"
+    cropName: "Vite"
+    region: "Emilia-Romagna"
+    text: "Dose massima ammessa: 1,5 l/ha per trattamento. Non superare la dose indicata in etichetta."
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).found === true"
+    - type: javascript
+      value: "JSON.parse(output).doseMax >= 1.4 && JSON.parse(output).doseMax <= 1.6"
+
+- description: "Dosage range — min and max"
+  vars:
+    kind: "dosage"
+    productName: "Ziram"
+    cropName: "Melo"
+    region: "Veneto"
+    text: "Dose minima 0,8 kg/ha. Dose massima 1,2 kg/ha per trattamento contro ticchiolatura."
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).found === true"
+    - type: javascript
+      value: "JSON.parse(output).doseMin >= 0.7 && JSON.parse(output).doseMin <= 0.9"
+    - type: javascript
+      value: "JSON.parse(output).doseMax >= 1.1 && JSON.parse(output).doseMax <= 1.3"
+
+- description: "Irrelevant chunk — no hallucinated limits"
+  vars:
+    kind: "applications"
+    productName: "Folpet"
+    cropName: "Vite"
+    region: "Piemonte"
+    text: "Il produttore deve tenere un registro dei trattamenti effettuati e conservarlo per almeno 3 anni."
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).found === false"
+    - type: javascript
+      value: "JSON.parse(output).maxApplications === null"
+
+- description: "Empty-looking administrative text — dosage kind"
+  vars:
+    kind: "dosage"
+    productName: "Rame"
+    cropName: "Vite"
+    text: "Le buone pratiche agronomiche prevedono il monitoraggio costante del vigneto."
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).found === false"
+    - type: javascript
+      value: "JSON.parse(output).doseMax === null"

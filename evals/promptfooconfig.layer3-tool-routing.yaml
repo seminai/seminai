@@ -1,0 +1,27 @@
+# Layer 3 — Tool Routing with Function Calling
+# Tests actual tool selection via OpenAI's tools parameter.
+# The provider returns "TOOL_SELECTED: <tool_name>" for assertion matching.
+
+description: "Dosage ReAct Agent — Tool Routing Eval (Layer 3)"
+
+prompts:
+  - "{{input_prompt}}"
+
+providers:
+  - id: file://./providers/tool-routing.provider.ts
+    label: "GPT-4o + Tool Routing"
+    config:
+      model: gpt-4o
+      temperature: 0
+
+  - id: file://./providers/tool-routing.provider.ts
+    label: "GPT-4o-mini + Tool Routing"
+    config:
+      model: gpt-4o-mini
+      temperature: 0
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+
+tests: file://./datasets/tool-routing-comprehensive.yaml

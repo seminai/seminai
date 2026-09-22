@@ -1,0 +1,112 @@
+# Layer 4 — WeatherAdvisor Quality
+# Tests the agronomist sub-agent's reasoning quality on different treatment contexts.
+# Provider sends the FULL agronomist prompt (system + product/machine context) to the
+# LLM and assertions verify (1) JSON shape, (2) value plausibility, (3) reasoning
+# quality via llm-rubric LLM-as-judge.
+
+- description: 'Fungicida con atomizzatore: vento ridotto, umidità min alta'
+  vars:
+    user_context: |
+      PRODOTTI DEL TRATTAMENTO:
+      1. RameZinc 35 WG (sku: TST-FUNG-CU)
+         - Category enum: PESTICIDE
+         - Type (free text): Fungicida
+         - Categoria da label: Fungicida (WG)
+
+      MACCHINA APPLICATIVA:
+      - Atomizzatore Padano AP-12 (id: ATM-PD-12)
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "const j = JSON.parse(output); j.thresholds.windMaxKmh > 0 && j.thresholds.windMaxKmh < 50 && j.thresholds.tempMinCelsius < j.thresholds.tempMaxCelsius && j.thresholds.humidityMinPercent < j.thresholds.humidityMaxPercent && j.confidence !== undefined"
+    - type: llm-rubric
+      value: >
+        Il reasoning cita esplicitamente la categoria FUNGICIDA o l'atomizzatore o
+        il rischio di deriva o l'importanza dell'umidità per la fitobagnatura.
+        Le soglie sono coerenti con un fungicida (es. windMaxKmh ragionevolmente
+        contenuto, umidità non troppo bassa). Il JSON è valido e completo.
+
+- description: 'Erbicida con barra: tolleranza vento maggiore'
+  vars:
+    user_context: |
+      PRODOTTI DEL TRATTAMENTO:
+      1. ErbicidaSel SC (sku: TST-HERB-SC)
+         - Category enum: PESTICIDE
+         - Type (free text): Erbicida
+         - Categoria da label: Erbicida sistemico (SC)
+
+      MACCHINA APPLICATIVA:
+      - Barra Padano BP-18 (id: BAR-PD-18)
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "const j = JSON.parse(output); j.thresholds.windMaxKmh > 0 && j.thresholds.windMaxKmh < 50 && j.thresholds.tempMinCelsius < j.thresholds.tempMaxCelsius"
+    - type: llm-rubric
+      value: >
+        Il reasoning menziona ERBICIDA o sistemico o barra o deriva controllata.
+        Le soglie sono internamente coerenti. Il JSON è valido.
+
+- description: 'Insetticida piretroide: temperature contenute'
+  vars:
+    user_context: |
+      PRODOTTI DEL TRATTAMENTO:
+      1. PiretroSpec EW (sku: TST-INS-EW)
+         - Category enum: PESTICIDE
+         - Type (free text): Insetticida
+         - Categoria da label: Insetticida piretroide (EW)
+
+      MACCHINA APPLICATIVA: non specificata. Assumi attrezzatura standard.
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "const j = JSON.parse(output); j.thresholds.windMaxKmh > 0 && j.thresholds.windMaxKmh < 50 && j.thresholds.tempMaxCelsius < 45"
+    - type: llm-rubric
+      value: >
+        Il reasoning cita INSETTICIDA o piretroide o degradazione UV o temperatura.
+        Le soglie sono coerenti (es. tempMaxCelsius non eccessivo per evitare
+        degradazione del piretroide). JSON valido.
+
+- description: 'Mix fungicida + erbicida: soglie più conservative'
+  vars:
+    user_context: |
+      PRODOTTI DEL TRATTAMENTO:
+      1. RameZinc 35 WG (sku: TST-FUNG-CU)
+         - Category enum: PESTICIDE
+         - Type (free text): Fungicida
+         - Categoria da label: Fungicida (WG)
+      2. ErbicidaSel SC (sku: TST-HERB-SC)
+         - Category enum: PESTICIDE
+         - Type (free text): Erbicida
+         - Categoria da label: Erbicida sistemico (SC)
+
+      MACCHINA APPLICATIVA:
+      - Atomizzatore Padano AP-12 (id: ATM-PD-12)
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "const j = JSON.parse(output); j.thresholds.windMaxKmh > 0 && j.thresholds.windMaxKmh < 50"
+    - type: llm-rubric
+      value: >
+        Il reasoning riconosce che c'è un MIX di prodotti (fungicida + erbicida)
+        e applica una strategia conservativa. Cita esplicitamente almeno una
+        delle due categorie nel ragionamento. JSON valido.
+
+- description: 'Fertilizzante fogliare: soglie meno restrittive sulla pioggia post'
+  vars:
+    user_context: |
+      PRODOTTI DEL TRATTAMENTO:
+      1. NPK Foliare 12-12-12 (sku: TST-FERT-NPK)
+         - Category enum: FERTILIZER
+         - Type (free text): Fertilizzante fogliare
+
+      MACCHINA APPLICATIVA: non specificata. Assumi attrezzatura standard.
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "const j = JSON.parse(output); j.thresholds.windMaxKmh > 0 && j.thresholds.windMaxKmh < 50"
+    - type: llm-rubric
+      value: >
+        Il reasoning identifica il FERTILIZZANTE fogliare. Le soglie sono
+        coerenti con applicazione fogliare (es. noRainHoursPostApplication
+        non eccessivamente stretto rispetto a un fungicida di copertura).
+        JSON valido.

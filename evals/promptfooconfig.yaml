@@ -1,0 +1,42 @@
+# Layer 1 — Dosage ReAct Agent: System Prompt Evaluation
+# Tests how the model responds with the full system prompt injected,
+# WITHOUT executing tools. Validates reasoning, language, safety, compliance awareness.
+
+description: "Dosage ReAct Agent — System Prompt Eval (Layer 1)"
+
+prompts:
+  - "{{input_prompt}}"
+
+providers:
+  - id: file://./providers/system-prompt.provider.ts
+    label: "GPT-4o + Dosage System Prompt"
+    config:
+      model: gpt-4o
+      temperature: 0
+
+  - id: file://./providers/system-prompt.provider.ts
+    label: "GPT-4o-mini + Dosage System Prompt"
+    config:
+      model: gpt-4o-mini
+      temperature: 0
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+  assert:
+    # Response language must mirror the user's input language (IT/EN). Existing
+    # datasets are Italian-only, so this passes equivalently to the previous
+    # Italian-only rubric while remaining correct under the new mirror policy.
+    - type: llm-rubric
+      value: >
+        The response is written in the same language as the user's input prompt.
+        If the user wrote in Italian, the response is in Italian.
+        If the user wrote in English, the response is in English.
+    # Responses should be substantive
+    - type: javascript
+      value: "output.length > 50"
+
+tests:
+  - file://./datasets/dosage-basic.yaml
+  - file://./datasets/dosage-edge-cases.yaml
+  - file://./datasets/tool-routing.yaml

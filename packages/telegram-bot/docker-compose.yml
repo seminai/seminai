@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: seminai-telegram-bot
+    restart: unless-stopped
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - SEMINAI_API_URL=${SEMINAI_API_URL}
+      - DEBUG=${DEBUG:-false}
+    # No ports needed - bot uses long polling (outbound only)
+    # Uncomment for Raspberry Pi 4 (64-bit):
+    # platform: linux/arm64
+    # Or for Raspberry Pi 3/Zero (32-bit):
+    # platform: linux/arm/v7

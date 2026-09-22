@@ -1,0 +1,49 @@
+{
+  "name": "seminai",
+  "version": "0.1.0-alpha.0",
+  "private": true,
+  "description": "Local-first AI-assisted agronomic management platform",
+  "license": "AGPL-3.0-or-later",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "workspaces": [
+    "backend",
+    "frontend",
+    "packages/*",
+    "evals"
+  ],
+  "scripts": {
+    "predev": "npm run codegen",
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev:watch --workspace @seminai/backend\" \"npm run dev --workspace @seminai/frontend\"",
+    "codegen": "npm run prisma:generate --workspace @seminai/backend && npm run prisma:generate --workspace @seminai/frontend && npm run api:generate",
+    "api:generate": "npm run swagger:export --workspace @seminai/backend && npm run api:codegen --workspace @seminai/frontend",
+    "build": "npm run codegen && npm run build --workspaces --if-present",
+    "type-check": "npm run type-check --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test:unit --workspace @seminai/backend && npm run test --workspace @seminai/frontend && npm run test:unit --workspace @seminai/mcp-connector",
+    "test:integration:fast": "npm run test:int:fast:env --workspace @seminai/backend",
+    "test:integration:public": "npm run test:int:public:env --workspace @seminai/backend",
+    "privacy:scan": "node scripts/scan-private-data.mjs",
+    "privacy:scan:full": "node scripts/scan-private-data.mjs --full",
+    "clean": "npm run clean --workspaces --if-present"
+  },
+  "devDependencies": {
+    "@langchain/core": "1.1.31",
+    "@langchain/langgraph-checkpoint": "1.0.0",
+    "@types/leaflet": "1.9.21",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "concurrently": "9.2.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "overrides": {
+    "@langchain/langgraph-checkpoint": "1.0.0",
+    "@types/leaflet": "1.9.21",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  }
+}

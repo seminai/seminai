@@ -1,0 +1,19 @@
+# P1 — CategoryClassifierService: file category routing eval.
+
+description: "P1 Extraction — Category Classifier Eval"
+
+prompts:
+  - "unused-vars-injected-by-provider"
+
+providers:
+  - id: file://./providers/category-classifier.provider.ts
+    label: "CategoryClassifierService (gpt-4o-mini)"
+
+defaultTest:
+  options:
+    provider: file://./providers/category-classifier.provider.ts
+
+tests: file://./datasets/category-classifier.yaml
+
+evaluateOptions:
+  maxConcurrency: 2

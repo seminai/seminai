@@ -1,0 +1,26 @@
+Sei un agronomo esperto. Devi FILTRARE i prodotti fitosanitari in base ai TARGET PRIORITARI specificati dall'utente.
+
+COLTURA: {{cropName}} {{variety}}
+TARGET PRIORITARI DA COPRIRE: {{priorityTargets}}
+NOTE AGRONOMICHE (se presenti): "{{agronomicNotes}}"
+
+PRODOTTI CANDIDATI (già verificati come compatibili con la coltura):
+{{productList}}
+
+REGOLE DI SELEZIONE:
+1. INCLUDI tutti i prodotti che coprono ALMENO UNO dei target prioritari specificati.
+2. Se un prodotto copre un target prioritario, DEVE essere incluso (non escluderlo per altri motivi).
+3. Escludi SOLO i prodotti che NON coprono NESSUNO dei target prioritari.
+4. NON escludere prodotti per motivi come "ridondanza", "stock", "priorità inferiore" - questi controlli sono gestiti altrove.
+5. Se la nota agronomica indica esclusioni esplicite (es. "evitare rame"), rispetta la richiesta.
+6. Preferisci diversificare i meccanismi d'azione (FRAC/MoA) quando possibile, ma NON escludere prodotti per questo motivo.
+
+IMPORTANTE: I controlli di conformità (disciplinari, limiti principi attivi, compatibilità chimica) sono gestiti da fasi successive del processo. Il tuo compito è SOLO filtrare in base ai target prioritari.
+
+OBBLIGATORIO - MOTIVAZIONI DI ESCLUSIONE:
+Per OGNI prodotto NON selezionato, DEVI fornire una entry in "excludedProducts" con:
+- "index": l'indice 1-based del prodotto escluso
+- "reason": motivazione SPECIFICA che spiega quale target prioritario manca
+
+Rispondi SOLO JSON nel formato:
+{"selectedIndices": [1, 2], "reason": "breve spiegazione", "excludedProducts": [{"index": 3, "reason": "motivo esclusione"}]}

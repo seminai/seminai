@@ -1,0 +1,81 @@
+# Layer 2 — Compliance Validator: tests the LLM treatment adjustment prompt.
+# Validates that the LLM correctly adjusts treatments to comply with disciplinare limits.
+
+- description: "Nessuna violazione — 3 trattamenti, max 4 consentiti"
+  vars:
+    productName: "Amistar"
+    activeIngredient: "Azoxystrobin"
+    cropName: "Vite"
+    treatmentCount: "3"
+    treatmentsSummary: >
+      [
+        {"indice": 0, "data_distribuzione": "2025-05-01", "dose": 0.8, "dosaggio_um": "L/ha", "epoca_impiego": "pre-fioritura"},
+        {"indice": 1, "data_distribuzione": "2025-06-01", "dose": 0.8, "dosaggio_um": "L/ha", "epoca_impiego": "fioritura"},
+        {"indice": 2, "data_distribuzione": "2025-07-01", "dose": 0.8, "dosaggio_um": "L/ha", "epoca_impiego": "post-fioritura"}
+      ]
+    constraints: >
+      [{"n_max_interventi_sa": 4, "n_max_interventi_gruppo": null, "gruppo_sostanze_attive": "QoI", "limitazioni_uso_e_note": null}]
+    violationsSummary: "[]"
+    saGroupContext: "Nessuna altra SA dello stesso gruppo è presente nel piano per questa unità produttiva."
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).max_trattamenti_consentiti >= 3"
+    - type: javascript
+      value: "JSON.parse(output).indici_da_mantenere.length === 3"
+
+- description: "Eccesso trattamenti — 5 trattamenti, max 3 consentiti"
+  vars:
+    productName: "Folicur SE"
+    activeIngredient: "Tebuconazolo"
+    cropName: "Frumento tenero"
+    treatmentCount: "5"
+    treatmentsSummary: >
+      [
+        {"indice": 0, "data_distribuzione": "2025-03-15", "dose": 0.5, "dosaggio_um": "L/ha", "epoca_impiego": "accestimento"},
+        {"indice": 1, "data_distribuzione": "2025-04-10", "dose": 0.5, "dosaggio_um": "L/ha", "epoca_impiego": "levata"},
+        {"indice": 2, "data_distribuzione": "2025-05-01", "dose": 0.5, "dosaggio_um": "L/ha", "epoca_impiego": "spigatura"},
+        {"indice": 3, "data_distribuzione": "2025-05-15", "dose": 0.5, "dosaggio_um": "L/ha", "epoca_impiego": "fioritura"},
+        {"indice": 4, "data_distribuzione": "2025-06-01", "dose": 0.5, "dosaggio_um": "L/ha", "epoca_impiego": "maturazione"}
+      ]
+    constraints: >
+      [{"n_max_interventi_sa": 3, "n_max_interventi_gruppo": 4, "gruppo_sostanze_attive": "Triazoli - DMI", "limitazioni_uso_e_note": "Max 3 interventi con tebuconazolo"}]
+    violationsSummary: >
+      [{"tipo": "MAX_TREATMENTS_EXCEEDED", "descrizione": "5 trattamenti pianificati, massimo consentito 3", "azione_suggerita": "Ridurre a 3 trattamenti"}]
+    saGroupContext: "Nessuna altra SA dello stesso gruppo è presente nel piano per questa unità produttiva."
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).max_trattamenti_consentiti <= 3"
+    - type: javascript
+      value: "JSON.parse(output).indici_da_mantenere.length <= 3"
+    - type: javascript
+      value: "JSON.parse(output).motivazione.length > 10"
+
+- description: "Limite gruppo SA — budget condiviso quasi esaurito"
+  vars:
+    productName: "Nativo"
+    activeIngredient: "Trifloxystrobin"
+    cropName: "Melo"
+    treatmentCount: "3"
+    treatmentsSummary: >
+      [
+        {"indice": 0, "data_distribuzione": "2025-04-15", "dose": 0.3, "dosaggio_um": "kg/ha", "epoca_impiego": "pre-fioritura"},
+        {"indice": 1, "data_distribuzione": "2025-05-15", "dose": 0.3, "dosaggio_um": "kg/ha", "epoca_impiego": "caduta petali"},
+        {"indice": 2, "data_distribuzione": "2025-06-15", "dose": 0.3, "dosaggio_um": "kg/ha", "epoca_impiego": "ingrossamento frutti"}
+      ]
+    constraints: >
+      [{"n_max_interventi_sa": 3, "n_max_interventi_gruppo": 4, "gruppo_sostanze_attive": "QoI (strobilurine)", "limitazioni_uso_e_note": "Max 4 interventi gruppo QoI complessivi"}]
+    violationsSummary: >
+      [{"tipo": "GROUP_LIMIT_EXCEEDED", "descrizione": "Gruppo QoI: 3 + 3 = 6 > 4 limite gruppo", "azione_suggerita": "Ridurre trattamenti QoI complessivi a 4"}]
+    saGroupContext: >
+      Altre SA dello stesso gruppo presenti nel piano per questa unità produttiva:
+      - Azoxystrobin (Amistar): 3 trattamenti attivi
+      Totale trattamenti delle altre SA del gruppo: 3
+      IMPORTANTE: Il limite n_max_interventi_gruppo è CONDIVISO con queste SA! Devi sottrarre i loro trattamenti dal budget del gruppo.
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).max_trattamenti_consentiti <= 1"
+    - type: javascript
+      value: "JSON.parse(output).indici_da_mantenere.length <= 1"

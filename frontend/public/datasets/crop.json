@@ -1,0 +1,1388 @@
+[
+  {
+    "code": "AGROS_CAP",
+    "species": "Agrostis capillaris",
+    "cropType": "cappellini",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 2000, "max": 4000 }
+  },
+  {
+    "code": "AGROS_GIG",
+    "species": "Agrostis gigantea",
+    "cropType": "cappellini giganti",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 2500, "max": 4500 }
+  },
+  {
+    "code": "AGROS_STO",
+    "species": "Agrostis stolonifera",
+    "cropType": "cappellini stoloniferi",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 2200, "max": 4200 }
+  },
+  {
+    "code": "ARRHE_ELA",
+    "species": "Arrhenatherum elatius",
+    "cropType": "avena altissima",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "30-04" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3000, "max": 5000 }
+  },
+  {
+    "code": "AVENA_NUD",
+    "species": "Avena nuda",
+    "cropType": "avena nuda",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 2500, "max": 4500 }
+  },
+  {
+    "code": "AVENA_SAT",
+    "species": "Avena sativa",
+    "cropType": "avena",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 3000, "max": 5000 }
+  },
+  {
+    "code": "AVENA_STR",
+    "species": "Avena strigosa",
+    "cropType": "avena nera",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 2800, "max": 4800 }
+  },
+  {
+    "code": "BETAA_VUL_GVA",
+    "species": "Beta vulgaris var. altissima",
+    "cropType": "barbabietola da zucchero",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "estimatedYield": { "min": 40000, "max": 70000 }
+  },
+  {
+    "code": "BETAA_VUL_GVS",
+    "species": "Beta vulgaris var. saccharifera",
+    "cropType": "barbabietola da zucchero",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "estimatedYield": { "min": 40000, "max": 70000 }
+  },
+  {
+    "code": "BETAA_VUL_GVC",
+    "species": "Beta vulgaris var. cicla",
+    "cropType": "bietola da coste",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-09" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "30-10" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "BETAA_VUL_GVF",
+    "species": "Beta vulgaris var. flavescens",
+    "cropType": "barbabietola da foraggio",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "estimatedYield": { "min": 50000, "max": 80000 }
+  },
+  {
+    "code": "BRASS_JUN",
+    "species": "Brassica juncea",
+    "cropType": "senape indiana",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-08" },
+    "estimatedYield": { "min": 1500, "max": 3000 }
+  },
+  {
+    "code": "BRASS_NAP_NBR",
+    "species": "Brassica napus var. napobrassica",
+    "cropType": "rutabaga",
+    "sowingPeriod": { "minDate": "15-05", "maxDate": "15-07" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "estimatedYield": { "min": 30000, "max": 50000 }
+  },
+  {
+    "code": "BRASS_NAP_NUS",
+    "species": "Brassica napus",
+    "cropType": "colza",
+    "sowingPeriod": { "minDate": "15-08", "maxDate": "15-09" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 2500, "max": 4000 }
+  },
+  {
+    "code": "BRASS_NIG",
+    "species": "Brassica nigra",
+    "cropType": "senape nera",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-08" },
+    "estimatedYield": { "min": 1200, "max": 2500 }
+  },
+  {
+    "code": "BRASS_OLE_GAS",
+    "species": "Brassica oleracea var. asparagus",
+    "cropType": "cavolo broccolo",
+    "sowingPeriod": { "minDate": "15-06", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-12" },
+    "estimatedYield": { "min": 12000, "max": 25000 }
+  },
+  {
+    "code": "BRASS_OLE_GBB",
+    "species": "Brassica oleracea var. botrytis",
+    "cropType": "cavolfiore",
+    "sowingPeriod": { "minDate": "15-06", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-01" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "BRASS_OLE_GBC",
+    "species": "Brassica oleracea",
+    "cropType": "cavolo",
+    "sowingPeriod": { "minDate": "15-06", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-01" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "BRASS_OLE_GCA",
+    "species": "Brassica oleracea var. capitata",
+    "cropType": "cavolo cappuccio",
+    "sowingPeriod": { "minDate": "15-06", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-01" },
+    "estimatedYield": { "min": 25000, "max": 50000 }
+  },
+  {
+    "code": "BRASS_OLE_GCR",
+    "species": "Brassica oleracea var. costata",
+    "cropType": "cavolo portoghese",
+    "sowingPeriod": { "minDate": "15-06", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-01" },
+    "estimatedYield": { "min": 18000, "max": 35000 }
+  },
+  {
+    "code": "BRASS_OLE_GCS",
+    "species": "Brassica oleracea var. italica",
+    "cropType": "broccolo",
+    "sowingPeriod": { "minDate": "15-06", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-12" },
+    "estimatedYield": { "min": 10000, "max": 20000 }
+  },
+  {
+    "code": "BRASS_OLE_GGM",
+    "species": "Brassica oleracea var. gemmifera",
+    "cropType": "cavoletti di Bruxelles",
+    "sowingPeriod": { "minDate": "15-05", "maxDate": "15-07" },
+    "floweringPeriod": { "minDate": "15-08", "maxDate": "30-10" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-01" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "BRASS_OLE_GGO",
+    "species": "Brassica oleracea var. gongylodes",
+    "cropType": "cavolo rapa",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-09" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-10" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "BRASS_OLE_PAL",
+    "species": "Brassica oleracea var. palmifolia",
+    "cropType": "cavolo nero",
+    "sowingPeriod": { "minDate": "15-06", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-09", "maxDate": "30-11" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-01" },
+    "estimatedYield": { "min": 12000, "max": 25000 }
+  },
+  {
+    "code": "BRASS_RAP_CAM",
+    "species": "Brassica rapa var. campestris",
+    "cropType": "colza primaverile",
+    "sowingPeriod": { "minDate": "15-02", "maxDate": "15-04" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 2000, "max": 3500 }
+  },
+  {
+    "code": "BRASS_RAP_RAP",
+    "species": "Brassica rapa",
+    "cropType": "rapa",
+    "sowingPeriod": { "minDate": "15-07", "maxDate": "15-09" },
+    "floweringPeriod": { "minDate": "15-08", "maxDate": "30-10" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-12" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "BROMU_CAT",
+    "species": "Bromus catharticus",
+    "cropType": "foraggera bromus",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3000, "max": 6000 }
+  },
+  {
+    "code": "BROMU_SIT",
+    "species": "Bromus sitchensis",
+    "cropType": "bromo sitka",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 2800, "max": 5500 }
+  },
+  {
+    "code": "CANNB_SAT",
+    "species": "Cannabis sativa",
+    "cropType": "canapa",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "30-10" },
+    "estimatedYield": { "min": 2000, "max": 4000 }
+  },
+  {
+    "code": "CAPSI_ANN",
+    "species": "Capsicum annuum",
+    "cropType": "peperone",
+    "sowingPeriod": { "minDate": "15-02", "maxDate": "15-04" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "30-10" },
+    "estimatedYield": { "min": 25000, "max": 50000 }
+  },
+  {
+    "code": "CARTH_TIN",
+    "species": "Carthamus tinctorius",
+    "cropType": "cartamo",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "30-09" },
+    "estimatedYield": { "min": 1500, "max": 3000 }
+  },
+  {
+    "code": "CICER_ARI",
+    "species": "Cicer arietinum",
+    "cropType": "cece",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-02" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 1500, "max": 2500 }
+  },
+  {
+    "code": "CICHO_END",
+    "species": "Cichorium endivia",
+    "cropType": "indivia",
+    "sowingPeriod": { "minDate": "15-06", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-08", "maxDate": "30-10" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-11" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "CICHO_INT_1WIT",
+    "species": "Cichorium intybus var. witloof",
+    "cropType": "indivia belga",
+    "sowingPeriod": { "minDate": "15-05", "maxDate": "15-07" },
+    "floweringPeriod": { "minDate": "15-07", "maxDate": "30-09" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-12" },
+    "estimatedYield": { "min": 12000, "max": 25000 }
+  },
+  {
+    "code": "CICHO_INT_FOL",
+    "species": "Cichorium intybus var. foliosum",
+    "cropType": "radicchio",
+    "sowingPeriod": { "minDate": "15-06", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-08", "maxDate": "30-10" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-12" },
+    "estimatedYield": { "min": 18000, "max": 35000 }
+  },
+  {
+    "code": "CICHO_INT",
+    "species": "Cichorium intybus",
+    "cropType": "cicoria",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "30-09" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-10" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "CORIA_SAT",
+    "species": "Coriandrum sativum",
+    "cropType": "coriandolo",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-08" },
+    "estimatedYield": { "min": 1200, "max": 2500 }
+  },
+  {
+    "code": "CTRLS_LAN",
+    "species": "Citrullus lanatus",
+    "cropType": "anguria",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-08" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "CUCUM_MEL",
+    "species": "Cucumis melo",
+    "cropType": "melone",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-08" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "CUCUM_MEL_MEF",
+    "species": "Cucumis melo ssp. flexuosus",
+    "cropType": "melone serpentiforme",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-08" },
+    "estimatedYield": { "min": 12000, "max": 25000 }
+  },
+  {
+    "code": "CUCUM_SAT",
+    "species": "Cucumis sativus",
+    "cropType": "cetriolo",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-07" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "30-09" },
+    "estimatedYield": { "min": 30000, "max": 60000 }
+  },
+  {
+    "code": "CUCUR_MAX",
+    "species": "Cucurbita maxima",
+    "cropType": "zucca",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "31-10" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "CUCUR_MMO",
+    "species": "Cucurbita maxima var. moschata",
+    "cropType": "zucca moscata",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "31-10" },
+    "estimatedYield": { "min": 18000, "max": 35000 }
+  },
+  {
+    "code": "CUCUR_MOS",
+    "species": "Cucurbita moschata",
+    "cropType": "zucca moscata",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "31-10" },
+    "estimatedYield": { "min": 18000, "max": 35000 }
+  },
+  {
+    "code": "CUCUR_PEP",
+    "species": "Cucurbita pepo",
+    "cropType": "zucchina",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-07" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "30-09" },
+    "estimatedYield": { "min": 25000, "max": 50000 }
+  },
+  {
+    "code": "CYNOD_DAC",
+    "species": "Cynodon dactylon",
+    "cropType": "gramigna",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-09" },
+    "estimatedYield": { "min": 4000, "max": 8000 }
+  },
+  {
+    "code": "CYNAR_CAR",
+    "species": "Cynara cardunculus",
+    "cropType": "carciofo",
+    "sowingPeriod": { "minDate": "15-06", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-10", "maxDate": "31-03" },
+    "harvestPeriod": { "minDate": "15-11", "maxDate": "30-04" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "DAUCU_CAR",
+    "species": "Daucus carota",
+    "cropType": "carota",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-07" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-10" },
+    "estimatedYield": { "min": 30000, "max": 60000 }
+  },
+  {
+    "code": "DCTLS_GLO",
+    "species": "Dactylis glomerata",
+    "cropType": "erba mazzolina",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 4000, "max": 8000 }
+  },
+  {
+    "code": "FESTL",
+    "species": "Festuca sp.",
+    "cropType": "festuca",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3500, "max": 7000 }
+  },
+  {
+    "code": "FESTU_ARU",
+    "species": "Festuca arundinacea",
+    "cropType": "festuca alta",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 4000, "max": 8000 }
+  },
+  {
+    "code": "FESTU_BRE",
+    "species": "Festuca brevipila",
+    "cropType": "festuca fine",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3000, "max": 6000 }
+  },
+  {
+    "code": "FESTU_OVI",
+    "species": "Festuca ovina",
+    "cropType": "festuca ovina",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 2500, "max": 5000 }
+  },
+  {
+    "code": "FESTU_PRA",
+    "species": "Festuca pratensis",
+    "cropType": "festuca dei prati",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3500, "max": 7000 }
+  },
+  {
+    "code": "FESTU_RUB",
+    "species": "Festuca rubra",
+    "cropType": "festuca rossa",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3000, "max": 6000 }
+  },
+  {
+    "code": "FOENI_VUL",
+    "species": "Foeniculum vulgare",
+    "cropType": "finocchio",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "30-09" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "31-11" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "GLYCI_MAX",
+    "species": "Glycine max",
+    "cropType": "soia",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 2500, "max": 4500 }
+  },
+  {
+    "code": "GOSSY",
+    "species": "Gossypium sp.",
+    "cropType": "cotone",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 1500, "max": 3000 }
+  },
+  {
+    "code": "HEDYS_COR",
+    "species": "Hedysarum coronarium",
+    "cropType": "sulla",
+    "sowingPeriod": { "minDate": "15-09", "maxDate": "15-11" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "31-07" },
+    "estimatedYield": { "min": 3000, "max": 6000 }
+  },
+  {
+    "code": "HLNTS_ANN",
+    "species": "Helianthus annuus",
+    "cropType": "girasole",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "30-09" },
+    "estimatedYield": { "min": 2000, "max": 4000 }
+  },
+  {
+    "code": "HORDE_VUL",
+    "species": "Hordeum vulgare",
+    "cropType": "orzo",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 3500, "max": 6000 }
+  },
+  {
+    "code": "LACTU_SAT",
+    "species": "Lactuca sativa",
+    "cropType": "lattuga",
+    "sowingPeriod": { "minDate": "15-02", "maxDate": "15-09" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-10" },
+    "harvestPeriod": { "minDate": "15-04", "maxDate": "30-11" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "LAGEN_SIC",
+    "species": "Lagenaria siceraria",
+    "cropType": "zucca bottiglia",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "31-10" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "LINUM_USI",
+    "species": "Linum usitatissimum",
+    "cropType": "lino",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-08" },
+    "estimatedYield": { "min": 1500, "max": 3000 }
+  },
+  {
+    "code": "LOLIU_BOU",
+    "species": "Lolium boucheanum",
+    "cropType": "loietto ibrido",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 4000, "max": 8000 }
+  },
+  {
+    "code": "LOLIU_MUL_ITA",
+    "species": "Lolium × boucheanum (italicum)",
+    "cropType": "loietto italico",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 4500, "max": 9000 }
+  },
+  {
+    "code": "LOLIU_MUL_WES",
+    "species": "Lolium × boucheanum (westerwoldicum)",
+    "cropType": "loietto westerwoldico",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 4000, "max": 8000 }
+  },
+  {
+    "code": "LOLIU_PER",
+    "species": "Lolium perenne",
+    "cropType": "loietto perenne",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 5000, "max": 10000 }
+  },
+  {
+    "code": "LOTUS_COR",
+    "species": "Lotus corniculatus",
+    "cropType": "ginestrino",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-09" },
+    "estimatedYield": { "min": 3000, "max": 6000 }
+  },
+  {
+    "code": "LUPIN_ALB",
+    "species": "Lupinus albus",
+    "cropType": "lupino bianco",
+    "sowingPeriod": { "minDate": "15-09", "maxDate": "15-11" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 2000, "max": 4000 }
+  },
+  {
+    "code": "LUPIN_ANG",
+    "species": "Lupinus angustifolius",
+    "cropType": "lupino blu",
+    "sowingPeriod": { "minDate": "15-09", "maxDate": "15-11" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 1800, "max": 3500 }
+  },
+  {
+    "code": "MEDIC_LUP",
+    "species": "Medicago lupulina",
+    "cropType": "medicago lupulina",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-07" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 2500, "max": 5000 }
+  },
+  {
+    "code": "MEDIC_POL",
+    "species": "Medicago polymorpha",
+    "cropType": "medicago polimorfa",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-07" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 2000, "max": 4000 }
+  },
+  {
+    "code": "MEDIC_SAT",
+    "species": "Medicago sativa",
+    "cropType": "erba medica",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-09" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "MEDIC_SAT_VAR",
+    "species": "Medicago sativa ssp. varia",
+    "cropType": "erba medica varia",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-09" },
+    "estimatedYield": { "min": 7000, "max": 14000 }
+  },
+  {
+    "code": "ONOBR_VIC",
+    "species": "Onobrychis viciifolia",
+    "cropType": "esparcetta",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-07" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 4000, "max": 8000 }
+  },
+  {
+    "code": "ORYZA_SAT",
+    "species": "Oryza sativa",
+    "cropType": "riso",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 5000, "max": 8000 }
+  },
+  {
+    "code": "PETRO_CRI",
+    "species": "Petroselinum crispum",
+    "cropType": "prezzemolo",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-09" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "31-10" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "PHACE_TAN",
+    "species": "Phacelia tanacetifolia",
+    "cropType": "facelia",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-09" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-10" },
+    "estimatedYield": { "min": 1500, "max": 3000 }
+  },
+  {
+    "code": "PHALR_AQU",
+    "species": "Phalaris aquatica",
+    "cropType": "foraggera phalaris",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3500, "max": 7000 }
+  },
+  {
+    "code": "PHALR_CAN",
+    "species": "Phalaris canariensis",
+    "cropType": "miglio dei canarini",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "30-09" },
+    "estimatedYield": { "min": 1500, "max": 3000 }
+  },
+  {
+    "code": "PHASE_COC",
+    "species": "Phaseolus coccineus",
+    "cropType": "fagiolo di Spagna",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "30-09" },
+    "estimatedYield": { "min": 1500, "max": 3000 }
+  },
+  {
+    "code": "PHASE_VUL",
+    "species": "Phaseolus vulgaris",
+    "cropType": "fagiolo",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-07" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "30-09" },
+    "estimatedYield": { "min": 1800, "max": 3500 }
+  },
+  {
+    "code": "PHLEU_PRA",
+    "species": "Phleum pratense",
+    "cropType": "fleolo",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 4000, "max": 8000 }
+  },
+  {
+    "code": "PISUM_SAT",
+    "species": "Pisum sativum",
+    "cropType": "pisello",
+    "sowingPeriod": { "minDate": "15-02", "maxDate": "15-04" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "estimatedYield": { "min": 2000, "max": 4000 }
+  },
+  {
+    "code": "POAAA_PRA",
+    "species": "Poa pratensis",
+    "cropType": "fienarola dei prati",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3000, "max": 6000 }
+  },
+  {
+    "code": "POAAA_TRI",
+    "species": "Poa trivialis",
+    "cropType": "fienarola comune",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 2800, "max": 5500 }
+  },
+  {
+    "code": "RAPHA_SAT_NIG",
+    "species": "Raphanus sativus var. niger",
+    "cropType": "ravanello nero",
+    "sowingPeriod": { "minDate": "15-07", "maxDate": "15-09" },
+    "floweringPeriod": { "minDate": "15-08", "maxDate": "30-10" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-11" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "RAPHA_SAT_OLE",
+    "species": "Raphanus sativus var. oleiformis",
+    "cropType": "ravanello oleifero",
+    "sowingPeriod": { "minDate": "15-08", "maxDate": "15-09" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 1500, "max": 3000 }
+  },
+  {
+    "code": "RAPHA_SAT_SAT",
+    "species": "Raphanus sativus var. sativus",
+    "cropType": "ravanello",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-09" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-10" },
+    "harvestPeriod": { "minDate": "15-04", "maxDate": "30-11" },
+    "estimatedYield": { "min": 12000, "max": 25000 }
+  },
+  {
+    "code": "SECAL_CER",
+    "species": "Secale cereale",
+    "cropType": "segale",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-12" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 2500, "max": 5000 }
+  },
+  {
+    "code": "SINAP_ALB",
+    "species": "Sinapis alba",
+    "cropType": "senape bianca",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-08" },
+    "estimatedYield": { "min": 1200, "max": 2500 }
+  },
+  {
+    "code": "SOLAN_LCH",
+    "species": "Solanum lycopersicoides",
+    "cropType": "selvatico pomodoro",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "30-09" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "SOLAN_LYC",
+    "species": "Solanum lycopersicum",
+    "cropType": "pomodoro",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "30-09" },
+    "estimatedYield": { "min": 40000, "max": 80000 }
+  },
+  {
+    "code": "SOLAN_MEL",
+    "species": "Solanum melongena",
+    "cropType": "melanzana",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "30-09" },
+    "estimatedYield": { "min": 25000, "max": 50000 }
+  },
+  {
+    "code": "SOLAN_MET",
+    "species": "Solanum metel",
+    "cropType": "datura",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "30-09" },
+    "estimatedYield": { "min": 1000, "max": 2000 }
+  },
+  {
+    "code": "SOLAN_TOR",
+    "species": "Solanum torvum",
+    "cropType": "portainnesto melanzana",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "30-09" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "SOLAN_TUB",
+    "species": "Solanum tuberosum",
+    "cropType": "patata",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 25000, "max": 50000 }
+  },
+  {
+    "code": "SPINA_OLE",
+    "species": "Spinacia oleracea",
+    "cropType": "spinacio",
+    "sowingPeriod": { "minDate": "15-02", "maxDate": "15-10" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-11" },
+    "harvestPeriod": { "minDate": "15-04", "maxDate": "31-12" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "SRGHM_BIC_BIC",
+    "species": "Sorghum bicolor ssp. bicolor",
+    "cropType": "sorgo",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 4000, "max": 8000 }
+  },
+  {
+    "code": "SRGHM_DRU",
+    "species": "Sorghum drummondii",
+    "cropType": "sorgo sudanese",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "30-09" },
+    "estimatedYield": { "min": 30000, "max": 60000 }
+  },
+  {
+    "code": "TRFOL_ALE",
+    "species": "Trifolium alexandrinum",
+    "cropType": "trifoglio alessandrino",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-07" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 4000, "max": 8000 }
+  },
+  {
+    "code": "TRFOL_HYB",
+    "species": "Trifolium hybridum",
+    "cropType": "trifoglio ibrido",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-07" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3500, "max": 7000 }
+  },
+  {
+    "code": "TRFOL_INC",
+    "species": "Trifolium incarnatum",
+    "cropType": "trifoglio incarnato",
+    "sowingPeriod": { "minDate": "15-09", "maxDate": "15-11" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "estimatedYield": { "min": 3000, "max": 6000 }
+  },
+  {
+    "code": "TRFOL_PRA",
+    "species": "Trifolium pratense",
+    "cropType": "trifoglio rosso",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-07" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 5000, "max": 10000 }
+  },
+  {
+    "code": "TRFOL_REP",
+    "species": "Trifolium repens",
+    "cropType": "trifoglio bianco",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-08" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-09" },
+    "estimatedYield": { "min": 4000, "max": 8000 }
+  },
+  {
+    "code": "TRFOL_RES",
+    "species": "Trifolium resupinatum",
+    "cropType": "trifoglio persiano",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-07" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3500, "max": 7000 }
+  },
+  {
+    "code": "TRFOL_SUB",
+    "species": "Trifolium subterraneum",
+    "cropType": "trifoglio sotterraneo",
+    "sowingPeriod": { "minDate": "15-09", "maxDate": "15-11" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "estimatedYield": { "min": 2500, "max": 5000 }
+  },
+  {
+    "code": "TRFOL_VES",
+    "species": "Trifolium vesiculosum",
+    "cropType": "trifoglio vesiculoso",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-07" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 3000, "max": 6000 }
+  },
+  {
+    "code": "TRITI_AES",
+    "species": "Triticum aestivum",
+    "cropType": "frumento tenero",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-12" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 4000, "max": 7000 }
+  },
+  {
+    "code": "TRITI_AES_SPE",
+    "species": "Triticum aestivum ssp. spelta",
+    "cropType": "farro spelta",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-12" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 2500, "max": 4500 }
+  },
+  {
+    "code": "TRITI_TUR_DUR",
+    "species": "Triticum turgidum ssp. durum",
+    "cropType": "frumento duro",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-12" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 3500, "max": 6000 }
+  },
+  {
+    "code": "TRITL",
+    "species": "× Triticosecale",
+    "cropType": "triticale",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-12" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 4000, "max": 7000 }
+  },
+  {
+    "code": "VICIA_FAB_MAJ",
+    "species": "Vicia faba var. major",
+    "cropType": "fava",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-05" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "31-07" },
+    "estimatedYield": { "min": 2000, "max": 4000 }
+  },
+  {
+    "code": "VICIA_FAB_MIN",
+    "species": "Vicia faba var. minor",
+    "cropType": "favino",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-05" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "31-07" },
+    "estimatedYield": { "min": 2500, "max": 4500 }
+  },
+  {
+    "code": "VICIA_SAT",
+    "species": "Vicia sativa",
+    "cropType": "veccia comune",
+    "sowingPeriod": { "minDate": "15-09", "maxDate": "15-11" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "estimatedYield": { "min": 2000, "max": 4000 }
+  },
+  {
+    "code": "VICIA_VIL",
+    "species": "Vicia villosa",
+    "cropType": "veccia villosa",
+    "sowingPeriod": { "minDate": "15-09", "maxDate": "15-11" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "estimatedYield": { "min": 2200, "max": 4200 }
+  },
+  {
+    "code": "VLRNL_LOC",
+    "species": "Valerianella locusta",
+    "cropType": "soncino",
+    "sowingPeriod": { "minDate": "15-08", "maxDate": "15-10" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-05" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-03" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "ZEAAA_MAY_GMA",
+    "species": "Zea mays",
+    "cropType": "mais",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "ZEAAA_MAY_GPO",
+    "species": "Zea mays",
+    "cropType": "mais",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "ZEAAA_MAY_GSW",
+    "species": "Zea mays",
+    "cropType": "mais",
+    "sowingPeriod": { "minDate": "15-04", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "ALLIU_CEP_CEP",
+    "species": "Allium cepa",
+    "cropType": "cipolla",
+    "sowingPeriod": { "minDate": "15-02", "maxDate": "15-04" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-08" },
+    "estimatedYield": { "min": 30000, "max": 60000 }
+  },
+  {
+    "code": "ALLIU_FIS",
+    "species": "Allium fistulosum",
+    "cropType": "cipollotto",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-08" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-09" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "31-10" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "ALLIU_POR",
+    "species": "Allium porrum",
+    "cropType": "porro",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-07" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "31-12" },
+    "estimatedYield": { "min": 25000, "max": 50000 }
+  },
+  {
+    "code": "ALLIU_SAT",
+    "species": "Allium sativum",
+    "cropType": "aglio",
+    "sowingPeriod": { "minDate": "15-10", "maxDate": "15-12" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "APIUM_GRA_DUL",
+    "species": "Apium graveolens var. dulce",
+    "cropType": "sedano",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-06" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "31-10" },
+    "estimatedYield": { "min": 40000, "max": 80000 }
+  },
+  {
+    "code": "APIUM_GRA_RAP",
+    "species": "Apium graveolens var. rapaceum",
+    "cropType": "sedano rapa",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-11" },
+    "estimatedYield": { "min": 35000, "max": 70000 }
+  },
+  {
+    "code": "ASPAR_OFF",
+    "species": "Asparagus officinalis",
+    "cropType": "asparago",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "31-07" },
+    "harvestPeriod": { "minDate": "15-03", "maxDate": "31-05" },
+    "estimatedYield": { "min": 3000, "max": 6000 }
+  },
+  {
+    "code": "MALUS_DOM",
+    "species": "Malus domestica",
+    "cropType": "melo",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-04" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "31-10" },
+    "estimatedYield": { "min": 30000, "max": 60000 }
+  },
+  {
+    "code": "PYRUS_COM",
+    "species": "Pyrus communis",
+    "cropType": "pero",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-04" },
+    "harvestPeriod": { "minDate": "15-07", "maxDate": "31-10" },
+    "estimatedYield": { "min": 25000, "max": 50000 }
+  },
+  {
+    "code": "PRUNU_PER",
+    "species": "Prunus persica",
+    "cropType": "pesco / nettarina",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-02", "maxDate": "31-03" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "30-09" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "PRUNU_ARM",
+    "species": "Prunus armeniaca",
+    "cropType": "albicocco",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-02", "maxDate": "31-03" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "31-07" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "PRUNU_DOM",
+    "species": "Prunus domestica",
+    "cropType": "susino europeo",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-04" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 18000, "max": 35000 }
+  },
+  {
+    "code": "PRUNU_SAL",
+    "species": "Prunus salicina",
+    "cropType": "susino giapponese",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-04" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "31-07" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "PRUNU_AVI",
+    "species": "Prunus avium",
+    "cropType": "ciliegio dolce",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-04" },
+    "harvestPeriod": { "minDate": "15-05", "maxDate": "31-07" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "PRUNU_CSS",
+    "species": "Prunus cerasus",
+    "cropType": "ciliegio acido",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-04" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-07" },
+    "estimatedYield": { "min": 6000, "max": 12000 }
+  },
+  {
+    "code": "PRUNU_DUL",
+    "species": "Prunus dulcis",
+    "cropType": "mandorlo",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-02", "maxDate": "31-03" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "30-09" },
+    "estimatedYield": { "min": 1500, "max": 3000 }
+  },
+  {
+    "code": "JUGLA_REG",
+    "species": "Juglans regia",
+    "cropType": "noce",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 2000, "max": 4000 }
+  },
+  {
+    "code": "CRYLS_AVE",
+    "species": "Corylus avellana",
+    "cropType": "nocciolo",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-02", "maxDate": "31-03" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "30-09" },
+    "estimatedYield": { "min": 1500, "max": 3000 }
+  },
+  {
+    "code": "CASTA_SAT",
+    "species": "Castanea sativa",
+    "cropType": "castagno",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 2000, "max": 4000 }
+  },
+  {
+    "code": "PISTA_VER",
+    "species": "Pistacia vera",
+    "cropType": "pistacchio",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-04" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 1000, "max": 2000 }
+  },
+  {
+    "code": "OLEAA_EUR",
+    "species": "Olea europaea",
+    "cropType": "olivo",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-12" },
+    "estimatedYield": { "min": 3000, "max": 6000 }
+  },
+  {
+    "code": "ACTIN",
+    "species": "Actinidia deliciosa / chinensis",
+    "cropType": "kiwi",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-11" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "VITIS",
+    "species": "Vitis vinifera",
+    "cropType": "vite",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-08", "maxDate": "31-10" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "CITRU_SIN",
+    "species": "Citrus sinensis",
+    "cropType": "arancio dolce",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-05" },
+    "harvestPeriod": { "minDate": "15-11", "maxDate": "31-03" },
+    "estimatedYield": { "min": 25000, "max": 50000 }
+  },
+  {
+    "code": "CITRU_RET",
+    "species": "Citrus reticulata",
+    "cropType": "mandarino",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-05" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-02" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "CITRU_LIM",
+    "species": "Citrus limon",
+    "cropType": "limone",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-09" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-05" },
+    "estimatedYield": { "min": 20000, "max": 40000 }
+  },
+  {
+    "code": "CITRU_CLE",
+    "species": "Citrus clementina",
+    "cropType": "clementina",
+    "sowingPeriod": { "minDate": "15-03", "maxDate": "15-05" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "30-05" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-01" },
+    "estimatedYield": { "min": 18000, "max": 35000 }
+  },
+  {
+    "code": "FRAGA_ANA",
+    "species": "Fragaria × ananassa",
+    "cropType": "fragola",
+    "sowingPeriod": { "minDate": "15-07", "maxDate": "15-09" },
+    "floweringPeriod": { "minDate": "15-03", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-04", "maxDate": "30-06" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "VACCI_COR",
+    "species": "Vaccinium corymbosum",
+    "cropType": "mirtillo",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 8000, "max": 15000 }
+  },
+  {
+    "code": "RUBUS_IDA",
+    "species": "Rubus idaeus",
+    "cropType": "lampone",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-08" },
+    "estimatedYield": { "min": 6000, "max": 12000 }
+  },
+  {
+    "code": "FICUS_CAR",
+    "species": "Ficus carica",
+    "cropType": "fico",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-06", "maxDate": "31-09" },
+    "estimatedYield": { "min": 10000, "max": 20000 }
+  },
+  {
+    "code": "DIOSP_KAK",
+    "species": "Diospyros kaki",
+    "cropType": "kaki / cachi",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-04", "maxDate": "31-05" },
+    "harvestPeriod": { "minDate": "15-10", "maxDate": "31-11" },
+    "estimatedYield": { "min": 15000, "max": 30000 }
+  },
+  {
+    "code": "PUNIC_GRA",
+    "species": "Punica granatum",
+    "cropType": "melograno",
+    "sowingPeriod": { "minDate": "15-11", "maxDate": "15-03" },
+    "floweringPeriod": { "minDate": "15-05", "maxDate": "30-06" },
+    "harvestPeriod": { "minDate": "15-09", "maxDate": "31-10" },
+    "estimatedYield": { "min": 12000, "max": 25000 }
+  }
+]

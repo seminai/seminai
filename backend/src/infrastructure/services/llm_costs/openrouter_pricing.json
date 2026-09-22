@@ -1,0 +1,3153 @@
+{
+  "syncedAt": "2026-05-22T09:58:38.253Z",
+  "sourceUrl": "https://openrouter.ai/api/v1/models",
+  "modelCount": 355,
+  "modelsBySlug": {
+    "qwen/qwen3.7-max": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 7.5
+    },
+    "x-ai/grok-build-0.1": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.2
+    },
+    "google/gemini-3.5-flash": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 9,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "anthropic/claude-opus-4.7-fast": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 150,
+      "cachedInputDiscount": 0.1
+    },
+    "perceptron/perceptron-mk1": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 1.5
+    },
+    "inclusionai/ring-2.6-1t": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.625,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "google/gemini-3.1-flash-lite": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 1.5,
+      "cachedInputDiscount": 0.1
+    },
+    "baidu/cobuddy:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "openai/gpt-chat-latest": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 30,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "x-ai/grok-4.3": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 2.5,
+      "cachedInputDiscount": 0.15999999999999998
+    },
+    "ibm-granite/granite-4.1-8b": {
+      "inputPerMillionTokens": 0.049999999999999996,
+      "outputPerMillionTokens": 0.09999999999999999,
+      "cachedInputDiscount": 1
+    },
+    "mistralai/mistral-medium-3-5": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 7.5
+    },
+    "openrouter/owl-alpha": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "poolside/laguna-xs.2:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "poolside/laguna-m.1:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "~anthropic/claude-haiku-latest": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 5,
+      "cachedInputDiscount": 0.1
+    },
+    "~openai/gpt-mini-latest": {
+      "inputPerMillionTokens": 0.75,
+      "outputPerMillionTokens": 4.5,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "~google/gemini-pro-latest": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 12,
+      "cachedInputDiscount": 0.1
+    },
+    "~moonshotai/kimi-latest": {
+      "inputPerMillionTokens": 0.73,
+      "outputPerMillionTokens": 3.49,
+      "cachedInputDiscount": 0.3424657534246575
+    },
+    "~google/gemini-flash-latest": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 9,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "~anthropic/claude-sonnet-latest": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "~openai/gpt-latest": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 30,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "qwen/qwen3.5-plus-20260420": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 1.7999999999999998
+    },
+    "qwen/qwen3.6-flash": {
+      "inputPerMillionTokens": 0.12375000000000001,
+      "outputPerMillionTokens": 0.7424999999999999
+    },
+    "qwen/qwen3.6-35b-a3b": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 1,
+      "cachedInputDiscount": 0.3333333333333333
+    },
+    "qwen/qwen3.6-max-preview": {
+      "inputPerMillionTokens": 1.04,
+      "outputPerMillionTokens": 6.24
+    },
+    "qwen/qwen3.6-27b": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 3.1999999999999997
+    },
+    "openai/gpt-5.5-pro": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 180
+    },
+    "openai/gpt-5.5": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 30,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "deepseek/deepseek-v4-pro": {
+      "inputPerMillionTokens": 0.435,
+      "outputPerMillionTokens": 0.87,
+      "cachedInputDiscount": 0.008333333333333333
+    },
+    "deepseek/deepseek-v4-flash:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "deepseek/deepseek-v4-flash": {
+      "inputPerMillionTokens": 0.112,
+      "outputPerMillionTokens": 0.224,
+      "cachedInputDiscount": 0.19642857142857142
+    },
+    "inclusionai/ling-2.6-1t": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.625,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "tencent/hy3-preview": {
+      "inputPerMillionTokens": 0.06599999999999999,
+      "outputPerMillionTokens": 0.26,
+      "cachedInputDiscount": 0.43939393939393945
+    },
+    "xiaomi/mimo-v2.5-pro": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 3,
+      "cachedInputDiscount": 0.2
+    },
+    "xiaomi/mimo-v2.5": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.2
+    },
+    "openai/gpt-5.4-image-2": {
+      "inputPerMillionTokens": 8,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.25
+    },
+    "inclusionai/ling-2.6-flash": {
+      "inputPerMillionTokens": 0.01,
+      "outputPerMillionTokens": 0.03,
+      "cachedInputDiscount": 0.2
+    },
+    "~anthropic/claude-opus-latest": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 25,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "baidu/qianfan-ocr-fast": {
+      "inputPerMillionTokens": 0.6799999999999999,
+      "outputPerMillionTokens": 2.81
+    },
+    "moonshotai/kimi-k2.6": {
+      "inputPerMillionTokens": 0.73,
+      "outputPerMillionTokens": 3.49,
+      "cachedInputDiscount": 0.3424657534246575
+    },
+    "anthropic/claude-opus-4.7": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 25,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "anthropic/claude-opus-4.6-fast": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 150,
+      "cachedInputDiscount": 0.1
+    },
+    "z-ai/glm-5.1": {
+      "inputPerMillionTokens": 0.98,
+      "outputPerMillionTokens": 3.08,
+      "cachedInputDiscount": 0.18571428571428572
+    },
+    "google/gemma-4-26b-a4b-it:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "google/gemma-4-26b-a4b-it": {
+      "inputPerMillionTokens": 0.06,
+      "outputPerMillionTokens": 0.33
+    },
+    "google/gemma-4-31b-it:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "google/gemma-4-31b-it": {
+      "inputPerMillionTokens": 0.12,
+      "outputPerMillionTokens": 0.37
+    },
+    "qwen/qwen3.6-plus": {
+      "inputPerMillionTokens": 0.1794,
+      "outputPerMillionTokens": 1.07315
+    },
+    "z-ai/glm-5v-turbo": {
+      "inputPerMillionTokens": 1.2,
+      "outputPerMillionTokens": 4,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "arcee-ai/trinity-large-thinking:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "arcee-ai/trinity-large-thinking": {
+      "inputPerMillionTokens": 0.22,
+      "outputPerMillionTokens": 0.85,
+      "cachedInputDiscount": 0.2727272727272727
+    },
+    "x-ai/grok-4.20-multi-agent": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "x-ai/grok-4.20": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 2.5,
+      "cachedInputDiscount": 0.15999999999999998
+    },
+    "google/lyria-3-pro-preview": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "google/lyria-3-clip-preview": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "kwaipilot/kat-coder-pro-v2": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 1.2,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "rekaai/reka-edge": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.09999999999999999
+    },
+    "xiaomi/mimo-v2-omni": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.2
+    },
+    "xiaomi/mimo-v2-pro": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 3,
+      "cachedInputDiscount": 0.2
+    },
+    "minimax/minimax-m2.7": {
+      "inputPerMillionTokens": 0.27899999999999997,
+      "outputPerMillionTokens": 1.2
+    },
+    "openai/gpt-5.4-nano": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 1.25,
+      "cachedInputDiscount": 0.1
+    },
+    "openai/gpt-5.4-mini": {
+      "inputPerMillionTokens": 0.75,
+      "outputPerMillionTokens": 4.5,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "mistralai/mistral-small-2603": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "z-ai/glm-5-turbo": {
+      "inputPerMillionTokens": 1.2,
+      "outputPerMillionTokens": 4,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "nvidia/nemotron-3-super-120b-a12b:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "nvidia/nemotron-3-super-120b-a12b": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 0.44999999999999996
+    },
+    "bytedance-seed/seed-2.0-lite": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 2
+    },
+    "qwen/qwen3.5-9b": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.15
+    },
+    "openai/gpt-5.4-pro": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 180
+    },
+    "openai/gpt-5.4": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "inception/mercury-2": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 0.75,
+      "cachedInputDiscount": 0.1
+    },
+    "openai/gpt-5.3-chat": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "google/gemini-3.1-flash-lite-preview": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 1.5,
+      "cachedInputDiscount": 0.1
+    },
+    "bytedance-seed/seed-2.0-mini": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "google/gemini-3.1-flash-image-preview": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 3
+    },
+    "qwen/qwen3.5-35b-a3b": {
+      "inputPerMillionTokens": 0.13899999999999998,
+      "outputPerMillionTokens": 1
+    },
+    "qwen/qwen3.5-27b": {
+      "inputPerMillionTokens": 0.195,
+      "outputPerMillionTokens": 1.56
+    },
+    "qwen/qwen3.5-122b-a10b": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 2.08
+    },
+    "qwen/qwen3.5-flash-02-23": {
+      "inputPerMillionTokens": 0.065,
+      "outputPerMillionTokens": 0.26
+    },
+    "liquid/lfm-2-24b-a2b": {
+      "inputPerMillionTokens": 0.03,
+      "outputPerMillionTokens": 0.12
+    },
+    "google/gemini-3.1-pro-preview-customtools": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 12,
+      "cachedInputDiscount": 0.1
+    },
+    "openai/gpt-5.3-codex": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "aion-labs/aion-2.0": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 1.5999999999999999,
+      "cachedInputDiscount": 0.25
+    },
+    "google/gemini-3.1-pro-preview": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 12,
+      "cachedInputDiscount": 0.1
+    },
+    "anthropic/claude-sonnet-4.6": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "qwen/qwen3.5-plus-02-15": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 1.56
+    },
+    "qwen/qwen3.5-397b-a17b": {
+      "inputPerMillionTokens": 0.39,
+      "outputPerMillionTokens": 2.34
+    },
+    "minimax/minimax-m2.5:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "minimax/minimax-m2.5": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 1.15
+    },
+    "z-ai/glm-5": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 1.92,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "qwen/qwen3-max-thinking": {
+      "inputPerMillionTokens": 0.78,
+      "outputPerMillionTokens": 3.9
+    },
+    "anthropic/claude-opus-4.6": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 25,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "qwen/qwen3-coder-next": {
+      "inputPerMillionTokens": 0.11,
+      "outputPerMillionTokens": 0.7999999999999999,
+      "cachedInputDiscount": 0.6363636363636364
+    },
+    "openrouter/free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "stepfun/step-3.5-flash": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 0.3,
+      "cachedInputDiscount": 0.22222222222222224
+    },
+    "moonshotai/kimi-k2.5": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 1.9,
+      "cachedInputDiscount": 0.225
+    },
+    "upstage/solar-pro-3": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "minimax/minimax-m2-her": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 1.2,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "writer/palmyra-x5": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 6
+    },
+    "liquid/lfm-2.5-1.2b-thinking:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "liquid/lfm-2.5-1.2b-instruct:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "openai/gpt-audio": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "openai/gpt-audio-mini": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.4
+    },
+    "z-ai/glm-4.7-flash": {
+      "inputPerMillionTokens": 0.06,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.16666666666666669
+    },
+    "openai/gpt-5.2-codex": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "bytedance-seed/seed-1.6-flash": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.3
+    },
+    "bytedance-seed/seed-1.6": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 2
+    },
+    "minimax/minimax-m2.1": {
+      "inputPerMillionTokens": 0.29,
+      "outputPerMillionTokens": 0.95,
+      "cachedInputDiscount": 0.10344827586206896
+    },
+    "z-ai/glm-4.7": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 1.75,
+      "cachedInputDiscount": 0.2
+    },
+    "google/gemini-3-flash-preview": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 3,
+      "cachedInputDiscount": 0.1
+    },
+    "xiaomi/mimo-v2-flash": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.3,
+      "cachedInputDiscount": 0.1
+    },
+    "nvidia/nemotron-3-nano-30b-a3b:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "nvidia/nemotron-3-nano-30b-a3b": {
+      "inputPerMillionTokens": 0.049999999999999996,
+      "outputPerMillionTokens": 0.19999999999999998
+    },
+    "openai/gpt-5.2-chat": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "openai/gpt-5.2-pro": {
+      "inputPerMillionTokens": 21,
+      "outputPerMillionTokens": 168
+    },
+    "openai/gpt-5.2": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "mistralai/devstral-2512": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.1
+    },
+    "relace/relace-search": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 3
+    },
+    "z-ai/glm-4.6v": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 0.8999999999999999,
+      "cachedInputDiscount": 0.16666666666666666
+    },
+    "nex-agi/deepseek-v3.1-nex-n1": {
+      "inputPerMillionTokens": 0.135,
+      "outputPerMillionTokens": 0.5
+    },
+    "essentialai/rnj-1-instruct": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.15
+    },
+    "openai/gpt-5.1-codex-max": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "amazon/nova-2-lite-v1": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 2.5
+    },
+    "mistralai/ministral-14b-2512": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 0.19999999999999998,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralai/ministral-8b-2512": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "mistralai/ministral-3b-2512": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.09999999999999999,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralai/mistral-large-2512": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 1.5,
+      "cachedInputDiscount": 0.1
+    },
+    "arcee-ai/trinity-mini": {
+      "inputPerMillionTokens": 0.045,
+      "outputPerMillionTokens": 0.15
+    },
+    "deepseek/deepseek-v3.2-speciale": {
+      "inputPerMillionTokens": 0.28700000000000003,
+      "outputPerMillionTokens": 0.431,
+      "cachedInputDiscount": 0.20209059233449478
+    },
+    "deepseek/deepseek-v3.2": {
+      "inputPerMillionTokens": 0.252,
+      "outputPerMillionTokens": 0.378,
+      "cachedInputDiscount": 0.1
+    },
+    "prime-intellect/intellect-3": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 1.1
+    },
+    "anthropic/claude-opus-4.5": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 25,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "allenai/olmo-3-32b-think": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.5
+    },
+    "google/gemini-3-pro-image-preview": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 12,
+      "cachedInputDiscount": 0.1
+    },
+    "deepcogito/cogito-v2.1-671b": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 1.25
+    },
+    "openai/gpt-5.1": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.104
+    },
+    "openai/gpt-5.1-chat": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "openai/gpt-5.1-codex": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "openai/gpt-5.1-codex-mini": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.12
+    },
+    "moonshotai/kimi-k2-thinking": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.5
+    },
+    "amazon/nova-premier-v1": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 12.5,
+      "cachedInputDiscount": 0.25
+    },
+    "perplexity/sonar-pro-search": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15
+    },
+    "mistralai/voxtral-small-24b-2507": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.3,
+      "cachedInputDiscount": 0.1
+    },
+    "openai/gpt-oss-safeguard-20b": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.3,
+      "cachedInputDiscount": 0.49333333333333335
+    },
+    "nvidia/nemotron-nano-12b-v2-vl:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "minimax/minimax-m2": {
+      "inputPerMillionTokens": 0.255,
+      "outputPerMillionTokens": 1,
+      "cachedInputDiscount": 0.11764705882352941
+    },
+    "qwen/qwen3-vl-32b-instruct": {
+      "inputPerMillionTokens": 0.10400000000000001,
+      "outputPerMillionTokens": 0.41600000000000004
+    },
+    "ibm-granite/granite-4.0-h-micro": {
+      "inputPerMillionTokens": 0.017,
+      "outputPerMillionTokens": 0.112
+    },
+    "microsoft/phi-4-mini-instruct": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.35,
+      "cachedInputDiscount": 1
+    },
+    "openai/gpt-5-image-mini": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "anthropic/claude-haiku-4.5": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 5,
+      "cachedInputDiscount": 0.1
+    },
+    "qwen/qwen3-vl-8b-thinking": {
+      "inputPerMillionTokens": 0.117,
+      "outputPerMillionTokens": 1.365
+    },
+    "qwen/qwen3-vl-8b-instruct": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.5
+    },
+    "openai/gpt-5-image": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.125
+    },
+    "openai/o3-deep-research": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 40,
+      "cachedInputDiscount": 0.25
+    },
+    "openai/o4-mini-deep-research": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8,
+      "cachedInputDiscount": 0.25
+    },
+    "nvidia/llama-3.3-nemotron-super-49b-v1.5": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "baidu/ernie-4.5-21b-a3b-thinking": {
+      "inputPerMillionTokens": 0.07,
+      "outputPerMillionTokens": 0.28
+    },
+    "google/gemini-2.5-flash-image": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 2.5,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "qwen/qwen3-vl-30b-a3b-thinking": {
+      "inputPerMillionTokens": 0.13,
+      "outputPerMillionTokens": 1.56
+    },
+    "qwen/qwen3-vl-30b-a3b-instruct": {
+      "inputPerMillionTokens": 0.13,
+      "outputPerMillionTokens": 0.52
+    },
+    "openai/gpt-5-pro": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 120
+    },
+    "z-ai/glm-4.6": {
+      "inputPerMillionTokens": 0.43,
+      "outputPerMillionTokens": 1.74,
+      "cachedInputDiscount": 0.18604651162790697
+    },
+    "anthropic/claude-sonnet-4.5": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "deepseek/deepseek-v3.2-exp": {
+      "inputPerMillionTokens": 0.27,
+      "outputPerMillionTokens": 0.41
+    },
+    "thedrummer/cydonia-24b-v4.1": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 0.5,
+      "cachedInputDiscount": 0.5
+    },
+    "relace/relace-apply-3": {
+      "inputPerMillionTokens": 0.85,
+      "outputPerMillionTokens": 1.25
+    },
+    "google/gemini-2.5-flash-lite-preview-09-2025": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.1
+    },
+    "qwen/qwen3-vl-235b-a22b-thinking": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 2.6
+    },
+    "qwen/qwen3-vl-235b-a22b-instruct": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 0.88,
+      "cachedInputDiscount": 0.55
+    },
+    "qwen/qwen3-max": {
+      "inputPerMillionTokens": 0.78,
+      "outputPerMillionTokens": 3.9,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "qwen/qwen3-coder-plus": {
+      "inputPerMillionTokens": 0.65,
+      "outputPerMillionTokens": 3.25,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "openai/gpt-5-codex": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "deepseek/deepseek-v3.1-terminus": {
+      "inputPerMillionTokens": 0.27,
+      "outputPerMillionTokens": 0.95,
+      "cachedInputDiscount": 0.48148148148148145
+    },
+    "alibaba/tongyi-deepresearch-30b-a3b": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 0.44999999999999996,
+      "cachedInputDiscount": 1
+    },
+    "qwen/qwen3-coder-flash": {
+      "inputPerMillionTokens": 0.195,
+      "outputPerMillionTokens": 0.975,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "qwen/qwen3-next-80b-a3b-thinking": {
+      "inputPerMillionTokens": 0.0975,
+      "outputPerMillionTokens": 0.78
+    },
+    "qwen/qwen3-next-80b-a3b-instruct:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "qwen/qwen3-next-80b-a3b-instruct": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 1.1
+    },
+    "qwen/qwen-plus-2025-07-28:thinking": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 0.78
+    },
+    "qwen/qwen-plus-2025-07-28": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 0.78
+    },
+    "nvidia/nemotron-nano-9b-v2:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "nvidia/nemotron-nano-9b-v2": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.16
+    },
+    "moonshotai/kimi-k2-0905": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.5
+    },
+    "qwen/qwen3-30b-a3b-thinking-2507": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 1
+    },
+    "nousresearch/hermes-4-70b": {
+      "inputPerMillionTokens": 0.13,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "nousresearch/hermes-4-405b": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 3
+    },
+    "deepseek/deepseek-chat-v3.1": {
+      "inputPerMillionTokens": 0.21,
+      "outputPerMillionTokens": 0.7899999999999999,
+      "cachedInputDiscount": 0.6190476190476191
+    },
+    "openai/gpt-4o-audio-preview": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "mistralai/mistral-medium-3.1": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.1
+    },
+    "baidu/ernie-4.5-21b-a3b": {
+      "inputPerMillionTokens": 0.07,
+      "outputPerMillionTokens": 0.28
+    },
+    "baidu/ernie-4.5-vl-28b-a3b": {
+      "inputPerMillionTokens": 0.14,
+      "outputPerMillionTokens": 0.56
+    },
+    "z-ai/glm-4.5v": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 1.7999999999999998,
+      "cachedInputDiscount": 0.18333333333333335
+    },
+    "ai21/jamba-large-1.7": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8
+    },
+    "openai/gpt-5-chat": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "openai/gpt-5": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "openai/gpt-5-mini": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.1
+    },
+    "openai/gpt-5-nano": {
+      "inputPerMillionTokens": 0.049999999999999996,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.2
+    },
+    "openai/gpt-oss-120b:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "openai/gpt-oss-120b": {
+      "inputPerMillionTokens": 0.039,
+      "outputPerMillionTokens": 0.18
+    },
+    "openai/gpt-oss-20b:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "openai/gpt-oss-20b": {
+      "inputPerMillionTokens": 0.03,
+      "outputPerMillionTokens": 0.14
+    },
+    "anthropic/claude-opus-4.1": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 75,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralai/codestral-2508": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 0.8999999999999999,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "qwen/qwen3-coder-30b-a3b-instruct": {
+      "inputPerMillionTokens": 0.07,
+      "outputPerMillionTokens": 0.27
+    },
+    "qwen/qwen3-30b-a3b-instruct-2507": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 0.3
+    },
+    "z-ai/glm-4.5": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.2,
+      "cachedInputDiscount": 0.18333333333333335
+    },
+    "z-ai/glm-4.5-air:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "z-ai/glm-4.5-air": {
+      "inputPerMillionTokens": 0.13,
+      "outputPerMillionTokens": 0.85,
+      "cachedInputDiscount": 0.1923076923076923
+    },
+    "qwen/qwen3-235b-a22b-thinking-2507": {
+      "inputPerMillionTokens": 0.14950000000000002,
+      "outputPerMillionTokens": 1.495
+    },
+    "z-ai/glm-4-32b": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.09999999999999999
+    },
+    "qwen/qwen3-coder:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "qwen/qwen3-coder": {
+      "inputPerMillionTokens": 0.22,
+      "outputPerMillionTokens": 1.7999999999999998
+    },
+    "bytedance/ui-tars-1.5-7b": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.19999999999999998,
+      "cachedInputDiscount": 1
+    },
+    "google/gemini-2.5-flash-lite": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.1
+    },
+    "qwen/qwen3-235b-a22b-2507": {
+      "inputPerMillionTokens": 0.071,
+      "outputPerMillionTokens": 0.09999999999999999
+    },
+    "switchpoint/router": {
+      "inputPerMillionTokens": 0.85,
+      "outputPerMillionTokens": 3.4
+    },
+    "moonshotai/kimi-k2": {
+      "inputPerMillionTokens": 0.5700000000000001,
+      "outputPerMillionTokens": 2.3
+    },
+    "mistralai/devstral-medium": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralai/devstral-small": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.3,
+      "cachedInputDiscount": 0.1
+    },
+    "cognitivecomputations/dolphin-mistral-24b-venice-edition:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "tencent/hunyuan-a13b-instruct": {
+      "inputPerMillionTokens": 0.14,
+      "outputPerMillionTokens": 0.5700000000000001
+    },
+    "morph/morph-v3-large": {
+      "inputPerMillionTokens": 0.8999999999999999,
+      "outputPerMillionTokens": 1.9
+    },
+    "morph/morph-v3-fast": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 1.2
+    },
+    "baidu/ernie-4.5-vl-424b-a47b": {
+      "inputPerMillionTokens": 0.42,
+      "outputPerMillionTokens": 1.25
+    },
+    "baidu/ernie-4.5-300b-a47b": {
+      "inputPerMillionTokens": 0.28,
+      "outputPerMillionTokens": 1.1
+    },
+    "mistralai/mistral-small-3.2-24b-instruct": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.19999999999999998
+    },
+    "minimax/minimax-m1": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2.2
+    },
+    "google/gemini-2.5-flash": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 2.5,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "google/gemini-2.5-pro": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "openai/o3-pro": {
+      "inputPerMillionTokens": 20,
+      "outputPerMillionTokens": 80
+    },
+    "google/gemini-2.5-pro-preview": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "deepseek/deepseek-r1-0528": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 2.1500000000000004,
+      "cachedInputDiscount": 0.7
+    },
+    "anthropic/claude-opus-4": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 75,
+      "cachedInputDiscount": 0.1
+    },
+    "anthropic/claude-sonnet-4": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "google/gemma-3n-e4b-it": {
+      "inputPerMillionTokens": 0.06,
+      "outputPerMillionTokens": 0.12
+    },
+    "mistralai/mistral-medium-3": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.1
+    },
+    "google/gemini-2.5-pro-preview-05-06": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "arcee-ai/spotlight": {
+      "inputPerMillionTokens": 0.18,
+      "outputPerMillionTokens": 0.18
+    },
+    "arcee-ai/maestro-reasoning": {
+      "inputPerMillionTokens": 0.8999999999999999,
+      "outputPerMillionTokens": 3.3000000000000003
+    },
+    "arcee-ai/virtuoso-large": {
+      "inputPerMillionTokens": 0.75,
+      "outputPerMillionTokens": 1.2
+    },
+    "arcee-ai/coder-large": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 0.7999999999999999
+    },
+    "meta-llama/llama-guard-4-12b": {
+      "inputPerMillionTokens": 0.18,
+      "outputPerMillionTokens": 0.18
+    },
+    "qwen/qwen3-30b-a3b": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 0.44999999999999996
+    },
+    "qwen/qwen3-8b": {
+      "inputPerMillionTokens": 0.049999999999999996,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 1
+    },
+    "qwen/qwen3-14b": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.24
+    },
+    "qwen/qwen3-32b": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.28
+    },
+    "qwen/qwen3-235b-a22b": {
+      "inputPerMillionTokens": 0.45499999999999996,
+      "outputPerMillionTokens": 1.8199999999999998
+    },
+    "openai/o4-mini-high": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4,
+      "cachedInputDiscount": 0.25
+    },
+    "openai/o3": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8,
+      "cachedInputDiscount": 0.25
+    },
+    "openai/o4-mini": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4,
+      "cachedInputDiscount": 0.25
+    },
+    "openai/gpt-4.1": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8,
+      "cachedInputDiscount": 0.25
+    },
+    "openai/gpt-4.1-mini": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 1.5999999999999999,
+      "cachedInputDiscount": 0.25
+    },
+    "openai/gpt-4.1-nano": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.25
+    },
+    "alfredpros/codellama-7b-instruct-solidity": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 1.2
+    },
+    "meta-llama/llama-4-maverick": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6
+    },
+    "meta-llama/llama-4-scout": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.3
+    },
+    "deepseek/deepseek-chat-v3-0324": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 0.77,
+      "cachedInputDiscount": 0.675
+    },
+    "openai/o1-pro": {
+      "inputPerMillionTokens": 150,
+      "outputPerMillionTokens": 600
+    },
+    "mistralai/mistral-small-3.1-24b-instruct": {
+      "inputPerMillionTokens": 0.351,
+      "outputPerMillionTokens": 0.5549999999999999
+    },
+    "google/gemma-3-4b-it": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.08
+    },
+    "google/gemma-3-12b-it": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.13
+    },
+    "cohere/command-a": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "openai/gpt-4o-mini-search-preview": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6
+    },
+    "openai/gpt-4o-search-preview": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "rekaai/reka-flash-3": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.19999999999999998
+    },
+    "google/gemma-3-27b-it": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.16
+    },
+    "thedrummer/skyfall-36b-v2": {
+      "inputPerMillionTokens": 0.55,
+      "outputPerMillionTokens": 0.7999999999999999,
+      "cachedInputDiscount": 0.4545454545454545
+    },
+    "perplexity/sonar-reasoning-pro": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8
+    },
+    "perplexity/sonar-pro": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15
+    },
+    "perplexity/sonar-deep-research": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8
+    },
+    "google/gemini-2.0-flash-lite-001": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.3
+    },
+    "mistralai/mistral-saba": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 0.6,
+      "cachedInputDiscount": 0.1
+    },
+    "meta-llama/llama-guard-3-8b": {
+      "inputPerMillionTokens": 0.48400000000000004,
+      "outputPerMillionTokens": 0.03
+    },
+    "openai/o3-mini-high": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4,
+      "cachedInputDiscount": 0.5
+    },
+    "google/gemini-2.0-flash-001": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.25
+    },
+    "aion-labs/aion-1.0": {
+      "inputPerMillionTokens": 4,
+      "outputPerMillionTokens": 8
+    },
+    "aion-labs/aion-1.0-mini": {
+      "inputPerMillionTokens": 0.7,
+      "outputPerMillionTokens": 1.4
+    },
+    "aion-labs/aion-rp-llama-3.1-8b": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 1.5999999999999999
+    },
+    "qwen/qwen2.5-vl-72b-instruct": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 0.75
+    },
+    "qwen/qwen-plus": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 0.78,
+      "cachedInputDiscount": 0.2
+    },
+    "openai/o3-mini": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4,
+      "cachedInputDiscount": 0.5
+    },
+    "mistralai/mistral-small-24b-instruct-2501": {
+      "inputPerMillionTokens": 0.049999999999999996,
+      "outputPerMillionTokens": 0.08
+    },
+    "deepseek/deepseek-r1-distill-qwen-32b": {
+      "inputPerMillionTokens": 0.29,
+      "outputPerMillionTokens": 0.29
+    },
+    "perplexity/sonar": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 1
+    },
+    "deepseek/deepseek-r1-distill-llama-70b": {
+      "inputPerMillionTokens": 0.7,
+      "outputPerMillionTokens": 0.7999999999999999
+    },
+    "deepseek/deepseek-r1": {
+      "inputPerMillionTokens": 0.7,
+      "outputPerMillionTokens": 2.5
+    },
+    "minimax/minimax-01": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 1.1
+    },
+    "microsoft/phi-4": {
+      "inputPerMillionTokens": 0.065,
+      "outputPerMillionTokens": 0.14
+    },
+    "sao10k/l3.1-70b-hanami-x1": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 3
+    },
+    "deepseek/deepseek-chat": {
+      "inputPerMillionTokens": 0.32,
+      "outputPerMillionTokens": 0.8899999999999999
+    },
+    "sao10k/l3.3-euryale-70b": {
+      "inputPerMillionTokens": 0.65,
+      "outputPerMillionTokens": 0.75
+    },
+    "openai/o1": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 60,
+      "cachedInputDiscount": 0.5
+    },
+    "cohere/command-r7b-12-2024": {
+      "inputPerMillionTokens": 0.0375,
+      "outputPerMillionTokens": 0.15
+    },
+    "meta-llama/llama-3.3-70b-instruct:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "meta-llama/llama-3.3-70b-instruct": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.32
+    },
+    "amazon/nova-lite-v1": {
+      "inputPerMillionTokens": 0.06,
+      "outputPerMillionTokens": 0.24
+    },
+    "amazon/nova-micro-v1": {
+      "inputPerMillionTokens": 0.035,
+      "outputPerMillionTokens": 0.14
+    },
+    "amazon/nova-pro-v1": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 3.1999999999999997
+    },
+    "openai/gpt-4o-2024-11-20": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.5
+    },
+    "mistralai/mistral-large-2411": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralai/mistral-large-2407": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralai/pixtral-large-2411": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "qwen/qwen-2.5-coder-32b-instruct": {
+      "inputPerMillionTokens": 0.66,
+      "outputPerMillionTokens": 1
+    },
+    "thedrummer/unslopnemo-12b": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "anthropic/claude-3.5-haiku": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 4,
+      "cachedInputDiscount": 0.1
+    },
+    "anthracite-org/magnum-v4-72b": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 5
+    },
+    "qwen/qwen-2.5-7b-instruct": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.09999999999999999
+    },
+    "inflection/inflection-3-productivity": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "inflection/inflection-3-pi": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "thedrummer/rocinante-12b": {
+      "inputPerMillionTokens": 0.16999999999999998,
+      "outputPerMillionTokens": 0.43
+    },
+    "meta-llama/llama-3.2-11b-vision-instruct": {
+      "inputPerMillionTokens": 0.245,
+      "outputPerMillionTokens": 0.245
+    },
+    "meta-llama/llama-3.2-1b-instruct": {
+      "inputPerMillionTokens": 0.027,
+      "outputPerMillionTokens": 0.201
+    },
+    "meta-llama/llama-3.2-3b-instruct:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "meta-llama/llama-3.2-3b-instruct": {
+      "inputPerMillionTokens": 0.0509,
+      "outputPerMillionTokens": 0.335
+    },
+    "qwen/qwen-2.5-72b-instruct": {
+      "inputPerMillionTokens": 0.36,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "cohere/command-r-08-2024": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6
+    },
+    "cohere/command-r-plus-08-2024": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "sao10k/l3.1-euryale-70b": {
+      "inputPerMillionTokens": 0.85,
+      "outputPerMillionTokens": 0.85
+    },
+    "nousresearch/hermes-3-llama-3.1-70b": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 0.3
+    },
+    "nousresearch/hermes-3-llama-3.1-405b:free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "nousresearch/hermes-3-llama-3.1-405b": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 1
+    },
+    "sao10k/l3-lunaris-8b": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.049999999999999996
+    },
+    "openai/gpt-4o-2024-08-06": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.5
+    },
+    "meta-llama/llama-3.1-70b-instruct": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "meta-llama/llama-3.1-8b-instruct": {
+      "inputPerMillionTokens": 0.02,
+      "outputPerMillionTokens": 0.049999999999999996
+    },
+    "mistralai/mistral-nemo": {
+      "inputPerMillionTokens": 0.02,
+      "outputPerMillionTokens": 0.03
+    },
+    "openai/gpt-4o-mini-2024-07-18": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6,
+      "cachedInputDiscount": 0.5
+    },
+    "openai/gpt-4o-mini": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6,
+      "cachedInputDiscount": 0.5
+    },
+    "google/gemma-2-27b-it": {
+      "inputPerMillionTokens": 0.65,
+      "outputPerMillionTokens": 0.65
+    },
+    "sao10k/l3-euryale-70b": {
+      "inputPerMillionTokens": 1.48,
+      "outputPerMillionTokens": 1.48
+    },
+    "nousresearch/hermes-2-pro-llama-3-8b": {
+      "inputPerMillionTokens": 0.14,
+      "outputPerMillionTokens": 0.14
+    },
+    "openai/gpt-4o": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "openai/gpt-4o-2024-05-13": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 15
+    },
+    "meta-llama/llama-3-70b-instruct": {
+      "inputPerMillionTokens": 0.51,
+      "outputPerMillionTokens": 0.74
+    },
+    "meta-llama/llama-3-8b-instruct": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.04
+    },
+    "mistralai/mixtral-8x22b-instruct": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "microsoft/wizardlm-2-8x22b": {
+      "inputPerMillionTokens": 0.62,
+      "outputPerMillionTokens": 0.62
+    },
+    "openai/gpt-4-turbo": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "anthropic/claude-3-haiku": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 1.25,
+      "cachedInputDiscount": 0.12
+    },
+    "mistralai/mistral-large": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "openai/gpt-3.5-turbo-0613": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 2
+    },
+    "openai/gpt-4-turbo-preview": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "openai/gpt-4-1106-preview": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "mistralai/mistral-7b-instruct-v0.1": {
+      "inputPerMillionTokens": 0.11,
+      "outputPerMillionTokens": 0.19
+    },
+    "openai/gpt-3.5-turbo-instruct": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 2
+    },
+    "openai/gpt-3.5-turbo-16k": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 4
+    },
+    "mancer/weaver": {
+      "inputPerMillionTokens": 0.75,
+      "outputPerMillionTokens": 1
+    },
+    "undi95/remm-slerp-l2-13b": {
+      "inputPerMillionTokens": 0.44999999999999996,
+      "outputPerMillionTokens": 0.65
+    },
+    "gryphe/mythomax-l2-13b": {
+      "inputPerMillionTokens": 0.06,
+      "outputPerMillionTokens": 0.06
+    },
+    "openai/gpt-4-0314": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 60
+    },
+    "openai/gpt-3.5-turbo": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 1.5
+    },
+    "openai/gpt-4": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 60
+    }
+  },
+  "modelsByNormalized": {
+    "qwenqwen3.7-max": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 7.5
+    },
+    "grok-build-0.1": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.2
+    },
+    "gemini-3.5-flash": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 9,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "claude-opus-4.7-fast": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 150,
+      "cachedInputDiscount": 0.1
+    },
+    "perceptronperceptron-mk1": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 1.5
+    },
+    "inclusionairing-2.6-1t": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.625,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "gemini-3.1-flash-lite": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 1.5,
+      "cachedInputDiscount": 0.1
+    },
+    "baiducobuddyfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "gpt-chat-latest": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 30,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "grok-4.3": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 2.5,
+      "cachedInputDiscount": 0.15999999999999998
+    },
+    "ibm-granitegranite-4.1-8b": {
+      "inputPerMillionTokens": 0.049999999999999996,
+      "outputPerMillionTokens": 0.09999999999999999,
+      "cachedInputDiscount": 1
+    },
+    "mistralaimistral-medium-3-5": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 7.5
+    },
+    "openrouterowl-alpha": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "nvidianemotron-3-nano-omni-30b-a3b-reasoningfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "poolsidelaguna-xs.2free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "poolsidelaguna-m.1free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "anthropicclaude-haiku-latest": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 5,
+      "cachedInputDiscount": 0.1
+    },
+    "openaigpt-mini-latest": {
+      "inputPerMillionTokens": 0.75,
+      "outputPerMillionTokens": 4.5,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "googlegemini-pro-latest": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 12,
+      "cachedInputDiscount": 0.1
+    },
+    "moonshotaikimi-latest": {
+      "inputPerMillionTokens": 0.73,
+      "outputPerMillionTokens": 3.49,
+      "cachedInputDiscount": 0.3424657534246575
+    },
+    "googlegemini-flash-latest": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 9,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "anthropicclaude-sonnet-latest": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "openaigpt-latest": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 30,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "qwenqwen3.5-plus-20260420": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 1.7999999999999998
+    },
+    "qwenqwen3.6-flash": {
+      "inputPerMillionTokens": 0.12375000000000001,
+      "outputPerMillionTokens": 0.7424999999999999
+    },
+    "qwenqwen3.6-35b-a3b": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 1,
+      "cachedInputDiscount": 0.3333333333333333
+    },
+    "qwenqwen3.6-max-preview": {
+      "inputPerMillionTokens": 1.04,
+      "outputPerMillionTokens": 6.24
+    },
+    "qwenqwen3.6-27b": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 3.1999999999999997
+    },
+    "gpt-5.5-pro": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 180
+    },
+    "gpt-5.5": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 30,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "deepseek-v4-pro": {
+      "inputPerMillionTokens": 0.435,
+      "outputPerMillionTokens": 0.87,
+      "cachedInputDiscount": 0.008333333333333333
+    },
+    "deepseek-v4-flashfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "deepseek-v4-flash": {
+      "inputPerMillionTokens": 0.112,
+      "outputPerMillionTokens": 0.224,
+      "cachedInputDiscount": 0.19642857142857142
+    },
+    "inclusionailing-2.6-1t": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.625,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "tencenthy3-preview": {
+      "inputPerMillionTokens": 0.06599999999999999,
+      "outputPerMillionTokens": 0.26,
+      "cachedInputDiscount": 0.43939393939393945
+    },
+    "xiaomimimo-v2.5-pro": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 3,
+      "cachedInputDiscount": 0.2
+    },
+    "xiaomimimo-v2.5": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.2
+    },
+    "gpt-5.4-image-2": {
+      "inputPerMillionTokens": 8,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.25
+    },
+    "inclusionailing-2.6-flash": {
+      "inputPerMillionTokens": 0.01,
+      "outputPerMillionTokens": 0.03,
+      "cachedInputDiscount": 0.2
+    },
+    "anthropicclaude-opus-latest": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 25,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "baiduqianfan-ocr-fast": {
+      "inputPerMillionTokens": 0.6799999999999999,
+      "outputPerMillionTokens": 2.81
+    },
+    "moonshotaikimi-k2.6": {
+      "inputPerMillionTokens": 0.73,
+      "outputPerMillionTokens": 3.49,
+      "cachedInputDiscount": 0.3424657534246575
+    },
+    "claude-opus-4.7": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 25,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "claude-opus-4.6-fast": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 150,
+      "cachedInputDiscount": 0.1
+    },
+    "z-aiglm-5.1": {
+      "inputPerMillionTokens": 0.98,
+      "outputPerMillionTokens": 3.08,
+      "cachedInputDiscount": 0.18571428571428572
+    },
+    "gemma-4-26b-a4b-itfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "gemma-4-26b-a4b-it": {
+      "inputPerMillionTokens": 0.06,
+      "outputPerMillionTokens": 0.33
+    },
+    "gemma-4-31b-itfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "gemma-4-31b-it": {
+      "inputPerMillionTokens": 0.12,
+      "outputPerMillionTokens": 0.37
+    },
+    "qwenqwen3.6-plus": {
+      "inputPerMillionTokens": 0.1794,
+      "outputPerMillionTokens": 1.07315
+    },
+    "z-aiglm-5v-turbo": {
+      "inputPerMillionTokens": 1.2,
+      "outputPerMillionTokens": 4,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "arcee-aitrinity-large-thinkingfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "arcee-aitrinity-large-thinking": {
+      "inputPerMillionTokens": 0.22,
+      "outputPerMillionTokens": 0.85,
+      "cachedInputDiscount": 0.2727272727272727
+    },
+    "grok-4.20-multi-agent": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "grok-4.20": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 2.5,
+      "cachedInputDiscount": 0.15999999999999998
+    },
+    "lyria-3-pro-preview": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "lyria-3-clip-preview": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "kwaipilotkat-coder-pro-v2": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 1.2,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "rekaaireka-edge": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.09999999999999999
+    },
+    "xiaomimimo-v2-omni": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.2
+    },
+    "xiaomimimo-v2-pro": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 3,
+      "cachedInputDiscount": 0.2
+    },
+    "minimaxminimax-m2.7": {
+      "inputPerMillionTokens": 0.27899999999999997,
+      "outputPerMillionTokens": 1.2
+    },
+    "gpt-5.4-nano": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 1.25,
+      "cachedInputDiscount": 0.1
+    },
+    "gpt-5.4-mini": {
+      "inputPerMillionTokens": 0.75,
+      "outputPerMillionTokens": 4.5,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "mistralaimistral-small-2603": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "z-aiglm-5-turbo": {
+      "inputPerMillionTokens": 1.2,
+      "outputPerMillionTokens": 4,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "nvidianemotron-3-super-120b-a12bfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "nvidianemotron-3-super-120b-a12b": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 0.44999999999999996
+    },
+    "bytedance-seedseed-2.0-lite": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 2
+    },
+    "qwenqwen3.5-9b": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.15
+    },
+    "gpt-5.4-pro": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 180
+    },
+    "gpt-5.4": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "inceptionmercury-2": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 0.75,
+      "cachedInputDiscount": 0.1
+    },
+    "gpt-5.3-chat": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "gemini-3.1-flash-lite-preview": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 1.5,
+      "cachedInputDiscount": 0.1
+    },
+    "bytedance-seedseed-2.0-mini": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "gemini-3.1-flash-image-preview": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 3
+    },
+    "qwenqwen3.5-35b-a3b": {
+      "inputPerMillionTokens": 0.13899999999999998,
+      "outputPerMillionTokens": 1
+    },
+    "qwenqwen3.5-27b": {
+      "inputPerMillionTokens": 0.195,
+      "outputPerMillionTokens": 1.56
+    },
+    "qwenqwen3.5-122b-a10b": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 2.08
+    },
+    "qwenqwen3.5-flash-02-23": {
+      "inputPerMillionTokens": 0.065,
+      "outputPerMillionTokens": 0.26
+    },
+    "liquidlfm-2-24b-a2b": {
+      "inputPerMillionTokens": 0.03,
+      "outputPerMillionTokens": 0.12
+    },
+    "gemini-3.1-pro-preview-customtools": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 12,
+      "cachedInputDiscount": 0.1
+    },
+    "gpt-5.3-codex": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "aion-labsaion-2.0": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 1.5999999999999999,
+      "cachedInputDiscount": 0.25
+    },
+    "gemini-3.1-pro-preview": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 12,
+      "cachedInputDiscount": 0.1
+    },
+    "claude-sonnet-4.6": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "qwenqwen3.5-plus-02-15": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 1.56
+    },
+    "qwenqwen3.5-397b-a17b": {
+      "inputPerMillionTokens": 0.39,
+      "outputPerMillionTokens": 2.34
+    },
+    "minimaxminimax-m2.5free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "minimaxminimax-m2.5": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 1.15
+    },
+    "z-aiglm-5": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 1.92,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "qwenqwen3-max-thinking": {
+      "inputPerMillionTokens": 0.78,
+      "outputPerMillionTokens": 3.9
+    },
+    "claude-opus-4.6": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 25,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "qwenqwen3-coder-next": {
+      "inputPerMillionTokens": 0.11,
+      "outputPerMillionTokens": 0.7999999999999999,
+      "cachedInputDiscount": 0.6363636363636364
+    },
+    "openrouterfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "stepfunstep-3.5-flash": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 0.3,
+      "cachedInputDiscount": 0.22222222222222224
+    },
+    "moonshotaikimi-k2.5": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 1.9,
+      "cachedInputDiscount": 0.225
+    },
+    "upstagesolar-pro-3": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "minimaxminimax-m2-her": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 1.2,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "writerpalmyra-x5": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 6
+    },
+    "liquidlfm-2.5-1.2b-thinkingfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "liquidlfm-2.5-1.2b-instructfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "gpt-audio": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-audio-mini": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.4
+    },
+    "z-aiglm-4.7-flash": {
+      "inputPerMillionTokens": 0.06,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.16666666666666669
+    },
+    "gpt-5.2-codex": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "bytedance-seedseed-1.6-flash": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.3
+    },
+    "bytedance-seedseed-1.6": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 2
+    },
+    "minimaxminimax-m2.1": {
+      "inputPerMillionTokens": 0.29,
+      "outputPerMillionTokens": 0.95,
+      "cachedInputDiscount": 0.10344827586206896
+    },
+    "z-aiglm-4.7": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 1.75,
+      "cachedInputDiscount": 0.2
+    },
+    "gemini-3-flash-preview": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 3,
+      "cachedInputDiscount": 0.1
+    },
+    "xiaomimimo-v2-flash": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.3,
+      "cachedInputDiscount": 0.1
+    },
+    "nvidianemotron-3-nano-30b-a3bfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "nvidianemotron-3-nano-30b-a3b": {
+      "inputPerMillionTokens": 0.049999999999999996,
+      "outputPerMillionTokens": 0.19999999999999998
+    },
+    "gpt-5.2-chat": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "gpt-5.2-pro": {
+      "inputPerMillionTokens": 21,
+      "outputPerMillionTokens": 168
+    },
+    "gpt-5.2": {
+      "inputPerMillionTokens": 1.75,
+      "outputPerMillionTokens": 14,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "mistralaidevstral-2512": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.1
+    },
+    "relacerelace-search": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 3
+    },
+    "z-aiglm-4.6v": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 0.8999999999999999,
+      "cachedInputDiscount": 0.16666666666666666
+    },
+    "nex-agideepseek-v3.1-nex-n1": {
+      "inputPerMillionTokens": 0.135,
+      "outputPerMillionTokens": 0.5
+    },
+    "essentialairnj-1-instruct": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.15
+    },
+    "gpt-5.1-codex-max": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "amazonnova-2-lite-v1": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 2.5
+    },
+    "mistralaiministral-14b-2512": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 0.19999999999999998,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralaiministral-8b-2512": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "mistralaiministral-3b-2512": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.09999999999999999,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralaimistral-large-2512": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 1.5,
+      "cachedInputDiscount": 0.1
+    },
+    "arcee-aitrinity-mini": {
+      "inputPerMillionTokens": 0.045,
+      "outputPerMillionTokens": 0.15
+    },
+    "deepseek-v3.2-speciale": {
+      "inputPerMillionTokens": 0.28700000000000003,
+      "outputPerMillionTokens": 0.431,
+      "cachedInputDiscount": 0.20209059233449478
+    },
+    "deepseek-v3.2": {
+      "inputPerMillionTokens": 0.252,
+      "outputPerMillionTokens": 0.378,
+      "cachedInputDiscount": 0.1
+    },
+    "prime-intellectintellect-3": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 1.1
+    },
+    "claude-opus-4.5": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 25,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "allenaiolmo-3-32b-think": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.5
+    },
+    "gemini-3-pro-image-preview": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 12,
+      "cachedInputDiscount": 0.1
+    },
+    "deepcogitocogito-v2.1-671b": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 1.25
+    },
+    "gpt-5.1": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.104
+    },
+    "gpt-5.1-chat": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "gpt-5.1-codex": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "gpt-5.1-codex-mini": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.12
+    },
+    "moonshotaikimi-k2-thinking": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.5
+    },
+    "amazonnova-premier-v1": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 12.5,
+      "cachedInputDiscount": 0.25
+    },
+    "perplexitysonar-pro-search": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15
+    },
+    "mistralaivoxtral-small-24b-2507": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.3,
+      "cachedInputDiscount": 0.1
+    },
+    "gpt-oss-safeguard-20b": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.3,
+      "cachedInputDiscount": 0.49333333333333335
+    },
+    "nvidianemotron-nano-12b-v2-vlfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "minimaxminimax-m2": {
+      "inputPerMillionTokens": 0.255,
+      "outputPerMillionTokens": 1,
+      "cachedInputDiscount": 0.11764705882352941
+    },
+    "qwenqwen3-vl-32b-instruct": {
+      "inputPerMillionTokens": 0.10400000000000001,
+      "outputPerMillionTokens": 0.41600000000000004
+    },
+    "ibm-granitegranite-4.0-h-micro": {
+      "inputPerMillionTokens": 0.017,
+      "outputPerMillionTokens": 0.112
+    },
+    "microsoftphi-4-mini-instruct": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.35,
+      "cachedInputDiscount": 1
+    },
+    "gpt-5-image-mini": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "claude-haiku-4.5": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 5,
+      "cachedInputDiscount": 0.1
+    },
+    "qwenqwen3-vl-8b-thinking": {
+      "inputPerMillionTokens": 0.117,
+      "outputPerMillionTokens": 1.365
+    },
+    "qwenqwen3-vl-8b-instruct": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.5
+    },
+    "gpt-5-image": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.125
+    },
+    "o3-deep-research": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 40,
+      "cachedInputDiscount": 0.25
+    },
+    "o4-mini-deep-research": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8,
+      "cachedInputDiscount": 0.25
+    },
+    "nvidiallama-3.3-nemotron-super-49b-v1.5": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "baiduernie-4.5-21b-a3b-thinking": {
+      "inputPerMillionTokens": 0.07,
+      "outputPerMillionTokens": 0.28
+    },
+    "gemini-2.5-flash-image": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 2.5,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "qwenqwen3-vl-30b-a3b-thinking": {
+      "inputPerMillionTokens": 0.13,
+      "outputPerMillionTokens": 1.56
+    },
+    "qwenqwen3-vl-30b-a3b-instruct": {
+      "inputPerMillionTokens": 0.13,
+      "outputPerMillionTokens": 0.52
+    },
+    "gpt-5-pro": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 120
+    },
+    "z-aiglm-4.6": {
+      "inputPerMillionTokens": 0.43,
+      "outputPerMillionTokens": 1.74,
+      "cachedInputDiscount": 0.18604651162790697
+    },
+    "claude-sonnet-4.5": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "deepseek-v3.2-exp": {
+      "inputPerMillionTokens": 0.27,
+      "outputPerMillionTokens": 0.41
+    },
+    "thedrummercydonia-24b-v4.1": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 0.5,
+      "cachedInputDiscount": 0.5
+    },
+    "relacerelace-apply-3": {
+      "inputPerMillionTokens": 0.85,
+      "outputPerMillionTokens": 1.25
+    },
+    "gemini-2.5-flash-lite-preview-09-2025": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.1
+    },
+    "qwenqwen3-vl-235b-a22b-thinking": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 2.6
+    },
+    "qwenqwen3-vl-235b-a22b-instruct": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 0.88,
+      "cachedInputDiscount": 0.55
+    },
+    "qwenqwen3-max": {
+      "inputPerMillionTokens": 0.78,
+      "outputPerMillionTokens": 3.9,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "qwenqwen3-coder-plus": {
+      "inputPerMillionTokens": 0.65,
+      "outputPerMillionTokens": 3.25,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "gpt-5-codex": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "deepseek-v3.1-terminus": {
+      "inputPerMillionTokens": 0.27,
+      "outputPerMillionTokens": 0.95,
+      "cachedInputDiscount": 0.48148148148148145
+    },
+    "alibabatongyi-deepresearch-30b-a3b": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 0.44999999999999996,
+      "cachedInputDiscount": 1
+    },
+    "qwenqwen3-coder-flash": {
+      "inputPerMillionTokens": 0.195,
+      "outputPerMillionTokens": 0.975,
+      "cachedInputDiscount": 0.19999999999999998
+    },
+    "qwenqwen3-next-80b-a3b-thinking": {
+      "inputPerMillionTokens": 0.0975,
+      "outputPerMillionTokens": 0.78
+    },
+    "qwenqwen3-next-80b-a3b-instructfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "qwenqwen3-next-80b-a3b-instruct": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 1.1
+    },
+    "qwenqwen-plus-2025-07-28thinking": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 0.78
+    },
+    "qwenqwen-plus-2025-07-28": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 0.78
+    },
+    "nvidianemotron-nano-9b-v2free": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "nvidianemotron-nano-9b-v2": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.16
+    },
+    "moonshotaikimi-k2-0905": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.5
+    },
+    "qwenqwen3-30b-a3b-thinking-2507": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 1
+    },
+    "nousresearchhermes-4-70b": {
+      "inputPerMillionTokens": 0.13,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "nousresearchhermes-4-405b": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 3
+    },
+    "deepseek-chat-v3.1": {
+      "inputPerMillionTokens": 0.21,
+      "outputPerMillionTokens": 0.7899999999999999,
+      "cachedInputDiscount": 0.6190476190476191
+    },
+    "gpt-4o-audio-preview": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "mistralaimistral-medium-3.1": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.1
+    },
+    "baiduernie-4.5-21b-a3b": {
+      "inputPerMillionTokens": 0.07,
+      "outputPerMillionTokens": 0.28
+    },
+    "baiduernie-4.5-vl-28b-a3b": {
+      "inputPerMillionTokens": 0.14,
+      "outputPerMillionTokens": 0.56
+    },
+    "z-aiglm-4.5v": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 1.7999999999999998,
+      "cachedInputDiscount": 0.18333333333333335
+    },
+    "ai21jamba-large-1.7": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8
+    },
+    "gpt-5-chat": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "gpt-5": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "gpt-5-mini": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.1
+    },
+    "gpt-5-nano": {
+      "inputPerMillionTokens": 0.049999999999999996,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.2
+    },
+    "gpt-oss-120bfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "gpt-oss-120b": {
+      "inputPerMillionTokens": 0.039,
+      "outputPerMillionTokens": 0.18
+    },
+    "gpt-oss-20bfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "gpt-oss-20b": {
+      "inputPerMillionTokens": 0.03,
+      "outputPerMillionTokens": 0.14
+    },
+    "claude-opus-4.1": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 75,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralaicodestral-2508": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 0.8999999999999999,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "qwenqwen3-coder-30b-a3b-instruct": {
+      "inputPerMillionTokens": 0.07,
+      "outputPerMillionTokens": 0.27
+    },
+    "qwenqwen3-30b-a3b-instruct-2507": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 0.3
+    },
+    "z-aiglm-4.5": {
+      "inputPerMillionTokens": 0.6,
+      "outputPerMillionTokens": 2.2,
+      "cachedInputDiscount": 0.18333333333333335
+    },
+    "z-aiglm-4.5-airfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "z-aiglm-4.5-air": {
+      "inputPerMillionTokens": 0.13,
+      "outputPerMillionTokens": 0.85,
+      "cachedInputDiscount": 0.1923076923076923
+    },
+    "qwenqwen3-235b-a22b-thinking-2507": {
+      "inputPerMillionTokens": 0.14950000000000002,
+      "outputPerMillionTokens": 1.495
+    },
+    "z-aiglm-4-32b": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.09999999999999999
+    },
+    "qwenqwen3-coderfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "qwenqwen3-coder": {
+      "inputPerMillionTokens": 0.22,
+      "outputPerMillionTokens": 1.7999999999999998
+    },
+    "bytedanceui-tars-1.5-7b": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.19999999999999998,
+      "cachedInputDiscount": 1
+    },
+    "gemini-2.5-flash-lite": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.1
+    },
+    "qwenqwen3-235b-a22b-2507": {
+      "inputPerMillionTokens": 0.071,
+      "outputPerMillionTokens": 0.09999999999999999
+    },
+    "switchpointrouter": {
+      "inputPerMillionTokens": 0.85,
+      "outputPerMillionTokens": 3.4
+    },
+    "moonshotaikimi-k2": {
+      "inputPerMillionTokens": 0.5700000000000001,
+      "outputPerMillionTokens": 2.3
+    },
+    "mistralaidevstral-medium": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralaidevstral-small": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.3,
+      "cachedInputDiscount": 0.1
+    },
+    "cognitivecomputationsdolphin-mistral-24b-venice-editionfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "tencenthunyuan-a13b-instruct": {
+      "inputPerMillionTokens": 0.14,
+      "outputPerMillionTokens": 0.5700000000000001
+    },
+    "morphmorph-v3-large": {
+      "inputPerMillionTokens": 0.8999999999999999,
+      "outputPerMillionTokens": 1.9
+    },
+    "morphmorph-v3-fast": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 1.2
+    },
+    "baiduernie-4.5-vl-424b-a47b": {
+      "inputPerMillionTokens": 0.42,
+      "outputPerMillionTokens": 1.25
+    },
+    "baiduernie-4.5-300b-a47b": {
+      "inputPerMillionTokens": 0.28,
+      "outputPerMillionTokens": 1.1
+    },
+    "mistralaimistral-small-3.2-24b-instruct": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.19999999999999998
+    },
+    "minimaxminimax-m1": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2.2
+    },
+    "gemini-2.5-flash": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 2.5,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "gemini-2.5-pro": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "o3-pro": {
+      "inputPerMillionTokens": 20,
+      "outputPerMillionTokens": 80
+    },
+    "gemini-2.5-pro-preview": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "deepseek-r1-0528": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 2.1500000000000004,
+      "cachedInputDiscount": 0.7
+    },
+    "claude-opus-4": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 75,
+      "cachedInputDiscount": 0.1
+    },
+    "claude-sonnet-4": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "gemma-3n-e4b-it": {
+      "inputPerMillionTokens": 0.06,
+      "outputPerMillionTokens": 0.12
+    },
+    "mistralaimistral-medium-3": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 2,
+      "cachedInputDiscount": 0.1
+    },
+    "gemini-2.5-pro-preview-05-06": {
+      "inputPerMillionTokens": 1.25,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.09999999999999999
+    },
+    "arcee-aispotlight": {
+      "inputPerMillionTokens": 0.18,
+      "outputPerMillionTokens": 0.18
+    },
+    "arcee-aimaestro-reasoning": {
+      "inputPerMillionTokens": 0.8999999999999999,
+      "outputPerMillionTokens": 3.3000000000000003
+    },
+    "arcee-aivirtuoso-large": {
+      "inputPerMillionTokens": 0.75,
+      "outputPerMillionTokens": 1.2
+    },
+    "arcee-aicoder-large": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 0.7999999999999999
+    },
+    "llama-guard-4-12b": {
+      "inputPerMillionTokens": 0.18,
+      "outputPerMillionTokens": 0.18
+    },
+    "qwenqwen3-30b-a3b": {
+      "inputPerMillionTokens": 0.09,
+      "outputPerMillionTokens": 0.44999999999999996
+    },
+    "qwenqwen3-8b": {
+      "inputPerMillionTokens": 0.049999999999999996,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 1
+    },
+    "qwenqwen3-14b": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.24
+    },
+    "qwenqwen3-32b": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.28
+    },
+    "qwenqwen3-235b-a22b": {
+      "inputPerMillionTokens": 0.45499999999999996,
+      "outputPerMillionTokens": 1.8199999999999998
+    },
+    "o4-mini-high": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4,
+      "cachedInputDiscount": 0.25
+    },
+    "o3": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8,
+      "cachedInputDiscount": 0.25
+    },
+    "o4-mini": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4,
+      "cachedInputDiscount": 0.25
+    },
+    "gpt-4.1": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8,
+      "cachedInputDiscount": 0.25
+    },
+    "gpt-4.1-mini": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 1.5999999999999999,
+      "cachedInputDiscount": 0.25
+    },
+    "gpt-4.1-nano": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.25
+    },
+    "alfredproscodellama-7b-instruct-solidity": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 1.2
+    },
+    "llama-4-maverick": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6
+    },
+    "llama-4-scout": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.3
+    },
+    "deepseek-chat-v3-0324": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 0.77,
+      "cachedInputDiscount": 0.675
+    },
+    "o1-pro": {
+      "inputPerMillionTokens": 150,
+      "outputPerMillionTokens": 600
+    },
+    "mistralaimistral-small-3.1-24b-instruct": {
+      "inputPerMillionTokens": 0.351,
+      "outputPerMillionTokens": 0.5549999999999999
+    },
+    "gemma-3-4b-it": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.08
+    },
+    "gemma-3-12b-it": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.13
+    },
+    "coherecommand-a": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-4o-mini-search-preview": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6
+    },
+    "gpt-4o-search-preview": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "rekaaireka-flash-3": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.19999999999999998
+    },
+    "gemma-3-27b-it": {
+      "inputPerMillionTokens": 0.08,
+      "outputPerMillionTokens": 0.16
+    },
+    "thedrummerskyfall-36b-v2": {
+      "inputPerMillionTokens": 0.55,
+      "outputPerMillionTokens": 0.7999999999999999,
+      "cachedInputDiscount": 0.4545454545454545
+    },
+    "perplexitysonar-reasoning-pro": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8
+    },
+    "perplexitysonar-pro": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 15
+    },
+    "perplexitysonar-deep-research": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 8
+    },
+    "gemini-2.0-flash-lite-001": {
+      "inputPerMillionTokens": 0.075,
+      "outputPerMillionTokens": 0.3
+    },
+    "mistralaimistral-saba": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 0.6,
+      "cachedInputDiscount": 0.1
+    },
+    "llama-guard-3-8b": {
+      "inputPerMillionTokens": 0.48400000000000004,
+      "outputPerMillionTokens": 0.03
+    },
+    "o3-mini-high": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4,
+      "cachedInputDiscount": 0.5
+    },
+    "gemini-2.0-flash-001": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.39999999999999997,
+      "cachedInputDiscount": 0.25
+    },
+    "aion-labsaion-1.0": {
+      "inputPerMillionTokens": 4,
+      "outputPerMillionTokens": 8
+    },
+    "aion-labsaion-1.0-mini": {
+      "inputPerMillionTokens": 0.7,
+      "outputPerMillionTokens": 1.4
+    },
+    "aion-labsaion-rp-llama-3.1-8b": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 1.5999999999999999
+    },
+    "qwenqwen2.5-vl-72b-instruct": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 0.75
+    },
+    "qwenqwen-plus": {
+      "inputPerMillionTokens": 0.26,
+      "outputPerMillionTokens": 0.78,
+      "cachedInputDiscount": 0.2
+    },
+    "o3-mini": {
+      "inputPerMillionTokens": 1.1,
+      "outputPerMillionTokens": 4.4,
+      "cachedInputDiscount": 0.5
+    },
+    "mistralaimistral-small-24b-instruct-2501": {
+      "inputPerMillionTokens": 0.049999999999999996,
+      "outputPerMillionTokens": 0.08
+    },
+    "deepseek-r1-distill-qwen-32b": {
+      "inputPerMillionTokens": 0.29,
+      "outputPerMillionTokens": 0.29
+    },
+    "perplexitysonar": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 1
+    },
+    "deepseek-r1-distill-llama-70b": {
+      "inputPerMillionTokens": 0.7,
+      "outputPerMillionTokens": 0.7999999999999999
+    },
+    "deepseek-r1": {
+      "inputPerMillionTokens": 0.7,
+      "outputPerMillionTokens": 2.5
+    },
+    "minimaxminimax-01": {
+      "inputPerMillionTokens": 0.19999999999999998,
+      "outputPerMillionTokens": 1.1
+    },
+    "microsoftphi-4": {
+      "inputPerMillionTokens": 0.065,
+      "outputPerMillionTokens": 0.14
+    },
+    "sao10kl3.1-70b-hanami-x1": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 3
+    },
+    "deepseek-chat": {
+      "inputPerMillionTokens": 0.32,
+      "outputPerMillionTokens": 0.8899999999999999
+    },
+    "sao10kl3.3-euryale-70b": {
+      "inputPerMillionTokens": 0.65,
+      "outputPerMillionTokens": 0.75
+    },
+    "o1": {
+      "inputPerMillionTokens": 15,
+      "outputPerMillionTokens": 60,
+      "cachedInputDiscount": 0.5
+    },
+    "coherecommand-r7b-12-2024": {
+      "inputPerMillionTokens": 0.0375,
+      "outputPerMillionTokens": 0.15
+    },
+    "llama-3.3-70b-instructfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "llama-3.3-70b-instruct": {
+      "inputPerMillionTokens": 0.09999999999999999,
+      "outputPerMillionTokens": 0.32
+    },
+    "amazonnova-lite-v1": {
+      "inputPerMillionTokens": 0.06,
+      "outputPerMillionTokens": 0.24
+    },
+    "amazonnova-micro-v1": {
+      "inputPerMillionTokens": 0.035,
+      "outputPerMillionTokens": 0.14
+    },
+    "amazonnova-pro-v1": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 3.1999999999999997
+    },
+    "gpt-4o-2024-11-20": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.5
+    },
+    "mistralaimistral-large-2411": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralaimistral-large-2407": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "mistralaipixtral-large-2411": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "qwenqwen-2.5-coder-32b-instruct": {
+      "inputPerMillionTokens": 0.66,
+      "outputPerMillionTokens": 1
+    },
+    "thedrummerunslopnemo-12b": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "claude-3.5-haiku": {
+      "inputPerMillionTokens": 0.7999999999999999,
+      "outputPerMillionTokens": 4,
+      "cachedInputDiscount": 0.1
+    },
+    "anthracite-orgmagnum-v4-72b": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 5
+    },
+    "qwenqwen-2.5-7b-instruct": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.09999999999999999
+    },
+    "inflectioninflection-3-productivity": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "inflectioninflection-3-pi": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "thedrummerrocinante-12b": {
+      "inputPerMillionTokens": 0.16999999999999998,
+      "outputPerMillionTokens": 0.43
+    },
+    "llama-3.2-11b-vision-instruct": {
+      "inputPerMillionTokens": 0.245,
+      "outputPerMillionTokens": 0.245
+    },
+    "llama-3.2-1b-instruct": {
+      "inputPerMillionTokens": 0.027,
+      "outputPerMillionTokens": 0.201
+    },
+    "llama-3.2-3b-instructfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "llama-3.2-3b-instruct": {
+      "inputPerMillionTokens": 0.0509,
+      "outputPerMillionTokens": 0.335
+    },
+    "qwenqwen-2.5-72b-instruct": {
+      "inputPerMillionTokens": 0.36,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "coherecommand-r-08-2024": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6
+    },
+    "coherecommand-r-plus-08-2024": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "sao10kl3.1-euryale-70b": {
+      "inputPerMillionTokens": 0.85,
+      "outputPerMillionTokens": 0.85
+    },
+    "nousresearchhermes-3-llama-3.1-70b": {
+      "inputPerMillionTokens": 0.3,
+      "outputPerMillionTokens": 0.3
+    },
+    "nousresearchhermes-3-llama-3.1-405bfree": {
+      "inputPerMillionTokens": 0,
+      "outputPerMillionTokens": 0
+    },
+    "nousresearchhermes-3-llama-3.1-405b": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 1
+    },
+    "sao10kl3-lunaris-8b": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.049999999999999996
+    },
+    "gpt-4o-2024-08-06": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10,
+      "cachedInputDiscount": 0.5
+    },
+    "llama-3.1-70b-instruct": {
+      "inputPerMillionTokens": 0.39999999999999997,
+      "outputPerMillionTokens": 0.39999999999999997
+    },
+    "llama-3.1-8b-instruct": {
+      "inputPerMillionTokens": 0.02,
+      "outputPerMillionTokens": 0.049999999999999996
+    },
+    "mistralaimistral-nemo": {
+      "inputPerMillionTokens": 0.02,
+      "outputPerMillionTokens": 0.03
+    },
+    "gpt-4o-mini-2024-07-18": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6,
+      "cachedInputDiscount": 0.5
+    },
+    "gpt-4o-mini": {
+      "inputPerMillionTokens": 0.15,
+      "outputPerMillionTokens": 0.6,
+      "cachedInputDiscount": 0.5
+    },
+    "gemma-2-27b-it": {
+      "inputPerMillionTokens": 0.65,
+      "outputPerMillionTokens": 0.65
+    },
+    "sao10kl3-euryale-70b": {
+      "inputPerMillionTokens": 1.48,
+      "outputPerMillionTokens": 1.48
+    },
+    "nousresearchhermes-2-pro-llama-3-8b": {
+      "inputPerMillionTokens": 0.14,
+      "outputPerMillionTokens": 0.14
+    },
+    "gpt-4o": {
+      "inputPerMillionTokens": 2.5,
+      "outputPerMillionTokens": 10
+    },
+    "gpt-4o-2024-05-13": {
+      "inputPerMillionTokens": 5,
+      "outputPerMillionTokens": 15
+    },
+    "llama-3-70b-instruct": {
+      "inputPerMillionTokens": 0.51,
+      "outputPerMillionTokens": 0.74
+    },
+    "llama-3-8b-instruct": {
+      "inputPerMillionTokens": 0.04,
+      "outputPerMillionTokens": 0.04
+    },
+    "mistralaimixtral-8x22b-instruct": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "microsoftwizardlm-2-8x22b": {
+      "inputPerMillionTokens": 0.62,
+      "outputPerMillionTokens": 0.62
+    },
+    "gpt-4-turbo": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "claude-3-haiku": {
+      "inputPerMillionTokens": 0.25,
+      "outputPerMillionTokens": 1.25,
+      "cachedInputDiscount": 0.12
+    },
+    "mistralaimistral-large": {
+      "inputPerMillionTokens": 2,
+      "outputPerMillionTokens": 6,
+      "cachedInputDiscount": 0.1
+    },
+    "gpt-3.5-turbo-0613": {
+      "inputPerMillionTokens": 1,
+      "outputPerMillionTokens": 2
+    },
+    "gpt-4-turbo-preview": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "gpt-4-1106-preview": {
+      "inputPerMillionTokens": 10,
+      "outputPerMillionTokens": 30
+    },
+    "mistralaimistral-7b-instruct-v0.1": {
+      "inputPerMillionTokens": 0.11,
+      "outputPerMillionTokens": 0.19
+    },
+    "gpt-3.5-turbo-instruct": {
+      "inputPerMillionTokens": 1.5,
+      "outputPerMillionTokens": 2
+    },
+    "gpt-3.5-turbo-16k": {
+      "inputPerMillionTokens": 3,
+      "outputPerMillionTokens": 4
+    },
+    "mancerweaver": {
+      "inputPerMillionTokens": 0.75,
+      "outputPerMillionTokens": 1
+    },
+    "undi95remm-slerp-l2-13b": {
+      "inputPerMillionTokens": 0.44999999999999996,
+      "outputPerMillionTokens": 0.65
+    },
+    "gryphemythomax-l2-13b": {
+      "inputPerMillionTokens": 0.06,
+      "outputPerMillionTokens": 0.06
+    },
+    "gpt-4-0314": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 60
+    },
+    "gpt-3.5-turbo": {
+      "inputPerMillionTokens": 0.5,
+      "outputPerMillionTokens": 1.5
+    },
+    "gpt-4": {
+      "inputPerMillionTokens": 30,
+      "outputPerMillionTokens": 60
+    }
+  }
+}

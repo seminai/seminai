@@ -1,0 +1,8 @@
+{
+  "node_version": "22",
+  "dependencies": ["."],
+  "graphs": {
+    "dosage_react": "./studio/dosage-react.graph.ts:graph"
+  },
+  "env": "./.env"
+}

@@ -1,0 +1,2104 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  GOD
+  BASIC
+  LABEL_MANAGER
+}
+
+model User {
+  id                String             @id @default(uuid())
+  email             String             @unique
+  password          String?
+  googleId          String?            @unique
+  name              String
+  surname           String?
+  fiscalCode        String?            @unique
+  companyName       String?
+  vatNumber         String?
+  phoneNumber       String?
+  address           String?
+  profilePictureUrl String?
+  role              UserRole           @default(BASIC)
+  credits           Float              @default(0)
+  emailVerified     Boolean            @default(false)
+  lastAccessAt      DateTime?
+  isBlocked         Boolean            @default(false)
+  blockedAt         DateTime?
+  blockedReason     String?
+  isDeactivated     Boolean            @default(false)
+  deactivatedAt     DateTime?
+  deactivatedReason String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  settings          Settings[]
+  companyUsers      UserOnCompany[]
+  patentini         Patentino[]
+  jobs              Job[]
+  chats             Chat[]
+  llmUsages         LlmUsage[]
+  dosageAgentJobs   DosageAgentJob[]
+  workspaces        WorkspaceMember[]
+  fieldNotes        FieldNote[]
+  labelHistories    LabelHistory[]
+  agentMemories     AgentMemory[]
+  outerLoopTriggers OuterLoopTrigger[]
+  fileExtractions   FileExtraction[]
+  notifications     Notification[]
+  emailIngestions   EmailIngestion[]
+  extractionApiAccount ExtractionApiAccount?
+  extractionApiKeys    ExtractionApiKey[]
+  extractionApiUsageLogs ExtractionApiUsageLog[]
+}
+
+enum ChatCategory {
+  DOSAGE_AGENT
+  JOB_VERIFICATION_AGENT
+  FIELD_NOTES
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+  TOOL
+}
+
+enum AgentResponseStatus {
+  COMPLETED
+  REQUIRES_APPROVAL
+  ERROR
+  CANCELLED
+}
+
+enum LlmJobType {
+  LABEL
+  DOSAGE
+  FIELD_NOTE
+  AUDIO_TRANSCRIPTION
+  CHAT_DOSAGE
+  JOB_VERIFICATION
+  CONFORMITY_CHECK
+  CSV_IMPORT
+  WEATHER_ADVISOR
+  DOCUMENT_EXTRACTION
+}
+
+enum DosageAgentJobState {
+  QUEUED
+  WAITING
+  ACTIVE
+  COMPLETED
+  FAILED
+  STALLED
+  DELAYED
+  NOT_FOUND
+}
+
+model Chat {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  category ChatCategory @default(DOSAGE_AGENT)
+
+  threadId String @unique // Thread ID per LangGraph (per mantenere lo stato della conversazione)
+
+  modelName   String? // gpt-4o, gpt-4o-mini, etc.
+  temperature Float?  @default(0)
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages   Message[]
+  agentTasks AgentTask[]
+
+  @@index([userId])
+  @@index([category])
+  @@index([threadId])
+}
+
+model Message {
+  id     String @id @default(uuid())
+  chatId String
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  role MessageRole
+
+  // Contenuto principale come stringa (markdown supportato)
+  // Usato per messaggi semplici e compatibilità
+  content String
+
+  // Contenuto strutturato (opzionale) - come Cursor/Claude
+  // Array di blocchi: [{ type: "text" | "code" | "citation", content: string, language?: string, ... }]
+  // Permette code blocks, citazioni inline, formattazione avanzata
+  contentBlocks Json?
+
+  status AgentResponseStatus?
+
+  pendingToolCalls Json? // Array di { name, args, id }
+
+  error String?
+
+  cost Json?
+
+  metadata Json?
+
+  sequence Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sources MessageSource[]
+
+  @@index([chatId])
+  @@index([chatId, sequence])
+  @@index([role])
+}
+
+model AgentStreamEvent {
+  id        String   @id @default(cuid())
+  threadId  String
+  seq       Int
+  type      String
+  payload   Json
+  createdAt DateTime @default(now())
+
+  @@unique([threadId, seq])
+  @@index([threadId, seq])
+  @@index([threadId, createdAt])
+}
+
+model LlmCacheEntry {
+  id            String    @id @default(uuid())
+  userId        String?
+  namespace     String
+  cacheKey      String
+  model         String
+  promptVersion String
+  payload       Json
+  contentScore  Int       @default(0)
+  lastCheckedAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([cacheKey, userId])
+  @@index([namespace])
+  @@index([userId])
+  @@index([lastCheckedAt])
+}
+
+/// Cache globale dei match (prodotto, coltura, varietà) → risultato LLM.
+/// Chiave canonica = numero_registrazione SIAN (stabile per il prodotto).
+/// Lookup prima di ogni `llmMatchProductToCrop` per evitare burst di chiamate
+/// LLM su matching semi-statici (l'etichetta del prodotto cambia raramente).
+model ProductCropMatchCache {
+  id                 String   @id @default(uuid())
+  registrationNumber String
+  cropNameNorm       String
+  varietyNorm        String   @default("")
+  isCompatible       Boolean
+  confidence         Int
+  reason             String
+  matchedCrops       String[] @default([])
+  /// Nome modello LLM che ha generato il match (informativo)
+  model              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([registrationNumber, cropNameNorm, varietyNorm], map: "pcm_reg_crop_var_uq")
+  @@index([registrationNumber])
+  @@index([updatedAt])
+}
+
+model SourceCitation {
+  id       String @id @default(uuid())
+  url      String
+  title    String
+  fragment String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages MessageSource[]
+
+  @@index([url])
+}
+
+model MessageSource {
+  id               String         @id @default(uuid())
+  messageId        String
+  message          Message        @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  sourceCitationId String
+  sourceCitation   SourceCitation @relation(fields: [sourceCitationId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([messageId, sourceCitationId])
+  @@index([messageId])
+  @@index([sourceCitationId])
+}
+
+model Settings {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  qdcApiKey      String?
+  ifarmingApiKey String?
+  language       String
+  tablesViewMode String  @default("grid") // "grid" | "excel"
+
+  // WhatsApp Integration via Evolution API
+  whatsappInstanceName   String? // Nome univoco dell'istanza WhatsApp
+  whatsappApiKey         String? // API key per autenticazione Evolution API
+  whatsappInstanceId     String? // ID dell'istanza restituito da Evolution API
+  whatsappConnected      Boolean   @default(false)
+  whatsappPhoneNumber    String? // Numero di telefono collegato (formato internazionale)
+  whatsappQrCode         String? // QR code temporaneo per connessione (base64)
+  whatsappLastSync       DateTime? // Ultima sincronizzazione con Evolution API
+  whatsappAllowedNumbers String[]  @default([]) // Numeri autorizzati a interagire con il bot WhatsApp
+
+  // Email Inbound Integration (SendGrid Inbound Parse → dosage_agent_react)
+  emailIngestionEnabled Boolean @default(false) // Per-user opt-in; if false, inbound emails from this user are ignored.
+
+  // Open-Meteo Integration (weather forecast for treatment application windows + risks)
+  openMeteoEnabled Boolean @default(false) // Per-user opt-in; if false, weather tools are unavailable to dosage_agent_react.
+
+  // QDC (Quaderno di Campagna, Image Line) nightly mirror sync opt-in.
+  // The cron runs only when IMAGE_LINE_CLIENT_ID is set AND at least one user enabled this.
+  qdcSyncEnabled Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([whatsappInstanceName])
+}
+
+// Cache of Agronomist LLM threshold suggestions for the WeatherAdvisor sub-agent.
+// Key is a sha256 of the canonical context (sorted product SKUs/categories + machine identifier),
+// so the same {prodotti, macchina} combination reuses the cached advice across processes and restarts.
+model WeatherAdvisorCache {
+  id               String   @id @default(uuid())
+  contextHash      String   @unique
+  thresholds       Json
+  reasoning        String?
+  confidence       String
+  sourceModel      String
+  promptTokens     Int?
+  completionTokens Int?
+  createdAt        DateTime @default(now())
+
+  @@index([contextHash])
+}
+
+model Patentino {
+  id        String   @id @default(uuid())
+  type      String
+  code      String   @unique
+  expiresAt DateTime
+  releaseAt DateTime
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+enum CompanyRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum CompanyKind {
+  AGRICULTURAL
+  MANUFACTURING
+}
+
+model UserOnCompany {
+  id        String      @id @default(uuid())
+  companyId String
+  company   Company     @relation(fields: [companyId], references: [id])
+  type      String? // Tecnico, Contoterzista, Agricoltore diretto
+  role      CompanyRole
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+
+  @@index([companyId])
+  @@index([userId])
+}
+
+model Company {
+  id              String           @id @default(uuid())
+  name            String
+  vatNumber       String
+  cuaa            String?
+  ownerId         String?
+  fiscalCode      String
+  nation          String?
+  city            String?
+  address         String?
+  cap             String?
+  email           String?
+  phoneNumber     String?
+  website         String?
+  logoUrl         String?
+  kind            CompanyKind      @default(AGRICULTURAL)
+  courierEmail    String? // destinatario riepilogo spedizioni
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  companyUsers    UserOnCompany[]
+  fields          Field[]
+  warehouses      Warehouse[]
+  machines        Machine[]
+  files           File[]
+  llmUsages       LlmUsage[]
+  rules           RuleOnCompany[]
+  fileExtractions FileExtraction[]
+  notifications   Notification[]
+  emailIngestions EmailIngestion[]
+
+  // Sales module (modulo vendite)
+  businessPartners BusinessPartner[]
+  salesOrders      SalesOrder[]
+  deliveryNotes    DeliveryNote[]
+  proformaInvoices ProformaInvoice[]
+  salesInvoices    SalesInvoice[]
+  workspaces       CompanyOnWorkspace[]
+
+  // QDC ImageLine mirror (aziende linked by normalized VAT)
+  qdcAziende QdcAzienda[]
+}
+
+model File {
+  id        String   @id @default(uuid())
+  name      String
+  url       String
+  path      String?
+  type      String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  expiresAt          DateTime?
+  reminderDaysBefore Int?      @default(30)
+  alertStatus        String?   @default("none")
+
+  companyId        String
+  company          Company           @relation(fields: [companyId], references: [id])
+  sourceStocks     Stock[]           @relation("StockSourceFile")
+  sourceFields     Field[]           @relation("FieldSourceFile")
+  extractions      FileExtraction[]
+  emailAttachments EmailAttachment[]
+
+  @@index([expiresAt, alertStatus])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id])
+  type      String
+  title     String
+  message   String
+  metadata  Json?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead, createdAt])
+  @@index([companyId])
+}
+
+model Machine {
+  id                            String    @id @default(uuid())
+  name                          String
+  identifier                    String
+  lastPositiveRevisionDate      DateTime?
+  functionalControlDate         DateTime?
+  calibrationDate               DateTime?
+  revisionReminderDays          Int?
+  calibrationReminderDays       Int?
+  functionalControlReminderDays Int?
+  createdAt                     DateTime  @default(now())
+  updatedAt                     DateTime  @updatedAt
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  jobs Job[]
+}
+
+model Warehouse {
+  id        String  @id @default(uuid())
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name    String
+  nation  String?
+  region  String?
+  city    String?
+  address String
+  cap     String?
+
+  // catasto 
+  sezione    String
+  foglio     String
+  particella String
+  subalterno String?
+
+  products Product[]
+}
+
+enum ProductCategory {
+  FERTILIZER // Fertilizzanti
+  PESTICIDE // Fitofarmaci/Agrofarmaci
+  SEED // Sementi
+  HARVEST // Raccolto
+  EQUIPMENT // Attrezzature (opzionale)
+  PACKAGING // Materiale di confezionamento (opzionale)
+  OTHER // Categoria personalizzata (label in product.type)
+}
+
+model Product {
+  id          String          @id @default(uuid())
+  name        String
+  sku         String
+  barcode     String?
+  category    ProductCategory
+  type        String
+  description String?
+
+  administrativeStatus String?
+
+  registrationNumber String?
+  labelUrl           String?
+  labelMetadata      Json?
+
+  // Composizione nutritiva (valida solo per category = FERTILIZER).
+  // Tutte le percentuali sono espresse in % massa rispetto al prodotto, boron incluso (uniformato in fase D).
+  // unitOfFertilizer descrive il packaging del prodotto ("kg", "L", ...).
+  // Tutti i campi sono opzionali: null != 0 (zero significa "0% misurato", null significa "non misurato").
+  nitrogen         Float? // % N
+  phosphorus       Float? // % P2O5
+  potassium        Float? // % K2O
+  magnesium        Float? // % MgO
+  calcium          Float? // % CaO
+  sulfur           Float? // % SO3
+  boron            Float? // % B
+  unitOfFertilizer String?
+
+  // Sales attributes (modulo vendite) — opzionali: non impattano i prodotti agronomici.
+  vintage       Int? // annata (se applicabile)
+  unitPrice     Float? // prezzo unitario di vendita
+  vatRate       Float? // aliquota IVA (es. 22, 10, 4)
+  unitOfMeasure String? // unità di misura di vendita (es. "bottiglia", "L", "kg")
+  isActive      Boolean @default(true)
+
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  stocks            Stock[]
+  fieldNotes        FieldNote[]
+  salesOrderItems   SalesOrderItem[]
+  deliveryNoteItems DeliveryNoteItem[]
+
+  @@index([warehouseId])
+  @@index([category])
+}
+
+// enum StockDirection {
+//   IN //+
+//   OUT //-
+// }
+
+model Stock {
+  id                      String          @id @default(uuid())
+  productId               String
+  product                 Product         @relation(fields: [productId], references: [id])
+  sourceFileId            String?
+  sourceFile              File?           @relation("StockSourceFile", fields: [sourceFileId], references: [id])
+  sourceExtractionId      String?
+  sourceExtraction        FileExtraction? @relation(fields: [sourceExtractionId], references: [id], onDelete: SetNull)
+  quantity                Float
+  unitOfMeasureQuantity   String
+  price                   Float
+  unitOfMeasurePrice      String
+  type                    String
+  //direction IN or OUT
+  ddtCode                 String?
+  ddtDate                 DateTime?
+  ddtUrlFile              String?
+  invoiceCode             String?
+  invoiceDate             DateTime?
+  invoiceDueDate          DateTime?
+  invoiceUrlFile          String?
+  companySupplierName     String?
+  addressSupplier         String?
+  vatNumberSupplier       String?
+  notes                   String?
+  packagingInfo           String?
+  productNameAsOnDocument String?
+  quantityConverted       Float?
+  unitMeasureConverted    String?
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+
+  jobId String?
+  job   Job?    @relation(fields: [jobId], references: [id])
+
+  // Sales module: links OUT (scarico) and IN (storno) movements to a DDT.
+  deliveryNoteId String?
+  deliveryNote   DeliveryNote? @relation(fields: [deliveryNoteId], references: [id])
+
+  @@index([productId])
+  @@index([jobId])
+  @@index([sourceFileId])
+  @@index([sourceExtractionId])
+  @@index([deliveryNoteId])
+}
+
+model Field {
+  id           String   @id @default(uuid())
+  companyId    String?
+  company      Company? @relation(fields: [companyId], references: [id])
+  sourceFileId String?
+  sourceFile   File?    @relation("FieldSourceFile", fields: [sourceFileId], references: [id])
+  name         String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coordinates           Float[]
+  latitude              Float?
+  longitude             Float?
+  polygon               Json?
+  coordinatesGaussBoaga Float[]
+  polygonGaussBoaga     Json?
+
+  //SUPERFICIE
+  gisHa Float?
+  sauHa Float?
+
+  // TIPOLOGIA SUOLO
+  ph         Float?
+  nitrogen   Float?
+  phosphorus Float?
+  potassium  Float?
+  calcium    Float?
+  magnesium  Float?
+  soilType   String?
+
+  // PARCELLA CATASTALE
+  uso                   String?
+  qualita               String? //sian
+  superficieCatastaleMq Float?
+  sezione               String?
+  foglio                String?
+  particella            String?
+  subalterno            String?
+
+  nation  String?
+  region  String? //provincia
+  city    String? //comune
+  address String?
+  cap     String?
+
+  variazioneMq String?
+
+  // Fasce di rispetto e deriva
+  bufferZoneNotes String? // Note sulle fasce di rispetto e deriva (testo lungo)
+
+  // PAC
+  inizioConduzione DateTime?
+  fineConduzione   DateTime?
+
+  productionUnitsOnFields ProductionUnitOnField[]
+  fieldNotes              FieldNote[]
+
+  @@index([sourceFileId])
+}
+
+model ProductionUnitOnField {
+  id               String         @id @default(uuid())
+  productionUnitId String
+  productionUnit   ProductionUnit @relation(fields: [productionUnitId], references: [id], onDelete: Cascade)
+  fieldId          String
+  field            Field          @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  areaHaOnField Float
+
+  @@unique([productionUnitId, fieldId])
+  @@index([fieldId])
+  @@index([productionUnitId])
+}
+
+model ProductionUnit {
+  id   String @id @default(uuid())
+  name String
+
+  startDate DateTime
+  endDate   DateTime
+  areaHa    Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  productionUnitsOnFields ProductionUnitOnField[]
+  cycles                  ProductionCycle[]
+  jobs                    Job[]
+  fieldNotes              FieldNote[]
+}
+
+model ProductionCycle {
+  id               String         @id @default(uuid())
+  productionUnitId String
+  productionUnit   ProductionUnit @relation(fields: [productionUnitId], references: [id], onDelete: Cascade)
+
+  cropName  String
+  cropType  String
+  variety   String
+  protocoll String
+
+  protectionStructure String
+
+  floweringDate  DateTime?
+  harvestingDate DateTime?
+
+  occupazione        String?
+  destinazioneDiUso  String?
+  acquaTotalePeridoL Float
+
+  seasonYear Int
+  cycleIndex Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  jobs Job[]
+
+  @@unique([productionUnitId, seasonYear, cycleIndex])
+  @@index([productionUnitId, seasonYear, cycleIndex])
+}
+
+enum JobCategory {
+  TREATMENT
+  SEEDING
+  FERTILIZATION
+}
+
+model Job {
+  id                String           @id @default(uuid())
+  productionUnitId  String
+  productionUnit    ProductionUnit   @relation(fields: [productionUnitId], references: [id])
+  productionCycleId String?
+  productionCycle   ProductionCycle? @relation(fields: [productionCycleId], references: [id])
+  dateOfOpeation    DateTime
+
+  jobId String?
+
+  isVerified        Boolean @default(false)
+  conformityChecked Boolean @default(false)
+
+  stocks Stock[]
+
+  category JobCategory
+
+  quantity              Float
+  unitOfMeasureQuantity String
+
+  productQuantityTreated              Float? // QTA_PRODOTTO_AGRICOLO_TRATTATO
+  unitOfMeasureProductQuantityTreated String? // UNITA_DI_MISURA_PRODOTTO_AGRICOLO
+
+  modeOfApplication String? //manuale o macchinari
+
+  avversity            String?
+  giustification       String?
+  treatedSurface       Float?
+  isLocalizedTreatment Boolean?
+
+  // Operatore
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  note       String?
+  alertNotes Json?
+
+  history Json?
+
+  appliedRules Json?
+
+  totalDistributedWaterL Float?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  machineId String?
+  machine   Machine? @relation(fields: [machineId], references: [id])
+
+  fieldNote FieldNote?
+
+  @@index([userId])
+  @@index([productionUnitId])
+  @@index([productionCycleId])
+  @@index([machineId])
+  @@index([dateOfOpeation])
+}
+
+// ============================================
+// FIELD NOTES - Note di campo
+// ============================================
+
+enum FieldNoteCategory {
+  OPERATION // Operazioni generiche (trattamenti, semina, etc.)
+  OBSERVATION // Osservazioni (malattie, parassiti, etc.)
+  MEASUREMENT // Misurazioni (umidità, temperature, etc.)
+  HARVEST // Raccolta
+  MAINTENANCE // Manutenzione
+  OTHER // Altro
+}
+
+enum FieldNoteProcessingStatus {
+  PENDING // In attesa di processamento
+  PROCESSING // In elaborazione (AI sta analizzando)
+  PROCESSED // Processata con successo
+  FAILED // Fallita
+  MANUALLY_REVIEWED // Revisionata manualmente
+}
+
+model FieldNote {
+  id String @id @default(uuid())
+
+  // Utente che ha creato la nota
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Categoria e stato
+  category FieldNoteCategory
+  status   FieldNoteProcessingStatus @default(PENDING)
+
+  // Contenuto originale (testo libero dell'utente)
+  rawContent String // "ho dato 10 kg di <prodotto 1> nel campo vite"
+
+  // Dati estratti/processati tramite AI o manualmente
+  extractedData Json? // Dati strutturati estratti dal rawContent
+
+  // Coordinate GPS
+  latitude    Float?
+  longitude   Float?
+  altitude    Float?
+  gpsAccuracy Float? // Accuratezza in metri
+
+  conformityNotes Json? // Note di conformità
+
+  // Data e ora dell'operazione/osservazione
+  operationDate DateTime @default(now())
+
+  // Relazioni opzionali (riconosciute automaticamente o assegnate manualmente)
+  fieldId String?
+  field   Field?  @relation(fields: [fieldId], references: [id])
+
+  productionUnitId String?
+  productionUnit   ProductionUnit? @relation(fields: [productionUnitId], references: [id])
+
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+
+  // Job collegato (se la nota è stata trasformata in un Job formale)
+  jobId String? @unique
+  job   Job?    @relation(fields: [jobId], references: [id])
+
+  // Metadati aggiuntivi
+  metadata Json? // Dati aggiuntivi flessibili (condizioni meteo, etc.)
+
+  // Note e confidence score del riconoscimento AI
+  aiConfidenceScore Float? // 0-1, quanto l'AI è sicura del riconoscimento
+  notes             String? // Note aggiuntive manuali
+
+  // Allegati (foto, documenti)
+  attachments FieldNoteAttachment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([category])
+  @@index([status])
+  @@index([operationDate])
+  @@index([fieldId])
+  @@index([productionUnitId])
+  @@index([productId])
+  @@index([latitude, longitude])
+}
+
+model FieldNoteAttachment {
+  id String @id @default(uuid())
+
+  fieldNoteId String
+  fieldNote   FieldNote @relation(fields: [fieldNoteId], references: [id], onDelete: Cascade)
+
+  // URL del file (su storage)
+  fileUrl  String
+  fileName String
+  fileType String // image/jpeg, image/png, application/pdf, etc.
+  fileSize Int // bytes
+
+  // Thumbnail per le immagini
+  thumbnailUrl String?
+
+  // Metadati estratti (es: EXIF per foto)
+  metadata Json?
+
+  // Analisi AI (se è una foto di malattia/parassita)
+  aiAnalysis Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([fieldNoteId])
+}
+
+enum LabelCategory {
+  FERTILIZER
+  FITO
+}
+
+enum LabelRefreshStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  SKIPPED
+}
+
+enum LabelHistoryActor {
+  USER
+  SYSTEM
+}
+
+model LabelExtraction {
+  id                           String              @id @default(uuid())
+  productName                  String
+  registrationNumber           String
+  normalizedProductName        String?
+  normalizedRegistrationNumber String?
+  sourceUrl                    String
+  sourcePdfHash                String?
+  rawTextHash                  String?
+  officialSourceUrl            String?
+  category                     LabelCategory       @default(FITO)
+  label                        Json
+  rawText                      String
+  extractionConfidence         Int
+  isVerified                   Boolean             @default(false)
+  extractedFields              String[]
+  errors                       String[]
+  qualityExtraction            Float[]
+  lastRefreshedAt              DateTime?
+  lastRefreshStatus            LabelRefreshStatus?
+  lastRefreshError             String?
+  isArchived                   Boolean             @default(false)
+  archivedAt                   DateTime?
+  archivedReason               String?
+  canonicalLabelExtractionId   String?
+
+  canonicalLabelExtraction LabelExtraction?  @relation("CanonicalLabelExtraction", fields: [canonicalLabelExtractionId], references: [id])
+  duplicateLabelExtractions LabelExtraction[] @relation("CanonicalLabelExtraction")
+  aliases                  LabelAlias[]
+  history                  LabelHistory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productName, registrationNumber])
+  @@index([productName])
+  @@index([registrationNumber])
+  @@index([normalizedProductName])
+  @@index([normalizedRegistrationNumber])
+  @@index([category, normalizedRegistrationNumber])
+  @@index([isArchived])
+  @@index([lastRefreshedAt])
+  @@index([canonicalLabelExtractionId])
+}
+
+model LabelAlias {
+  id                           String          @id @default(uuid())
+  labelExtractionId            String
+  labelExtraction              LabelExtraction @relation(fields: [labelExtractionId], references: [id], onDelete: Cascade)
+  productName                  String
+  registrationNumber           String
+  category                     LabelCategory   @default(FITO)
+  normalizedProductName        String
+  normalizedRegistrationNumber String?
+  createdAt                    DateTime        @default(now())
+
+  @@unique([category, normalizedProductName, normalizedRegistrationNumber], map: "LabelAlias_category_normalizedProductName_normalizedRegistr_key")
+  @@index([labelExtractionId])
+  @@index([normalizedProductName])
+  @@index([normalizedRegistrationNumber])
+}
+
+model LabelHistory {
+  id                String          @id @default(uuid())
+  labelExtractionId String
+  labelExtraction   LabelExtraction @relation(fields: [labelExtractionId], references: [id], onDelete: Cascade)
+  userId            String?
+  user              User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  actorType         LabelHistoryActor @default(USER)
+  actorLabel        String?
+  changes           Json
+  previousSnapshot  Json
+  createdAt         DateTime        @default(now())
+
+  @@index([labelExtractionId])
+  @@index([userId])
+  @@index([actorType])
+}
+
+model LlmUsage {
+  id               String     @id @default(uuid())
+  userId           String
+  user             User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId        String?
+  company          Company?   @relation(fields: [companyId], references: [id])
+  jobId            String?
+  jobGroupId       String?
+  jobType          LlmJobType
+  model            String
+  promptTokens     Int        @default(0)
+  completionTokens Int        @default(0)
+  totalTokens      Int        @default(0)
+  cachedTokens     Int        @default(0)
+  cost             Float
+  seminaiMargin    Float      @default(0.3)
+  costClient       Float
+  metadata         Json?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([jobId])
+  @@index([jobGroupId])
+}
+
+model DosageAgentJob {
+  id           String              @id
+  userId       String
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  state        DosageAgentJobState
+  progress     Int                 @default(0)
+  failedReason String?
+  processedOn  DateTime?
+  finishedOn   DateTime?
+  name         String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([userId, createdAt])
+}
+
+// ============================================
+// WORKSPACE - Ambiente di lavoro personalizzabile
+// ============================================
+
+enum WorkspaceRole {
+  OWNER // Proprietario del workspace
+  ADMIN // Amministratore
+  MEMBER // Membro standard
+  VIEWER // Solo lettura
+}
+
+enum WorkspacePlan {
+  FREE
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum WorkspaceModule {
+  DCA // Default archive content (documents/extractions)
+  LABELS // Product labels (etichette) section
+}
+
+enum WorkspaceKind {
+  AGRICULTURAL
+  MANUFACTURING
+}
+
+model Workspace {
+  id          String  @id @default(uuid())
+  name        String
+  slug        String  @unique // URL-friendly identifier (es: studio-agronomico-rossi)
+  description String?
+
+  // Customizzazione visuale (come Notion)
+  logoUrl        String?
+  iconUrl        String? // Icona piccola per favicon/tab
+  primaryColor   String? @default("#2563eb") // Colore principale
+  secondaryColor String? @default("#1e40af") // Colore secondario
+  accentColor    String? @default("#3b82f6") // Colore accento
+  customCss      String? // CSS custom opzionale per enterprise
+
+  // Configurazioni
+  kind     WorkspaceKind @default(AGRICULTURAL)
+  plan     WorkspacePlan @default(FREE)
+  isActive Boolean       @default(true)
+
+  // Moduli abilitati per il workspace (DCA sempre presente di default)
+  enabledModules WorkspaceModule[] @default([DCA])
+
+  // Limiti basati sul piano
+  maxMembers Int @default(5)
+  maxRules   Int @default(50)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relazioni
+  members     WorkspaceMember[]
+  rules       Rule[]
+  skills      Skill[]
+  invitations WorkspaceInvitation[]
+  companies   CompanyOnWorkspace[]
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+model CompanyOnWorkspace {
+  id           String    @id @default(uuid())
+  workspaceId  String
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  companyId    String
+  company      Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  assignedById String?
+  assignedAt   DateTime  @default(now())
+
+  @@unique([workspaceId, companyId])
+  @@index([workspaceId])
+  @@index([companyId])
+}
+
+model WorkspaceMember {
+  id          String    @id @default(uuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  role WorkspaceRole @default(MEMBER)
+
+  // Permessi granulari
+  canManageRules   Boolean @default(false)
+  canInviteMembers Boolean @default(false)
+
+  joinedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workspaceId, userId])
+  @@index([workspaceId])
+  @@index([userId])
+}
+
+model WorkspaceInvitation {
+  id          String    @id @default(uuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  email String
+  role  WorkspaceRole @default(MEMBER)
+  token String        @unique @default(uuid())
+
+  invitedById String
+
+  expiresAt  DateTime
+  acceptedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@unique([workspaceId, email])
+  @@index([token])
+  @@index([email])
+}
+
+// ============================================
+// RULES - Disciplinari e Standard
+// ============================================
+
+enum RuleCategory {
+  DISCIPLINARE // Disciplinari regionali/nazionali
+  STANDARD // Standard di certificazione (GlobalGAP, Bio, etc.)
+  BEST_PRACTICE // Best practice interne
+  METHODOLOGY // Metodologie di applicazione
+  CUSTOM // Regole personalizzate
+}
+
+enum RuleStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+  DEPRECATED
+}
+
+model Rule {
+  id          String    @id @default(uuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  name        String
+  slug        String // Identificativo URL-friendly
+  description String?
+
+  category RuleCategory
+  status   RuleStatus   @default(DRAFT)
+
+  // Contenuto della regola
+  content Json // Struttura flessibile per il contenuto
+
+  // Metadati
+  sourceUrl      String? // Link alla fonte originale (es: disciplinare regionale)
+  sourceDocument String? // Nome documento di riferimento
+  region         String? // Regione di applicazione (se disciplinare)
+  validFrom      DateTime?
+  validUntil     DateTime?
+  version        String?   @default("1.0")
+
+  // Configurazioni
+  isPublic   Boolean @default(false) // Visibile ad altri workspace
+  isTemplate Boolean @default(false) // Può essere usato come template
+
+  // Knowledge Hub (catalogo pubblico indicizzabile)
+  isFeatured Boolean @default(false) // Curata dal team per la home del Hub
+  viewCount  Int     @default(0) // Visite alla pagina pubblica /hub/rules/{slug}
+
+  // File PDF vettorializzato
+  pdfFileUrl         String? // URL del PDF caricato su GCS
+  pdfFileName        String? // Nome originale del file
+  pdfFileHash        String? // SHA256 per deduplicazione
+  qdrantCollection   String? // Collection Qdrant (sempre "rules_knowledge_base")
+  isVectorized       Boolean   @default(false) // Stato vettorializzazione
+  vectorizedAt       DateTime? // Data vettorializzazione
+  vectorizationError String? // Errore vettorializzazione (se fallita)
+
+  // Audit
+  createdById String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relazioni
+  companyRules RuleOnCompany[]
+  cropRules    RuleOnCrop[]
+  skills       Skill[] // Skill AI che usano questa rule come contesto RAG
+
+  @@unique([workspaceId, slug])
+  @@index([workspaceId])
+  @@index([category])
+  @@index([status])
+  @@index([region])
+  @@index([pdfFileHash])
+  @@index([isVectorized])
+  @@index([isPublic, status])
+}
+
+// Assegnazione Rules alle Company
+model RuleOnCompany {
+  id        String  @id @default(uuid())
+  ruleId    String
+  rule      Rule    @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  isActive Boolean @default(true)
+  priority Int     @default(0) // Ordine di priorità se più regole
+
+  // Configurazioni specifiche per questa assegnazione
+  overrides Json? // Override di parametri specifici
+  notes     String?
+
+  assignedAt   DateTime @default(now())
+  assignedById String
+
+  @@unique([ruleId, companyId])
+  @@index([companyId])
+  @@index([ruleId])
+}
+
+// Assegnazione Rules a Colture specifiche
+model RuleOnCrop {
+  id     String @id @default(uuid())
+  ruleId String
+  rule   Rule   @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  cropName String // Nome coltura
+  cropType String? // Tipo coltura
+
+  // Parametri specifici per questa coltura
+  parameters Json?
+
+  createdAt DateTime @default(now())
+
+  @@unique([ruleId, cropName])
+  @@index([ruleId])
+  @@index([cropName])
+}
+
+// ============================================
+// SKILLS - Prompt/workflow riusabili dall'agent, opzionalmente ancorati a una Rule
+// ============================================
+
+enum SkillStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+model Skill {
+  id          String    @id @default(uuid())
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  name        String
+  slug        String // Identificativo URL-friendly
+  description String?
+
+  status SkillStatus @default(DRAFT)
+
+  // Istruzioni operative per l'agent (prompt/workflow in linguaggio naturale)
+  instructions String
+
+  // Rule di riferimento opzionale: fornisce il contesto RAG/disciplinare per lo skill
+  sourceRuleId String?
+  sourceRule   Rule?   @relation(fields: [sourceRuleId], references: [id], onDelete: SetNull)
+
+  // Configurazioni Knowledge Hub (stesso pattern di Rule)
+  isPublic   Boolean @default(false) // Visibile ad altri workspace nel marketplace
+  isFeatured Boolean @default(false) // Curato dal team per la home del Hub
+  viewCount  Int     @default(0) // Visite alla pagina pubblica /hub/skills/{slug}
+
+  createdById String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([workspaceId, slug])
+  @@index([workspaceId])
+  @@index([status])
+  @@index([sourceRuleId])
+  @@index([isPublic, status])
+}
+
+// ============================================
+// DISCIPLINARI EXTRACTION - Estrazione dati da PDF disciplinari
+// ============================================
+
+model DisciplinariExtraction {
+  id String @id @default(uuid())
+
+  // Identificazione univoca
+  fileHash  String  @unique // SHA256 del file per deduplicazione
+  fileName  String
+  sourceUrl String?
+
+  // Metadati disciplinare
+  region  String // es: "Emilia-Romagna"
+  year    Int // es: 2025
+  version String? // es: "1.0", "rev.2"
+  title   String // es: "Disciplinari Produzione Integrata - Difesa"
+
+  // Date validita (estratte dal documento)
+  validFrom  DateTime? // Data inizio validita
+  validUntil DateTime? // Data fine validita/scadenza
+  isExpired  Boolean   @default(false) // Calcolato: validUntil < oggi
+
+  // Contenuto
+  rawText       String // Testo estratto dal PDF
+  extractedData Json // Dati strutturati (schema completo)
+
+  // Qualita estrazione
+  extractionConfidence Int      @default(0)
+  extractionErrors     String[]
+
+  // Audit
+  createdById String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([region, year, title]) // Evita duplicati
+  @@index([region])
+  @@index([year])
+  @@index([validUntil])
+  @@index([isExpired])
+  @@index([fileHash])
+}
+
+// ============================================
+// AGENT MEMORY - Persistent multi-level memory for the ReAct agent
+// ============================================
+
+enum AgentMemoryType {
+  CORE
+  EPISODIC
+  PROCEDURAL
+  SEMANTIC
+}
+
+model AgentMemory {
+  id          String          @id @default(uuid())
+  userId      String
+  type        AgentMemoryType
+  key         String
+  content     Json
+  embedding   Float[]
+  importance  Float           @default(1.0)
+  accessCount Int             @default(0)
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, key])
+  @@index([userId, type])
+  @@index([userId, key])
+  @@index([expiresAt])
+}
+
+// ============================================
+// AGENT TASK - Persistent task planning (TodoWrite pattern)
+// ============================================
+
+model AgentTask {
+  id        String   @id @default(uuid())
+  chatId    String
+  threadId  String
+  content   String
+  status    String   @default("pending")
+  priority  String   @default("medium")
+  sequence  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@index([threadId])
+  @@index([chatId])
+}
+
+// ============================================
+// OUTER LOOP TRIGGER - Proactive async alerts
+// ============================================
+
+model OuterLoopTrigger {
+  id          String    @id @default(uuid())
+  userId      String
+  threadId    String?
+  type        String
+  title       String
+  payload     Json
+  scheduledAt DateTime
+  executedAt  DateTime?
+  status      String    @default("pending")
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status, scheduledAt])
+  @@index([status, scheduledAt])
+}
+
+// ============================================
+// BDF CACHE - Cache risposte Banca Dati Fitofarmaci
+// ============================================
+
+model BdfCache {
+  id        String   @id @default(uuid())
+  endpoint  String // "colture", "avversita", "prodotti", "proddati", "dosi", etc.
+  cacheKey  String // Hash dei parametri di ricerca per univocità
+  params    Json? // Parametri originali della query (per debug/ispezione)
+  data      Json // Risposta BDF cachata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([endpoint, cacheKey])
+  @@index([endpoint])
+  @@index([updatedAt])
+}
+
+// ============================================
+// FILE EXTRACTION - Batch extraction workflow
+// ============================================
+
+enum FileExtractionStatus {
+  LOADING
+  PENDING_CONFIRMATION
+  CONFIRMED
+  ERROR
+}
+
+model FileExtraction {
+  id               String               @id @default(uuid())
+  batchId          String
+  status           FileExtractionStatus @default(LOADING)
+  category         String // "fields" | "production_units" | "agricultural" | "invoice" | "ddt" | "stock"
+  documentCategory DocumentCategory?    // Populated when the extraction originates from the chat review flow
+  progress         Int                  @default(0)
+  extractedData    Json?
+  error            String?
+
+  fileName  String
+  fileIndex Int
+
+  fileId String?
+  file   File?   @relation(fields: [fileId], references: [id])
+  stocks Stock[]
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  editLogs FileExtractionEditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([batchId])
+  @@index([companyId])
+  @@index([companyId, updatedAt])
+  @@index([userId])
+  @@index([fileId])
+  @@index([status])
+}
+
+enum FileExtractionEditSource {
+  LLM_INITIAL
+  USER_EDIT
+  CONFIRM_OVERRIDE
+}
+
+/// Append-only history of edits applied to FileExtraction.extractedData while the
+/// extraction is still in PENDING_CONFIRMATION (and at confirm-time overrides).
+/// Drives the human-correction dataset for LLM extraction quality regression.
+model FileExtractionEditLog {
+  id           String                   @id @default(uuid())
+  extractionId String
+  extraction   FileExtraction           @relation(fields: [extractionId], references: [id], onDelete: Cascade)
+  version      Int
+  source       FileExtractionEditSource
+  beforeData   Json?
+  afterData    Json
+  userId       String?
+  createdAt    DateTime                 @default(now())
+
+  @@unique([extractionId, version])
+  @@index([extractionId, createdAt])
+  @@index([source, createdAt])
+}
+
+// ============================================
+// EXTRACTION API - Public document extraction B2B API
+// ============================================
+
+model ExtractionApiAccount {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pageQuota Int      @default(0)
+  pagesUsed Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model ExtractionApiKey {
+  id         String    @id @default(uuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  keyPrefix  String
+  keyHash    String    @unique
+  revokedAt  DateTime?
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([userId])
+  @@index([keyHash])
+}
+
+model ExtractionApiUsageLog {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  apiKeyId       String?
+  documentType   String
+  detectedType   String?
+  fileName       String?
+  pagesProcessed Int
+  pagesCharged   Int
+  createdAt      DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
+enum DocumentCategory {
+  DDT
+  DISCIPLINARE
+  FASCICOLO_AZIENDALE
+  FATTURA
+  MAGAZZINO
+  ETICHETTA
+  VISURA_AZIENDALE
+  NOTA
+  PIANO_COLTURALE
+  CERTIFICAZIONE
+  ALTRO
+}
+
+enum EmailIngestionStatus {
+  RECEIVED
+  AWAITING_DISAMBIGUATION
+  DISPATCHED
+  FAILED
+  IGNORED_UNKNOWN_SENDER
+  IGNORED_DUPLICATE
+  IGNORED_NO_ATTACHMENTS
+  IGNORED_OPT_OUT
+}
+
+/// Inbound email received via SendGrid Inbound Parse webhook.
+/// One row per unique Message-ID (idempotency on provider retries).
+model EmailIngestion {
+  id                  String               @id @default(uuid())
+  messageId           String               @unique
+  status              EmailIngestionStatus @default(RECEIVED)
+  fromAddress         String
+  toAddress           String
+  subject             String?
+  bodyText            String?              @db.Text
+  rawHeaders          Json?
+  errorMessage        String?
+  threadId            String?
+  userId              String?
+  user                User?                @relation(fields: [userId], references: [id])
+  companyId           String?
+  company             Company?             @relation(fields: [companyId], references: [id])
+  parentIngestionId   String?
+  parent              EmailIngestion?      @relation("EmailIngestionReplyChain", fields: [parentIngestionId], references: [id])
+  replies             EmailIngestion[]     @relation("EmailIngestionReplyChain")
+  attachments         EmailAttachment[]
+  disambiguationToken String?              @unique
+  receivedAt          DateTime             @default(now())
+  dispatchedAt        DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@index([fromAddress, status])
+  @@index([userId, status])
+  @@index([companyId, status])
+}
+
+/// Raw attachment received with an inbound email.
+/// Stored on GCS; linked to a File row only after import_from_file persists it.
+model EmailAttachment {
+  id          String         @id @default(uuid())
+  ingestionId String
+  ingestion   EmailIngestion @relation(fields: [ingestionId], references: [id], onDelete: Cascade)
+  fileName    String
+  mimeType    String
+  sizeBytes   Int
+  gcsUrl      String
+  gcsPath     String
+  fileId      String?
+  file        File?          @relation(fields: [fileId], references: [id])
+  createdAt   DateTime       @default(now())
+
+  @@index([ingestionId])
+}
+
+/// Persisted working memory for agent threads.
+/// Stores the serializable subset of WorkingMemory as JSON so that
+/// server restarts don't lose intermediate agent state.
+model AgentWorkingMemory {
+  threadId  String   @id
+  data      Json     @default("{}")
+  updatedAt DateTime @updatedAt
+
+  @@index([updatedAt])
+}
+
+// ============================================
+// Sales module (modulo vendite): anagrafica clienti/fornitori,
+// ordini, DDT (documento di trasporto) con scarico magazzino atomico.
+// Il magazzino riusa Warehouse → Product → Stock (Stock = inventory_movements).
+// ============================================
+
+enum PartnerType {
+  CUSTOMER // Cliente
+  SUPPLIER // Fornitore
+}
+
+enum SalesOrderStatus {
+  DRAFT // bozza
+  CONFIRMED // confermato (giacenza riservata)
+  FULFILLED // evaso (DDT generato)
+  CANCELLED // annullato
+}
+
+enum DeliveryNoteStatus {
+  GENERATED // generato
+  SENT // inviato
+  CANCELLED // annullato (storno magazzino)
+}
+
+/// Anagrafica unificata cliente/fornitore, scoping su Company (azienda venditrice/mittente).
+model BusinessPartner {
+  id        String      @id @default(uuid())
+  companyId String
+  company   Company     @relation(fields: [companyId], references: [id])
+  type      PartnerType
+
+  name       String // ragione sociale / nome cliente
+  vatNumber  String? // partita IVA
+  fiscalCode String? // codice fiscale
+  sdiCode    String? // codice SDI
+  pec        String? // PEC
+  email      String?
+  phone      String?
+  referent   String? // persona di riferimento
+
+  // sede legale
+  nation  String?
+  city    String?
+  address String?
+  cap     String?
+
+  // indirizzo di consegna
+  deliveryAddress String?
+  deliveryCity    String?
+  deliveryCap     String?
+  deliveryNation  String?
+
+  deliveryNotesText String? // note consegna
+  deliveryHours     String? // orari di consegna
+
+  // Solleciti ordine (Phase 4b)
+  followUpEnabled    Boolean   @default(false)
+  followUpLastSentAt DateTime?
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  salesOrders      SalesOrder[]
+  deliveryNotes    DeliveryNote[]
+  proformaInvoices ProformaInvoice[]
+  salesInvoices    SalesInvoice[]
+
+  @@index([companyId, type])
+  @@index([companyId, vatNumber])
+  @@index([companyId, email])
+  @@index([followUpEnabled, followUpLastSentAt])
+}
+
+/// Ordine cliente (testata). Totali calcolati, non denormalizzati.
+model SalesOrder {
+  id        String          @id @default(uuid())
+  companyId String
+  company   Company         @relation(fields: [companyId], references: [id])
+  partnerId String
+  partner   BusinessPartner @relation(fields: [partnerId], references: [id])
+
+  orderDate         DateTime         @default(now())
+  status            SalesOrderStatus @default(DRAFT)
+  internalNotes     String? // note interne
+  deliveryNotesText String? // note per consegna
+  sourceRef         String? // riferimento agente/email/file origine
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items            SalesOrderItem[]
+  deliveryNotes    DeliveryNote[]
+  proformaInvoices ProformaInvoice[]
+
+  @@index([companyId, status])
+  @@index([partnerId])
+}
+
+/// Riga ordine.
+model SalesOrderItem {
+  id        String     @id @default(uuid())
+  orderId   String
+  order     SalesOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product    @relation(fields: [productId], references: [id])
+
+  quantity  Float
+  unitPrice Float
+  discount  Float @default(0) // percentuale di sconto (0–100)
+  vatRate   Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+/// DDT (documento di trasporto). Numerazione progressiva per (companyId, year).
+/// customerSnapshot congela i dati cliente al momento della generazione.
+model DeliveryNote {
+  id        String          @id @default(uuid())
+  companyId String
+  company   Company         @relation(fields: [companyId], references: [id])
+  partnerId String
+  partner   BusinessPartner @relation(fields: [partnerId], references: [id])
+  orderId   String?
+  order     SalesOrder?     @relation(fields: [orderId], references: [id])
+
+  number  Int // progressivo per (companyId, year)
+  year    Int
+  ddtDate DateTime @default(now())
+
+  status DeliveryNoteStatus @default(GENERATED)
+
+  causale           String? // causale trasporto
+  carrier           String? // vettore/corriere
+  packagesCount     Int? // numero colli
+  estimatedWeightKg Float? // peso stimato (kg)
+  deliveryNotesText String? // note consegna
+
+  customerSnapshot Json // copia storica dati cliente
+  htmlUrl          String? // documento stampabile (GCS)
+
+  sentAt       DateTime? // marcato SENT (consegnato al corriere)
+  cancelledAt  DateTime?
+  cancelReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items         DeliveryNoteItem[]
+  stocks        Stock[]
+  salesInvoices SalesInvoice[]
+
+  @@unique([companyId, year, number])
+  @@index([companyId, status])
+  @@index([partnerId])
+  @@index([orderId])
+}
+
+/// Riga DDT con snapshot storico del prodotto.
+model DeliveryNoteItem {
+  id             String       @id @default(uuid())
+  deliveryNoteId String
+  deliveryNote   DeliveryNote @relation(fields: [deliveryNoteId], references: [id], onDelete: Cascade)
+  productId      String?
+  product        Product?     @relation(fields: [productId], references: [id])
+
+  // snapshot storico prodotto al momento della generazione
+  productName   String
+  sku           String?
+  vintage       Int?
+  unitOfMeasure String?
+
+  quantity  Float
+  unitPrice Float
+  discount  Float @default(0)
+  vatRate   Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([deliveryNoteId])
+  @@index([productId])
+}
+
+/// Fattura proforma (documento non fiscale). Numerazione progressiva per (companyId, year).
+/// customerSnapshot congela i dati cliente. Nessun movimento di magazzino, nessun cambio stato ordine.
+model ProformaInvoice {
+  id        String          @id @default(uuid())
+  companyId String
+  company   Company         @relation(fields: [companyId], references: [id])
+  partnerId String
+  partner   BusinessPartner @relation(fields: [partnerId], references: [id])
+  orderId   String?
+  order     SalesOrder?     @relation(fields: [orderId], references: [id])
+
+  number       Int // progressivo per (companyId, year)
+  year         Int
+  proformaDate DateTime @default(now())
+
+  causale           String?
+  deliveryNotesText String?
+
+  customerSnapshot Json // copia storica dati cliente
+  htmlUrl          String? // documento stampabile (GCS)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items ProformaInvoiceItem[]
+
+  @@unique([companyId, year, number])
+  @@index([companyId])
+  @@index([partnerId])
+  @@index([orderId])
+}
+
+/// Riga proforma con snapshot storico del prodotto. productId è un riferimento (no FK).
+model ProformaInvoiceItem {
+  id                String          @id @default(uuid())
+  proformaInvoiceId String
+  proformaInvoice   ProformaInvoice @relation(fields: [proformaInvoiceId], references: [id], onDelete: Cascade)
+  productId         String?
+
+  productName   String
+  sku           String?
+  vintage       Int?
+  unitOfMeasure String?
+
+  quantity  Float
+  unitPrice Float
+  discount  Float @default(0)
+  vatRate   Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([proformaInvoiceId])
+}
+
+/// Fattura di vendita (Phase 5a). Status derivato: paidAt→PAID, dueDate<now→OVERDUE, altrimenti OPEN.
+model SalesInvoice {
+  id        String          @id @default(uuid())
+  companyId String
+  company   Company         @relation(fields: [companyId], references: [id])
+  partnerId String
+  partner   BusinessPartner @relation(fields: [partnerId], references: [id])
+
+  deliveryNoteId String?
+  deliveryNote   DeliveryNote? @relation(fields: [deliveryNoteId], references: [id])
+
+  number      Int // progressivo per (companyId, year)
+  year        Int
+  invoiceDate DateTime @default(now())
+  dueDate     DateTime // scadenza pagamento
+
+  totalAmount Float // importo lordo (IVA inclusa), calcolato dalle righe DDT
+  causale     String?
+
+  customerSnapshot Json // copia storica dati cliente
+
+  paidAt         DateTime? // marcata pagata
+  lastReminderAt DateTime? // ultimo sollecito inviato
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items SalesInvoiceItem[]
+
+  @@unique([companyId, year, number])
+  @@index([companyId])
+  @@index([partnerId])
+  @@index([deliveryNoteId])
+  @@index([dueDate])
+}
+
+/// Riga fattura con snapshot storico del prodotto.
+model SalesInvoiceItem {
+  id             String       @id @default(uuid())
+  salesInvoiceId String
+  salesInvoice   SalesInvoice @relation(fields: [salesInvoiceId], references: [id], onDelete: Cascade)
+  productId      String?
+
+  productName   String
+  sku           String?
+  vintage       Int?
+  unitOfMeasure String?
+
+  quantity  Float
+  unitPrice Float
+  discount  Float @default(0)
+  vatRate   Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([salesInvoiceId])
+}
+
+// ============================================
+// LangGraph Postgres Checkpointer (managed at runtime)
+// These tables are created and maintained by the LangGraph PostgresSaver.
+// They are listed here only to silence the Prisma drift detection — Prisma
+// MUST NOT manage their schema. Do not add relations or modify fields.
+// ============================================
+
+model checkpoint_migrations {
+  v Int @id
+
+  @@ignore
+}
+
+model checkpoints {
+  thread_id            String
+  checkpoint_ns        String  @default("")
+  checkpoint_id        String
+  parent_checkpoint_id String?
+  type                 String?
+  checkpoint           Json
+  metadata             Json    @default("{}")
+
+  @@id([thread_id, checkpoint_ns, checkpoint_id])
+  @@ignore
+}
+
+model checkpoint_blobs {
+  thread_id     String
+  checkpoint_ns String @default("")
+  channel       String
+  version       String
+  type          String
+  blob          Bytes?
+
+  @@id([thread_id, checkpoint_ns, channel, version])
+  @@ignore
+}
+
+model checkpoint_writes {
+  thread_id     String
+  checkpoint_ns String  @default("")
+  checkpoint_id String
+  task_id       String
+  idx           Int
+  channel       String
+  type          String?
+  blob          Bytes
+
+  @@id([thread_id, checkpoint_ns, checkpoint_id, task_id, idx])
+  @@ignore
+}
+
+// ─── QDC ImageLine mirror tables ──────────────────────────────────────────────
+// Read-only copy of the farmer's official field logbook, refreshed by the
+// nightly QdcSyncQueue (and the manual "Sincronizza ora" trigger). `raw` keeps
+// the full QDC record because the recordset columns vary per endpoint.
+// Discriminator fields are String literals on purpose (no Prisma enums:
+// jest-bridge.cjs is hand-maintained).
+
+model QdcAzienda {
+  id           String          @id @default(uuid())
+  qdcId        Int             @unique // getlicenzaaziende ID
+  nome         String // AZIENDA
+  piva         String? // PIVA, normalized via normalizeVat at write time
+  cf           String? // CF
+  validaDa     DateTime? // VALIDADA
+  validaA      DateTime? // VALIDAA
+  companyId    String? // Seminai Company matched by normalized VAT, fallback CF
+  company      Company?        @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  lastSyncedAt DateTime? // set only after this azienda fully succeeded in a run
+  raw          Json
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  unita        QdcUnita[]
+  operazioni   QdcOperazione[]
+  giacenze     QdcGiacenza[]
+  scadenze     QdcScadenza[]
+
+  @@index([companyId])
+  @@index([piva])
+}
+
+model QdcUnita {
+  id           String     @id @default(uuid())
+  qdcAziendaId String
+  qdcAzienda   QdcAzienda @relation(fields: [qdcAziendaId], references: [id], onDelete: Cascade)
+  qdcId        Int // ID_UNITA
+  anno         Int // anno param of getunita (server requires it)
+  coltura      String? // COLTURA
+  varieta      String? // VARIETA
+  superficie   Float? // SUPERFICIE
+  lat          Float?
+  lon          Float?
+  raw          Json // full record incl. FASI, CODICE, CODICEESTERNO, DACONFERMARE…
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([qdcAziendaId, anno, qdcId])
+  @@index([qdcAziendaId])
+}
+
+model QdcOperazione {
+  id             String     @id @default(uuid())
+  qdcAziendaId   String
+  qdcAzienda     QdcAzienda @relation(fields: [qdcAziendaId], references: [id], onDelete: Cascade)
+  tipo           String // 'trattamenti' | 'fertilizzazioni' | 'irrigazioni' | 'raccolte' | 'semine' | 'trapianti' | 'sovesci' | 'ispezioni_campo' | 'lanci_ausiliari' | 'altre_operazioni' | 'conce_sementi' | 'smaltimenti_rifiuti'
+  qdcId          Int // record ID column
+  dataOperazione DateTime? // parsed from DATA (dd/mm/yyyy)
+  raw            Json // full record; PRODOTTI/COLTURE/SUPERFICI are nested JSON
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@unique([qdcAziendaId, tipo, qdcId])
+  @@index([qdcAziendaId, tipo])
+  @@index([dataOperazione])
+}
+
+model QdcGiacenza {
+  id           String     @id @default(uuid())
+  qdcAziendaId String
+  qdcAzienda   QdcAzienda @relation(fields: [qdcAziendaId], references: [id], onDelete: Cascade)
+  categoria    String // 'agrofarmaci' | 'fertilizzanti'
+  prodotto     String
+  qta          Float?
+  udm          String?
+  raw          Json
+  snapshotAt   DateTime // replace-per-sync: rows for (azienda, categoria) share the run's snapshot time
+
+  @@index([qdcAziendaId, categoria])
+}
+
+model QdcScadenza {
+  id           String     @id @default(uuid())
+  qdcAziendaId String
+  qdcAzienda   QdcAzienda @relation(fields: [qdcAziendaId], references: [id], onDelete: Cascade)
+  tipo         String // 'patentino' | 'taratura'
+  raw          Json // element of QdcScadenzeResult.patentini / .tarature
+  syncedAt     DateTime   @default(now())
+
+  @@index([qdcAziendaId, tipo])
+}
+
+model QdcSyncRun {
+  id         String    @id @default(uuid())
+  trigger    String // 'cron' | 'manual'
+  status     String // 'running' | 'success' | 'partial' | 'error'
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  counters   Json? // { aziendeTotal, aziendeFailed, unitaUpserted, operazioniUpserted, operazioniDeleted, giacenzeRows, scadenzeRows, skippedNoId }
+  error      String? // top-level failure or joined per-azienda error summary when partial
+
+  @@index([status])
+  @@index([startedAt])
+}

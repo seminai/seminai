@@ -1,0 +1,61 @@
+# Deep dataset — Job Management Tools
+# Tests job modification scenarios with compliance constraints.
+
+- description: "Spostamento trattamento con vincoli PHI"
+  vars:
+    input_prompt: >
+      Sposta il trattamento con captano dal 10 maggio al 25 maggio.
+      La raccolta è prevista per il 15 giugno, verifica che il PHI sia rispettato.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should consider the pre-harvest interval (PHI) when
+        moving the treatment date. It should verify that 25 May + PHI
+        does not exceed the harvest date of June 15.
+
+- description: "Ottimizzazione trattamenti per evitare sovrapposizioni"
+  vars:
+    input_prompt: >
+      Ho 5 trattamenti tutti programmati nella stessa settimana.
+      Distribuiscili meglio nel mese di maggio per evitare sovrapposizioni.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should propose to redistribute treatments across May,
+        considering minimum intervals between applications and weather
+        windows.
+
+- description: "Merge trattamenti compatibili"
+  vars:
+    input_prompt: >
+      Il 20 maggio ho previsto un trattamento con rame e uno con zolfo.
+      Posso unirli in un'unica applicazione?
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should check product compatibility before merging.
+        It should explain that merging is possible only if the products
+        are chemically compatible.
+
+- description: "Aggiunta job a gruppo esistente"
+  vars:
+    input_prompt: >
+      Al gruppo di trattamenti di maggio, aggiungi un trattamento con
+      Penconazolo a 0.3 L/ha per il 18 maggio contro l'oidio.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should propose to add the job to the existing group
+        and mention that adding a job requires approval. It should
+        confirm the dose, date, and target adversity.
+
+- description: "Modifica dose — deve verificare conformità"
+  vars:
+    input_prompt: >
+      Aumenta la dose di rame del trattamento del 15 maggio da 3 a 6 kg/ha.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should warn that doubling the dose may exceed label
+        limits or disciplinary rules. It should propose to verify
+        compliance before applying the change.

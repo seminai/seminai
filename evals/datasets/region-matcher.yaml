@@ -1,0 +1,66 @@
+# Layer 2 — Region Matcher: tests the LLM address-to-region matching prompt.
+# Validates correct identification of Italian regions from addresses.
+
+- description: "Match diretto — Bologna, Emilia-Romagna"
+  vars:
+    address: "Via Roma 1, Bologna, Emilia-Romagna"
+    region: "Emilia-Romagna"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isMatch === true"
+    - type: javascript
+      value: "JSON.parse(output).confidence >= 90"
+
+- description: "Match per città — Verona in Veneto"
+  vars:
+    address: "Verona, VR"
+    region: "Veneto"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isMatch === true"
+    - type: javascript
+      value: "JSON.parse(output).confidence >= 70"
+
+- description: "Variante nome — Trentino Alto Adige senza trattino"
+  vars:
+    address: "Bolzano, Trentino Alto Adige"
+    region: "Trentino-Alto Adige"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isMatch === true"
+    - type: javascript
+      value: "JSON.parse(output).confidence >= 80"
+
+- description: "No match — Milano vs Veneto"
+  vars:
+    address: "Milano, Lombardia"
+    region: "Veneto"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isMatch === false"
+
+- description: "Match per provincia — Modena in Emilia-Romagna"
+  vars:
+    address: "Via Emilia Ovest 12, Modena, MO"
+    region: "Emilia-Romagna"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isMatch === true"
+    - type: javascript
+      value: "JSON.parse(output).confidence >= 70"
+
+- description: "Match — Catania in Sicilia"
+  vars:
+    address: "Via Etnea 100, Catania, CT"
+    region: "Sicilia"
+  assert:
+    - type: is-json
+    - type: javascript
+      value: "JSON.parse(output).isMatch === true"
+    - type: javascript
+      value: "JSON.parse(output).confidence >= 70"

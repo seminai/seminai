@@ -1,0 +1,59 @@
+# Layer 3 — Tool Routing: tests if the system prompt guides the model
+# toward the correct tools for specific user requests.
+
+- description: "Ricerca prodotti — deve indicare ricerca BDF/prodotti"
+  vars:
+    input_prompt: >
+      Cerca prodotti per il pero contro la ticchiolatura.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should indicate it will search for or help find crop
+        protection products suitable for pear scab (ticchiolatura).
+        It should convey the intent to use its tools or knowledge to
+        identify appropriate products, not invent specific product names
+        from memory without verification.
+    - type: javascript
+      value: "output.length > 80"
+
+- description: "Verifica conformità — deve indicare controllo disciplinare"
+  vars:
+    input_prompt: >
+      Il mio trattamento con captano a 2 kg/ha su melo è conforme
+      al disciplinare della mia regione?
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should explain it needs to verify compliance by checking
+        both the product label and the regional disciplinary rules.
+        It should convey the need for tool-based verification.
+    - type: icontains
+      value: "disciplinare"
+
+- description: "Pianificazione trattamento — deve indicare planning"
+  vars:
+    input_prompt: >
+      Crea un piano di trattamento completo per il mio vigneto
+      di Sangiovese in Toscana per questa stagione.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should explain it will help plan treatments,
+        mentioning the need to gather context (company, products available,
+        phenological stage) before creating a treatment plan.
+    - type: javascript
+      value: "output.length > 100"
+
+- description: "Fasce di rispetto — deve indicare buffer zones"
+  vars:
+    input_prompt: >
+      Ho un campo vicino a un corso d'acqua, cosa devo considerare
+      per i trattamenti fitosanitari?
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should address the topic of buffer zones (fasce di rispetto)
+        near water courses. It should mention that treatment restrictions apply
+        near water bodies and offer to check specific product constraints.
+    - type: icontains
+      value: "rispetto"

@@ -1,0 +1,8 @@
+node_modules
+.git
+src/__tests__
+src/integration-test
+dist
+*.md
+.env
+.env.*

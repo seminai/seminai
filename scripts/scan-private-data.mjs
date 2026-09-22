@@ -28,7 +28,7 @@ const binaryExtensions = new Set([
   '.woff2',
 ]);
 const forbiddenPaths = [
-  /(^|\/)\.env($|\.)/,
+  /(^|\/)\.env(?:$|\.(?!example$))/,
   /(^|\/)key_gcp\.json$/,
   /(^|\/)dataset\/(user|bdf|dataset_trattamenti)\//,
   /(^|\/)backups\/.*\.sql$/i,
@@ -39,11 +39,11 @@ const deniedContent = scanAllLocalFirstViolations
   : importForbiddenContentFragments;
 
 function trackedFiles() {
-  return execFileSync('git', ['ls-files', '-co', '--exclude-standard'], {
+  return execFileSync('git', ['ls-files', '-co', '--exclude-standard', '-z'], {
     cwd: repositoryRoot,
   })
     .toString('utf8')
-    .split('\n')
+    .split('\0')
     .filter(Boolean);
 }
 

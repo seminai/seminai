@@ -1,0 +1,22 @@
+# Layer 2 — Product Selection: Task-specific prompt evaluation.
+# Tests the product filtering prompt from dosage_agent/flowOrchestrateProductSelection.ts.
+
+description: "Dosage Agent — Product Selection Eval (Layer 2)"
+
+prompts:
+  - "unused-prompt-vars-injected-by-provider"
+
+providers:
+  - id: file://./providers/task-prompt.provider.ts
+    label: "GPT-4o-mini — Product Selection"
+    config:
+      model: gpt-4o-mini
+      temperature: 0
+      maxTokens: 1024
+      promptFile: prompts/product-selection.txt
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+
+tests: file://./datasets/product-selection.yaml

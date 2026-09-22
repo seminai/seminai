@@ -4,7 +4,7 @@ export const sourceRepositories = Object.freeze([
 ]);
 
 export const excludedPathPatterns = Object.freeze([
-  /(^|\/)\.env($|\.)/,
+  /(^|\/)\.env(?:$|\.(?!example$))/,
   /^\.claude\/settings\.local\.json$/,
   /(^|\/)\.tanstack\//,
   /(^|\/)dist\//,
@@ -15,7 +15,7 @@ export const excludedPathPatterns = Object.freeze([
   /^docker-compose\.prod\.yml$/,
   /^openapi-extract-api\.json$/,
   /^dataset\/(user|bdf|dataset_trattamenti|test|ddt_pdf|disciplinari_pdf)\//,
-  /^dataset\/sisco_lombardia\/CUAA_AZIENDA_UPLOADcsv\//,
+  /^dataset\/sisco_lombardia\/CUAA_AZIENDA_UPLOADcsv(?:\/|$)/,
   /^dataset\/dataset_crop_phases\/.*\.pdf$/i,
   /^dataset\/groundTruth\/label\.json$/,
   /^prisma\/data_seed\/LabelExtraction_rows\.csv$/,
@@ -37,6 +37,8 @@ export const excludedPathPatterns = Object.freeze([
   /^marketing\//,
   /^landingpage_html\//,
   /^public\/try-seminai\//,
+  /^public\/(bobby_chat|bobby_chat_cuffie|robot_farmer)\.png$/,
+  /^public\/image\/(chat_farmer_robot|conforme_alle_normative|integrabile|no_calcoli|riduzione_costi_tempo|white_label)\.png$/,
   /^swagger\.json$/,
   /^scripts\/sync-prisma-schema\.mjs$/,
 ]);
@@ -45,6 +47,15 @@ export const customerCoupledPathPatterns = Object.freeze([
   /boscarato/i,
   /truzzi/i,
   /ivano/i,
+  /user-dataset/i,
+  /^src\/integration-test\/(dosage-agent-historical-benchmark|ocr-benchmark)(?:\.|\/)/,
+  /^src\/integration-test\/extraction-api-accuracy(?:\.|\/)/,
+  /^src\/integration-test\/lombardia-format\.integration\.test\.ts$/,
+  /^src\/integration-test\/fixtures\/(extraction-datasets\.ts|ocr-benchmark\/)/,
+  /^src\/integration-test\/fixtures\/extraction-entry-validators\.ts$/,
+  /^src\/integration-test\/(document-classifier|document-preclassifier|extraction-queues|tool\.extract-data-from-ddt|tool\.extract-data-from-invoice)\.integration\.test\.ts$/,
+  /^llm-test\/datasets\/invoice-edits-.*\.ya?ml$/i,
+  /^llm-test\/datasets\/multi-turn-flow-[e-h]\.ya?ml$/i,
   /^src\/test\/(veneto-pcg-zip-parser|preclassify-zip-inspector|pcg-geojson-parser|extract-brogliaccio|shapefile-parser|csv_agent_multirow_headers|header_detector)\.test\.ts$/,
   /^jest\.integration\.(boscarato|quality|benchmark|ocr)\.config\.cjs$/,
 ]);

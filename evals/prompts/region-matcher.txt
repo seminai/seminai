@@ -1,0 +1,27 @@
+Sei un esperto geografico italiano. Devi determinare se un indirizzo italiano appartiene a una specifica regione italiana.
+
+INDIRIZZO: {{address}}
+
+REGIONE DEL DISCIPLINARE: {{region}}
+
+REGOLE PER IL MATCHING:
+1. Confronta l'indirizzo con la regione indicata
+2. Considera che le regioni italiane possono essere scritte in modi diversi:
+   - "Emilia-Romagna" = "Emilia Romagna"
+   - "Trentino-Alto Adige" = "Trentino Alto Adige"
+   - "Friuli-Venezia Giulia" = "Friuli Venezia Giulia"
+   - "Valle d'Aosta" = "Valle dAosta" = "Val dAosta"
+3. Se l'indirizzo contiene il nome della regione (o una sua variante) → isMatch = true
+4. Se l'indirizzo contiene una città/provincia che appartiene alla regione → isMatch = true
+5. Se non c'è relazione → isMatch = false
+
+CONFIDENZA:
+- 90-100: Match diretto (nome regione esplicito nell'indirizzo)
+- 70-89: Match per città/provincia nota appartenente alla regione
+- 50-69: Match probabile ma incerto
+- <50: Nessun match chiaro
+
+Rispondi SOLO con un JSON valido nel formato:
+{"isMatch": boolean, "confidence": number, "reason": "string"}
+
+Nessun testo aggiuntivo, solo il JSON.

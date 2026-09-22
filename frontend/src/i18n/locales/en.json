@@ -1,0 +1,256 @@
+{
+  "consent": {
+    "title": "We respect your privacy",
+    "description": "We use analytics cookies (PostHog) to understand how you use the app and improve it. No analytics data is collected without your consent.",
+    "accept": "Accept",
+    "reject": "Necessary only",
+    "policyLink": "Cookie policy",
+    "manageTitle": "Cookies & privacy",
+    "manageDescription": "Review or change your consent to analytics cookies.",
+    "manage": "Manage consent"
+  },
+  "common": {
+    "appName": "Seminai",
+    "archive": "Archive",
+    "cancel": "Cancel",
+    "chat": "Chat",
+    "confirm": "Confirm",
+    "email": "Email",
+    "home": "Home",
+    "language": "Language",
+    "languages": {
+      "en": "English",
+      "it": "Italian"
+    },
+    "loading": "Loading...",
+    "optional": "optional",
+    "password": "Password",
+    "settings": "Settings",
+    "workspace": "Workspace"
+  },
+  "auth": {
+    "actions": {
+      "backToLogin": "Back to login",
+      "forgotPassword": "Forgot password?",
+      "login": "Log in",
+      "register": "Register",
+      "requestNewResetLink": "Request a new reset link"
+    },
+    "bookCall": {
+      "addAttachments": "Add PDF attachments",
+      "attachmentFileTooLarge": "Each attachment must be smaller than 10 MB.",
+      "attachmentInvalidType": "Only PDF files are allowed.",
+      "attachmentsLabel": "Attachments (optional)",
+      "attachmentTotalTooLarge": "Total attachment size must be smaller than 20 MB.",
+      "attachmentTooMany": "You can attach up to 5 PDF files.",
+      "dateLabel": "Preferred date and time",
+      "datePlaceholder": "e.g. 20/03/2026 at 10:30",
+      "description": "Request a demo or meeting with the Seminai team.",
+      "message": "Message",
+      "messagePlaceholder": "I'd like a demo of Seminai...",
+      "send": "Send request",
+      "sendError": "Failed to send request. Please try again.",
+      "sending": "Sending...",
+      "sent": "Request sent successfully. We will get back to you soon.",
+      "title": "Book a call"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid credentials",
+      "invalidEmail": "Invalid email address",
+      "invalidInviteCode": "Invalid or expired invite code",
+      "messageRequired": "Write a short message",
+      "loginFailed": "Login failed",
+      "minPassword": "At least 6 characters",
+      "nameRequired": "Name is required",
+      "passwordMismatch": "Passwords do not match",
+      "preferredDateRequired": "Pick a preferred date",
+      "registrationFailed": "Registration failed",
+      "inviteCodeRequired": "Invite code is required"
+    },
+    "fields": {
+      "address": "Address",
+      "confirmPassword": "Confirm password",
+      "fiscalCode": "Fiscal Code",
+      "inviteCode": "Invite code",
+      "name": "Name",
+      "newPassword": "New password",
+      "phoneNumber": "Phone"
+    },
+    "forgotPassword": {
+      "description": "Enter your email and we will send you a link to reset your password.",
+      "error": "Unable to request a password reset. Please try again.",
+      "pending": "Sending link...",
+      "submit": "Send reset link",
+      "success": "If this email is registered, you will receive a password reset link shortly.",
+      "title": "Reset your password"
+    },
+    "inviteHelp": "You need a valid invite code to register. Interested in Seminai?",
+    "loginCta": "Already have an account?",
+    "loginPending": "Logging in...",
+    "placeholders": {
+      "address": "Via Roma 1, Milan",
+      "email": "you@example.com",
+      "inviteCode": "Enter your invite code",
+      "name": "Your name",
+      "password": "••••••",
+      "phoneNumber": "+39 333 1234567"
+    },
+    "registerCta": "Don't have an account?",
+    "registerPending": "Registering...",
+    "resetPassword": {
+      "description": "Choose a new password for your account.",
+      "error": "Unable to reset your password. Please try again.",
+      "invalidLink": "This password reset link is invalid. Request a new link to continue.",
+      "invalidToken": "This password reset link is expired or invalid. Request a new link to continue.",
+      "pending": "Resetting password...",
+      "submit": "Reset password",
+      "success": "Password reset successfully. Log in with your new password.",
+      "title": "Create a new password"
+    }
+  },
+  "errors": {
+    "root": {
+      "description": "The app caught an error and cannot continue. Reload the page to start again.",
+      "reload": "Reload page",
+      "title": "Something went wrong",
+      "unexpected": "Unexpected error"
+    }
+  },
+  "home": {
+    "actions": {
+      "createDosages": "Create dosages",
+      "upload": "Upload"
+    },
+    "add": "Add",
+    "addData": "Add data",
+    "addManual": "Add manually",
+    "addManualDescription": "Manually create companies, products, fields, or production units",
+    "chat": {
+      "errors": {
+        "emptyMessage": "Enter a message before sending.",
+        "micDenied": "Unable to access the microphone. Check your browser permissions.",
+        "sendFailed": "Message send failed.",
+        "transcriptionFailed": "Audio transcription failed.",
+        "transcriptionEmpty": "Empty transcription: try another audio file."
+      }
+    },
+    "chatInput": {
+      "addAttachments": "Add attachments",
+      "placeholder": "What do you need? Use @ to mention companies, products, fields, documents...",
+      "recordAudio": "Record audio",
+      "stopRecording": "Stop recording"
+    },
+    "commercial": {
+      "title": "What to do today",
+      "loading": "Loading tasks...",
+      "empty": "Nothing pending.",
+      "widgets": {
+        "ordersToProcess": "Orders to process",
+        "outgoingDdt": "Outgoing DDT",
+        "pendingEmails": "Emails to review",
+        "overdueInvoices": "Overdue invoices",
+        "followUpsSent": "Follow-ups sent"
+      }
+    },
+    "deadlines": {
+      "empty": "No documents expiring soon.",
+      "expired": "expired",
+      "inDays": "in {{count}}d",
+      "loading": "Loading deadlines...",
+      "tomorrow": "tomorrow",
+      "title": "Deadlines"
+    },
+    "quickActions": "Quick actions",
+    "recent": "Recent",
+    "timeAgo": {
+      "days": "{{count}}d ago",
+      "hours": "{{count}}h ago",
+      "minutes": "{{count}}m ago"
+    }
+  },
+  "commercial": {
+    "inbox": {
+      "cta": {
+        "shipDdt": "Print DDT",
+        "generateProforma": "Generate proforma",
+        "generateDdt": "Generate DDT",
+        "reviewAttachment": "Review",
+        "processOrder": "Confirm",
+        "openChat": "Open chat",
+        "sendCourierSummary": "Send to courier",
+        "sendPaymentReminder": "Send payment reminder"
+      },
+      "confirm": {
+        "generateProforma": "Generate the proforma for this order?",
+        "processOrder": "Confirm the order? Stock will be reserved.",
+        "generateDdt": "Generate the DDT? The warehouse will be unloaded.",
+        "sendCourierSummary": "Send the shipping summary to the courier? The DDTs will be marked as sent.",
+        "sendPaymentReminder": "Send the payment reminder to the customer?"
+      },
+      "toast": {
+        "courierSent": "Summary sent — {{count}} DDTs marked as sent",
+        "courierError": "Could not send the courier summary",
+        "reminderSent": "Payment reminder sent",
+        "reminderError": "Could not send the reminder"
+      },
+      "age": {
+        "today": "today",
+        "days": "{{count}}d ago"
+      }
+    }
+  },
+  "settings": {
+    "groups": {
+      "account": "Account"
+    },
+    "preferences": {
+      "display": {
+        "description": "Turn on the Excel-style view (AG Grid) with cell selection, Excel copy and paste, advanced filters, and inline editing.",
+        "title": "Excel view for tables"
+      },
+      "language": {
+        "description": "Choose the language for the protected area. The preference is saved in your user settings.",
+        "saveError": "I couldn't save the language. Try again.",
+        "saving": "Saving language...",
+        "title": "Language"
+      },
+      "title": "Display preferences"
+    },
+    "sections": {
+      "costs": "Costs",
+      "integrations": "Integrations",
+      "plan": "Plan",
+      "rules": "Rules",
+      "user": "User",
+      "users": "Users"
+    },
+    "sidebar": {
+      "collapse": "Collapse sidebar",
+      "expand": "Expand sidebar",
+      "logout": "Logout"
+    },
+    "user": {
+      "avatarHint": "Click the avatar to change your profile photo.",
+      "changePassword": "Change password",
+      "confirmPassword": "Confirm password",
+      "currentPassword": "Current password",
+      "fields": {
+        "address": "Address",
+        "companyName": "Company",
+        "name": "Name",
+        "phoneNumber": "Phone",
+        "surname": "Surname",
+        "vatNumber": "VAT number"
+      },
+      "loadError": "Error while loading user data.",
+      "loading": "Loading user data...",
+      "newPassword": "New password",
+      "noData": "No user data available.",
+      "passwordMismatch": "Passwords do not match.",
+      "personalInfo": "Personal information",
+      "profile": "User profile",
+      "save": "Save",
+      "uploading": "Uploading..."
+    }
+  }
+}

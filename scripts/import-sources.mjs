@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execFileSync, spawnSync } from 'node:child_process';
-import { chmodSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import {
   importForbiddenContentFragments,
@@ -83,17 +83,22 @@ function writeEntry(destination, entry, content) {
   if (!absoluteDestination.startsWith(`${repositoryRoot}/`)) {
     throw new Error(`Unsafe destination: ${destination}`);
   }
+  if (missingOnly && existsSync(absoluteDestination)) return false;
   mkdirSync(dirname(absoluteDestination), { recursive: true });
   if (entry.mode === '120000') {
     symlinkSync(content.toString('utf8'), absoluteDestination);
-    return;
+    return true;
   }
   writeFileSync(absoluteDestination, content);
   if (entry.mode === '100755') chmodSync(absoluteDestination, 0o755);
+  return true;
 }
 
+const missingOnly = process.argv.includes('--missing-only');
 let imported = 0;
+let existingSkipped = 0;
 let contentExcluded = 0;
+const contentExcludedPaths = [];
 for (const repository of sourceRepositories) {
   const source = resolve(repositoryRoot, repository.source);
   const entries = readTree(source, repository.ref);
@@ -102,13 +107,16 @@ for (const repository of sourceRepositories) {
     const content = blobs[index];
     if (hasForbiddenContent(entry.path, content)) {
       contentExcluded += 1;
+      contentExcludedPaths.push(`${repository.name}:${entry.path}`);
       return;
     }
-    writeEntry(mapDestination(repository.name, entry.path), entry, content);
-    imported += 1;
+    const written = writeEntry(mapDestination(repository.name, entry.path), entry, content);
+    if (written) imported += 1;
+    else existingSkipped += 1;
   });
 }
 
 process.stdout.write(
-  `Imported ${imported} tracked files; excluded ${contentExcluded} files by content policy.\n`,
+  `Imported ${imported} tracked files; skipped ${existingSkipped} existing files; excluded ${contentExcluded} files by content policy.\n`,
 );
+contentExcludedPaths.forEach((path) => process.stdout.write(`Excluded content: ${path}\n`));

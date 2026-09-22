@@ -1,0 +1,300 @@
+# Layer 3 — Comprehensive Tool Routing: tests actual tool selection via function calling.
+# Each test provides a user message and asserts the model selects the correct tool.
+
+# ── DOSAGE PIPELINE ──
+
+- description: "Ricerca prodotti per coltura"
+  vars:
+    input_prompt: "Cerca prodotti per il vigneto contro la peronospora."
+  assert:
+    - type: contains
+      value: "search_products"
+
+- description: "Calcolo dosaggio"
+  vars:
+    input_prompt: "Calcola i dosaggi per i prodotti che abbiamo trovato."
+  assert:
+    - type: contains
+      value: "calculate_dosage"
+
+- description: "Verifica conformità disciplinari"
+  vars:
+    input_prompt: "Verifica se i dosaggi calcolati sono conformi ai disciplinari della mia regione."
+  assert:
+    - type: contains
+      value: "validate_compliance"
+
+- description: "Verifica compatibilità prodotti"
+  vars:
+    input_prompt: "Controlla se posso mischiare captano e mancozeb nella stessa botte."
+  assert:
+    - type: contains
+      value: "check_compatibility"
+
+- description: "Calcolo stock magazzino"
+  vars:
+    input_prompt: "Ho abbastanza scorte in magazzino per coprire il piano di trattamento?"
+  assert:
+    - type: javascript
+      value: "output.includes('calculate_stock') || output.includes('search_company_stock')"
+
+# ── PLANNING ──
+
+- description: "Generazione piano — richiede raccolta context prima"
+  vars:
+    input_prompt: "Crea un piano di trattamento completo per il mio vigneto di Sangiovese in Toscana."
+  assert:
+    - type: javascript
+      value: "output.includes('ask_user_questions') || output.includes('list_user_companies') || output.includes('list_production_units') || output.includes('generate_treatment_plan')"
+
+- description: "Modifica passo piano"
+  vars:
+    input_prompt: "Cambia il prodotto del passo 3 del piano con Leopard alla dose di 2 L/ha."
+  assert:
+    - type: contains
+      value: "modify_plan_step"
+
+- description: "Esecuzione piano"
+  vars:
+    input_prompt: "Il piano mi sembra ok, procedi con l'esecuzione."
+  assert:
+    - type: javascript
+      value: "output.includes('execute_treatment_plan') || output.includes('create_treatment_jobs')"
+
+# ── ENTITY CREATION (ONBOARDING) ──
+
+- description: "Importazione file caricato"
+  vars:
+    input_prompt: "Ho caricato un file Excel con i dati della mia azienda, importalo."
+  assert:
+    - type: contains
+      value: "extract_from_file"
+
+- description: "Normalizzazione post-estrazione fascicolo aziendale"
+  vars:
+    input_prompt: |
+      [Stato] @Agri Toscana srl risolta (companyId=cmpy_001). Il tool extract_from_file
+      è già stato chiamato e wm.extractedFileData ora contiene 3 fields con
+      foglio/particella e 3 productionUnits con cycles (Piano Colturale).
+      [Azione richiesta] Procedi col prossimo passo del flusso "DA FILE — Piano Colturale".
+  assert:
+    - type: contains
+      value: "normalize_extraction"
+
+- description: "Review dopo normalizzazione (Piano Colturale)"
+  vars:
+    input_prompt: |
+      [Stato] Per @Agri Toscana srl (companyId=cmpy_001) ho eseguito extract_from_file
+      e normalize_extraction. wm.normalizedExtraction è popolato: 2 fields 'new',
+      1 'existing', 0 'occupied', 3 UP raggruppate per (coltura, foglio, comune).
+      [Azione richiesta] Chiama ORA il tool corretto per mostrare all'utente il form di
+      revisione dei dati. Non descrivere — invoca direttamente il tool.
+  assert:
+    - type: contains
+      value: "present_extraction_review"
+
+- description: "DDT/Fattura: salta normalizzazione e va direttamente al form"
+  vars:
+    input_prompt: |
+      [Stato] @Agri Toscana srl risolta (companyId=cmpy_001). Caricato un PDF DDT
+      (categoria=DDT, NON Piano Colturale). extract_from_file ha popolato
+      wm.extractedFileData con campi DDT (numero, data, righe prodotti).
+      [Azione richiesta] Procedi col prossimo passo del flusso "DA FILE — DDT/Fattura".
+  assert:
+    - type: contains
+      value: "present_extraction_review"
+    - type: not-contains
+      value: "normalize_extraction"
+
+- description: "Creazione azienda"
+  vars:
+    input_prompt: "Devo registrare una nuova azienda agricola, si chiama Agri Toscana srl."
+  assert:
+    - type: contains
+      value: "create_company"
+
+- description: "Creazione unità produttive"
+  vars:
+    input_prompt: "Crea le unità produttive per i campi dell'azienda appena registrata."
+  assert:
+    - type: contains
+      value: "create_production_units"
+
+# ── CONFORMITY CHECK ──
+
+- description: "Controllo conformità job group"
+  vars:
+    input_prompt: "Verifica la conformità dei trattamenti del mio job group."
+  assert:
+    - type: contains
+      value: "run_conformity_check"
+
+- description: "Conferma correzioni conformità"
+  vars:
+    input_prompt: "Applica le correzioni proposte dal controllo conformità."
+  assert:
+    - type: contains
+      value: "confirm_conformity_check"
+
+# ── JOB MANAGEMENT ──
+
+- description: "Spostamento data trattamento"
+  vars:
+    input_prompt: "Sposta il trattamento con captano al 15 maggio."
+  assert:
+    - type: contains
+      value: "update_job"
+
+- description: "Ottimizzazione distribuzione trattamenti"
+  vars:
+    input_prompt: "Distribuisci meglio i trattamenti selezionati nel tempo per evitare sovrapposizioni."
+  assert:
+    - type: contains
+      value: "optimize_selected_jobs"
+
+- description: "Unione trattamenti stessa data"
+  vars:
+    input_prompt: "Unisci i due trattamenti previsti per il 20 maggio in un'unica sessione."
+  assert:
+    - type: contains
+      value: "merge_treatment_dates"
+
+# ── STOCK & AUTHORIZATION ──
+
+- description: "Ricerca scorte magazzino"
+  vars:
+    input_prompt: "Quanti kg di rame ho in magazzino?"
+  assert:
+    - type: contains
+      value: "search_company_stock"
+
+- description: "Verifica autorizzazione prodotto"
+  vars:
+    input_prompt: "Il prodotto Leopard è autorizzato per la vite nella mia regione?"
+  assert:
+    - type: javascript
+      value: "output.includes('check_product_crop_authorizations') || output.includes('search_product_label_database')"
+
+# ── FIELD NOTES ──
+
+- description: "Registrazione trattamento passato"
+  vars:
+    input_prompt: "Ieri ho dato 2 litri per ettaro di Leopard sul vigneto nord."
+  assert:
+    - type: contains
+      value: "delegate_to_field_note"
+
+- description: "Registrazione osservazione campo"
+  vars:
+    input_prompt: "Stamattina ho visto macchie di peronospora sulle foglie del filare 3."
+  assert:
+    - type: contains
+      value: "delegate_to_field_note"
+
+# ── WORKSPACE RULES ──
+
+- description: "Creazione regola no neonicotinoidi"
+  vars:
+    input_prompt: "Crea una regola per non usare mai neonicotinoidi nei miei trattamenti."
+  assert:
+    - type: contains
+      value: "create_workspace_rule"
+
+- description: "Lista regole workspace"
+  vars:
+    input_prompt: "Quali regole ho impostato nel mio workspace?"
+  assert:
+    - type: contains
+      value: "list_workspace_rules"
+
+# ── SEARCH TOOLS ──
+
+- description: "Ricerca informazioni disciplinare"
+  vars:
+    input_prompt: "Cosa dice il disciplinare della Toscana riguardo al captano su melo?"
+  assert:
+    - type: javascript
+      value: "output.includes('search_disciplinari_database') || output.includes('search_disciplinari_bdf_pdf') || output.includes('search_rules')"
+
+- description: "Ricerca dosi BDF"
+  vars:
+    input_prompt: "Quali sono le dosi ufficiali del captano su pero secondo il BDF?"
+  assert:
+    - type: javascript
+      value: "output.includes('bdf_search_product_doses') || output.includes('search_product_label_database')"
+
+- description: "Ricerca prodotti per avversità"
+  vars:
+    input_prompt: "Quali prodotti sono autorizzati per la ticchiolatura del melo secondo il BDF?"
+  assert:
+    - type: javascript
+      value: "output.includes('bdf_search_products_by_adversity') || output.includes('search_products')"
+
+- description: "Ricerca etichetta ministeriale"
+  vars:
+    input_prompt: "Mostrami l'etichetta ministeriale del Leopard."
+  assert:
+    - type: contains
+      value: "search_product_label_database"
+
+# ── CONTEXT DISCOVERY ──
+
+- description: "Lista aziende utente"
+  vars:
+    input_prompt: "Quali sono le mie aziende registrate?"
+  assert:
+    - type: contains
+      value: "list_user_companies"
+
+- description: "Lista unità produttive"
+  vars:
+    input_prompt: "Mostrami le unità produttive della mia azienda."
+  assert:
+    - type: contains
+      value: "list_production_units"
+
+- description: "Lista campi"
+  vars:
+    input_prompt: "Quali campi ho registrato?"
+  assert:
+    - type: contains
+      value: "list_user_fields"
+
+# ── EDGE CASES ──
+
+- description: "Richiesta ambigua — dovrebbe chiedere chiarimenti"
+  vars:
+    input_prompt: "Fai qualcosa con i miei trattamenti."
+  assert:
+    - type: javascript
+      value: "output.includes('ask_user_questions') || output.includes('NO_TOOL') || output.includes('list_')"
+
+- description: "Fasce di rispetto — dovrebbe cercare buffer zones"
+  vars:
+    input_prompt: "Ho un campo vicino a un corso d'acqua, quali restrizioni ho sui trattamenti?"
+  assert:
+    - type: javascript
+      value: "output.includes('extract_buffer_zones') || output.includes('search_rules') || output.includes('search_product_label_database')"
+
+# ── DIAGNOSI & RACCOMANDAZIONE (nuovi tool) ──
+
+- description: "[NEW] Miglior prodotto per avversità citata a testo"
+  vars:
+    input_prompt: "Qual è il prodotto migliore per trattare la peronospora della vite?"
+  assert:
+    - type: contains
+      value: "recommend_best_products"
+
+- description: "[NEW] Miglior principio attivo contro avversità"
+  vars:
+    input_prompt: "Che principio attivo è il più efficace contro l'oidio sul mio melo?"
+  assert:
+    - type: contains
+      value: "recommend_best_products"
+
+- description: "[NEW] Diagnosi da foto allegata"
+  vars:
+    input_prompt: "Ti ho allegato una foto della mia pianta di vite con delle macchie strane sulle foglie: che malattia è e cosa devo usare?"
+  assert:
+    - type: javascript
+      value: "output.includes('diagnose_from_photo')"

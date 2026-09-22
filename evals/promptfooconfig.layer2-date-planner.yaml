@@ -1,0 +1,30 @@
+# Layer 2 — Date Planner: Task-specific prompt evaluation.
+# Tests the phenological date estimation prompt from dosage_agent/treatmentDatePlanner.ts.
+
+description: "Dosage Agent — Date Planner Eval (Layer 2)"
+
+prompts:
+  - "unused-prompt-vars-injected-by-provider"
+
+providers:
+  - id: file://./providers/task-prompt.provider.ts
+    label: "GPT-4o-mini — Date Planner"
+    config:
+      model: gpt-4o-mini
+      temperature: 0
+      maxTokens: 500
+      promptFile: prompts/date-planner-phenology.txt
+
+  - id: file://./providers/task-prompt.provider.ts
+    label: "GPT-4o — Date Planner"
+    config:
+      model: gpt-4o
+      temperature: 0
+      maxTokens: 500
+      promptFile: prompts/date-planner-phenology.txt
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+
+tests: file://./datasets/date-planner.yaml

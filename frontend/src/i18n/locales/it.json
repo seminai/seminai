@@ -1,0 +1,256 @@
+{
+  "consent": {
+    "title": "Rispettiamo la tua privacy",
+    "description": "Usiamo cookie di analisi (PostHog) per capire come usi l'app e migliorarla. Senza il tuo consenso non raccogliamo alcun dato di analisi.",
+    "accept": "Accetta",
+    "reject": "Solo necessari",
+    "policyLink": "Cookie policy",
+    "manageTitle": "Cookie e privacy",
+    "manageDescription": "Rivedi o modifica il tuo consenso ai cookie di analisi.",
+    "manage": "Gestisci consensi"
+  },
+  "common": {
+    "appName": "Seminai",
+    "archive": "Archivio",
+    "cancel": "Annulla",
+    "chat": "Chat",
+    "confirm": "Conferma",
+    "email": "Email",
+    "home": "Home",
+    "language": "Lingua",
+    "languages": {
+      "en": "Inglese",
+      "it": "Italiano"
+    },
+    "loading": "Caricamento...",
+    "optional": "opzionale",
+    "password": "Password",
+    "settings": "Impostazioni",
+    "workspace": "Workspace"
+  },
+  "auth": {
+    "actions": {
+      "backToLogin": "Torna al login",
+      "forgotPassword": "Password dimenticata?",
+      "login": "Accedi",
+      "register": "Registrati",
+      "requestNewResetLink": "Richiedi un nuovo link"
+    },
+    "bookCall": {
+      "addAttachments": "Aggiungi allegati PDF",
+      "attachmentFileTooLarge": "Ogni allegato deve essere inferiore a 10 MB.",
+      "attachmentInvalidType": "Sono ammessi solo file PDF.",
+      "attachmentsLabel": "Allegati (opzionale)",
+      "attachmentTotalTooLarge": "La dimensione totale degli allegati deve essere inferiore a 20 MB.",
+      "attachmentTooMany": "Puoi allegare al massimo 5 file PDF.",
+      "dateLabel": "Data e ora preferite",
+      "datePlaceholder": "es. 20/03/2026 alle 10:30",
+      "description": "Richiedi una demo o un incontro con il team Seminai.",
+      "message": "Messaggio",
+      "messagePlaceholder": "Vorrei una demo di Seminai...",
+      "send": "Invia richiesta",
+      "sendError": "Non sono riuscito a inviare la richiesta. Riprova.",
+      "sending": "Invio in corso...",
+      "sent": "Richiesta inviata correttamente. Ti risponderemo presto.",
+      "title": "Prenota una call"
+    },
+    "errors": {
+      "invalidCredentials": "Credenziali non valide",
+      "invalidEmail": "Indirizzo email non valido",
+      "invalidInviteCode": "Codice invito non valido o scaduto",
+      "messageRequired": "Scrivi un breve messaggio",
+      "loginFailed": "Accesso non riuscito",
+      "minPassword": "Almeno 6 caratteri",
+      "nameRequired": "Il nome è obbligatorio",
+      "passwordMismatch": "Le password non coincidono",
+      "preferredDateRequired": "Scegli una data preferita",
+      "registrationFailed": "Registrazione non riuscita",
+      "inviteCodeRequired": "Il codice invito è obbligatorio"
+    },
+    "fields": {
+      "address": "Indirizzo",
+      "confirmPassword": "Conferma password",
+      "fiscalCode": "Codice Fiscale",
+      "inviteCode": "Codice invito",
+      "name": "Nome",
+      "newPassword": "Nuova password",
+      "phoneNumber": "Telefono"
+    },
+    "forgotPassword": {
+      "description": "Inserisci la tua email e ti invieremo un link per reimpostare la password.",
+      "error": "Non sono riuscito a richiedere il reset della password. Riprova.",
+      "pending": "Invio link in corso...",
+      "submit": "Invia link di reset",
+      "success": "Se questa email è registrata, riceverai a breve un link per reimpostare la password.",
+      "title": "Reimposta la password"
+    },
+    "inviteHelp": "Serve un codice invito valido per registrarti. Ti interessa Seminai?",
+    "loginCta": "Hai già un account?",
+    "loginPending": "Accesso in corso...",
+    "placeholders": {
+      "address": "Via Roma 1, Milano",
+      "email": "tu@example.com",
+      "inviteCode": "Inserisci il tuo codice invito",
+      "name": "Il tuo nome",
+      "password": "••••••",
+      "phoneNumber": "+39 333 1234567"
+    },
+    "registerCta": "Non hai un account?",
+    "registerPending": "Registrazione in corso...",
+    "resetPassword": {
+      "description": "Scegli una nuova password per il tuo account.",
+      "error": "Non sono riuscito a reimpostare la password. Riprova.",
+      "invalidLink": "Questo link di reset password non è valido. Richiedi un nuovo link per continuare.",
+      "invalidToken": "Questo link di reset password è scaduto o non valido. Richiedi un nuovo link per continuare.",
+      "pending": "Reset password in corso...",
+      "submit": "Reimposta password",
+      "success": "Password reimpostata correttamente. Accedi con la nuova password.",
+      "title": "Crea una nuova password"
+    }
+  },
+  "errors": {
+    "root": {
+      "description": "L'app ha intercettato un errore e non può continuare. Ricarica la pagina per ripartire.",
+      "reload": "Ricarica pagina",
+      "title": "Qualcosa è andato storto",
+      "unexpected": "Errore inatteso"
+    }
+  },
+  "home": {
+    "actions": {
+      "createDosages": "Crea dosaggi",
+      "upload": "Carica"
+    },
+    "add": "Aggiungi",
+    "addData": "Aggiungi dati",
+    "addManual": "Aggiungi a mano",
+    "addManualDescription": "Crea manualmente aziende, prodotti, campi o unità produttive",
+    "chat": {
+      "errors": {
+        "emptyMessage": "Inserisci un messaggio prima di inviare.",
+        "micDenied": "Impossibile accedere al microfono. Controlla i permessi del browser.",
+        "sendFailed": "Invio messaggio fallito.",
+        "transcriptionFailed": "Trascrizione audio non riuscita.",
+        "transcriptionEmpty": "Trascrizione vuota: prova con un altro audio."
+      }
+    },
+    "chatInput": {
+      "addAttachments": "Aggiungi allegati",
+      "placeholder": "Di cosa hai bisogno? Usa @ per menzionare aziende, prodotti, campi, documenti...",
+      "recordAudio": "Registra audio",
+      "stopRecording": "Ferma registrazione"
+    },
+    "commercial": {
+      "title": "Cosa fare oggi",
+      "loading": "Caricamento attività...",
+      "empty": "Nessuna attività in sospeso.",
+      "widgets": {
+        "ordersToProcess": "Ordini da elaborare",
+        "outgoingDdt": "DDT in uscita",
+        "pendingEmails": "Email da rivedere",
+        "overdueInvoices": "Fatture scadute",
+        "followUpsSent": "Solleciti inviati"
+      }
+    },
+    "deadlines": {
+      "empty": "Nessun documento in scadenza.",
+      "expired": "scaduto",
+      "inDays": "tra {{count}}g",
+      "loading": "Caricamento scadenze...",
+      "tomorrow": "domani",
+      "title": "Scadenze"
+    },
+    "quickActions": "Azioni rapide",
+    "recent": "Recenti",
+    "timeAgo": {
+      "days": "{{count}}g fa",
+      "hours": "{{count}}h fa",
+      "minutes": "{{count}}m fa"
+    }
+  },
+  "commercial": {
+    "inbox": {
+      "cta": {
+        "shipDdt": "Stampa DDT",
+        "generateProforma": "Genera proforma",
+        "generateDdt": "Genera DDT",
+        "reviewAttachment": "Rivedi",
+        "processOrder": "Conferma",
+        "openChat": "Apri chat",
+        "sendCourierSummary": "Invia al corriere",
+        "sendPaymentReminder": "Sollecita pagamento"
+      },
+      "confirm": {
+        "generateProforma": "Generare la proforma per questo ordine?",
+        "processOrder": "Confermare l'ordine? La giacenza verrà riservata.",
+        "generateDdt": "Generare il DDT? Verrà effettuato lo scarico di magazzino.",
+        "sendCourierSummary": "Inviare il riepilogo spedizioni al corriere? I DDT verranno marcati come inviati.",
+        "sendPaymentReminder": "Inviare il sollecito di pagamento al cliente?"
+      },
+      "toast": {
+        "courierSent": "Riepilogo inviato — {{count}} DDT marcati come inviati",
+        "courierError": "Invio al corriere non riuscito",
+        "reminderSent": "Sollecito di pagamento inviato",
+        "reminderError": "Invio sollecito non riuscito"
+      },
+      "age": {
+        "today": "oggi",
+        "days": "{{count}}g fa"
+      }
+    }
+  },
+  "settings": {
+    "groups": {
+      "account": "Account"
+    },
+    "preferences": {
+      "display": {
+        "description": "Attiva la visualizzazione stile Excel (AG Grid) con selezione di celle, copia/incolla da Excel, filtri avanzati e modifica inline.",
+        "title": "Vista Excel per le tabelle"
+      },
+      "language": {
+        "description": "Scegli la lingua dell'area protetta. La preferenza viene salvata nei settings del tuo utente.",
+        "saveError": "Non sono riuscito a salvare la lingua. Riprova.",
+        "saving": "Salvataggio lingua...",
+        "title": "Lingua"
+      },
+      "title": "Preferenze visualizzazione"
+    },
+    "sections": {
+      "costs": "Costi",
+      "integrations": "Integrazioni",
+      "plan": "Piano",
+      "rules": "Regole",
+      "user": "Utente",
+      "users": "Utenti"
+    },
+    "sidebar": {
+      "collapse": "Comprimi sidebar",
+      "expand": "Espandi sidebar",
+      "logout": "Esci"
+    },
+    "user": {
+      "avatarHint": "Clicca sull'avatar per cambiare la foto profilo.",
+      "changePassword": "Cambia password",
+      "confirmPassword": "Conferma password",
+      "currentPassword": "Password attuale",
+      "fields": {
+        "address": "Indirizzo",
+        "companyName": "Azienda",
+        "name": "Nome",
+        "phoneNumber": "Telefono",
+        "surname": "Cognome",
+        "vatNumber": "Partita IVA"
+      },
+      "loadError": "Errore durante il caricamento dati utente.",
+      "loading": "Caricamento dati utente...",
+      "newPassword": "Nuova password",
+      "noData": "Nessun dato utente disponibile.",
+      "passwordMismatch": "Le password non coincidono.",
+      "personalInfo": "Informazioni personali",
+      "profile": "Profilo utente",
+      "save": "Salva",
+      "uploading": "Caricamento..."
+    }
+  }
+}

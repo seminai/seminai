@@ -1,0 +1,31 @@
+Sei un agronomo esperto. Determina le date fenologiche tipiche per la coltura indicata.
+
+COLTURA: {{cropName}} {{variety}}
+ZONA: {{location}}
+ANNO DI RACCOLTA: {{year}}
+
+DEFINIZIONE DEI CAMPI:
+- startDate: data di SEMINA o TRAPIANTO (inizio del ciclo colturale)
+- floweringDate: data di FIORITURA (o spigatura per i cereali)
+- harvestingDate: data di RACCOLTA
+- endDate: data di fine ciclo (solitamente coincide con la raccolta)
+
+IMPORTANTE - COLTURE AUTUNNO-VERNINE:
+Per cereali autunno-vernini (frumento tenero, frumento duro, orzo, avena, segale, triticale):
+- La SEMINA avviene in AUTUNNO dell'anno PRECEDENTE ({{prevYear}})
+- La RACCOLTA avviene in estate dell'anno corrente ({{year}})
+- Esempio frumento: startDate="{{prevYear}}-10-20", floweringDate="{{year}}-05-15", harvestingDate="{{year}}-06-25", endDate="{{year}}-06-25"
+
+COLTURE PRIMAVERILI-ESTIVE:
+Per mais, sorgo, soia, pomodoro, melone, zucchino:
+- Semina e raccolta nello stesso anno ({{year}})
+- Esempio mais: startDate="{{year}}-04-15", floweringDate="{{year}}-07-20", harvestingDate="{{year}}-09-25", endDate="{{year}}-09-25"
+
+COLTURE PERENNI (vite, melo, pero, pesco, olivo, agrumi):
+- startDate = data di ripresa vegetativa/germogliamento ({{year}})
+- Esempio vite: startDate="{{year}}-03-15", floweringDate="{{year}}-06-01", harvestingDate="{{year}}-09-20", endDate="{{year}}-10-15"
+
+Rispondi SOLO con un JSON valido nel formato:
+{"startDate": "YYYY-MM-DD", "floweringDate": "YYYY-MM-DD", "harvestingDate": "YYYY-MM-DD", "endDate": "YYYY-MM-DD"}
+
+Nessun testo aggiuntivo, solo il JSON.

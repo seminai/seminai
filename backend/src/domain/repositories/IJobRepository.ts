@@ -1,0 +1,42 @@
+import { Job } from '../entities/Job';
+import {
+  JobWithAssignmentDTO,
+  JobWithAssignmentWithoutHistoryDTO,
+} from '../dtos/job-assignment.dto';
+import { JobGroupSummaryDTO } from '../dtos/job-group-summary.dto';
+import { JobProductLinkDTO } from '../dtos/job-product-link.dto';
+
+export interface IJobRepository {
+  create(job: Job): Promise<Job>;
+  createMany(jobs: Job[]): Promise<void>;
+  findById(id: string): Promise<Job | null>;
+  findAll(): Promise<Job[]>;
+  findManyByProductionUnitId(productionUnitId: string): Promise<Job[]>;
+  findManyByUserIdWithAssignment(
+    userId: string,
+    companyName?: string,
+    jobId?: string,
+  ): Promise<JobWithAssignmentDTO[]>;
+  findManyByUserIdWithAssignmentWithoutHistory(
+    userId: string,
+    companyName?: string,
+    jobId?: string,
+  ): Promise<JobWithAssignmentWithoutHistoryDTO[]>;
+  findVerifiedJobsByUserIdWithAssignment(
+    userId: string,
+    companyName?: string,
+    skip?: number,
+    take?: number,
+  ): Promise<{ jobs: JobWithAssignmentDTO[]; total: number }>;
+  findUnverifiedJobsByUserIdWithAssignment(
+    userId: string,
+    companyName?: string,
+    jobGroupId?: string,
+  ): Promise<JobWithAssignmentWithoutHistoryDTO[]>;
+  findManyByIdsWithProducts(jobIds: string[]): Promise<JobProductLinkDTO[]>;
+  findJobGroupsSummaryByUserId(userId: string): Promise<JobGroupSummaryDTO[]>;
+  findManyByIdsWithCompany(ids: string[]): Promise<Array<{ job: Job; companyId: string | null }>>;
+  update(id: string, data: Partial<Job>): Promise<Job>;
+  delete(id: string): Promise<void>;
+  deleteMany(ids: string[]): Promise<void>;
+}

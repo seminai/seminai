@@ -1,0 +1,76 @@
+# Deep dataset — Dosage Pipeline Tools
+# Tests multi-step dosage scenarios with expected tool chains.
+
+- description: "Pipeline completa peronospora vite — deve scoprire contesto"
+  vars:
+    input_prompt: >
+      Ho un vigneto di Sangiovese da 12 ettari in Toscana. Voglio pianificare
+      i trattamenti antiperonosporici per questa stagione. Aiutami con il dosaggio.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should first gather context: list companies, production units,
+        and available products before calculating dosages. It should NOT jump
+        directly to dosage calculation without knowing the production units.
+    - type: javascript
+      value: "output.length > 100"
+
+- description: "Dosaggio con stock limitato — deve ottimizzare"
+  vars:
+    input_prompt: >
+      Calcola i dosaggi per i prodotti trovati, ma ho solo 50 kg di rame
+      in magazzino. Ottimizza le dosi per non superare le scorte disponibili.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should mention stock optimization and indicate it will
+        check stock availability. It should reference the stock limitation
+        of 50 kg of copper.
+
+- description: "Compliance dopo dosaggio — deve verificare disciplinare"
+  vars:
+    input_prompt: >
+      I dosaggi sono calcolati. Prima di procedere, verifica se sono conformi
+      al disciplinare della Toscana e controlla i limiti per i gruppi SA.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should mention both regional disciplinary rules verification
+        AND substance active group limits. It should indicate it will run
+        compliance and SA group validation.
+
+- description: "Strategia multi-prodotto — deve pianificare strategia"
+  vars:
+    input_prompt: >
+      Devo trattare contro peronospora e oidio. Ho captano, zolfo e
+      penconazolo. Crea una strategia che alterni questi prodotti.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should propose a cross-product treatment strategy that
+        alternates different active ingredients. It should mention
+        resistance management and treatment rotation.
+
+- description: "Buffer zones — deve estrarre prima di calcolare"
+  vars:
+    input_prompt: >
+      Il mio campo 'Vigna Nord' confina con un torrente. Devo verificare
+      le fasce di rispetto prima di procedere con il piano trattamenti.
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should propose to check buffer zones for the field
+        near the water course, and explain how this affects which products
+        can be used and at what distances.
+
+- description: "Revoca prodotto — deve verificare e proporre alternative"
+  vars:
+    input_prompt: >
+      Volevo usare il Mancozeb sul vigneto ma ho sentito che potrebbe essere
+      stato revocato. Puoi verificare e suggerirmi un'alternativa?
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should check product revocation status and, if revoked,
+        suggest alternative products with similar efficacy against the
+        same target adversities.

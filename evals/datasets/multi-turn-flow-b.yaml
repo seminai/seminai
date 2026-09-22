@@ -1,0 +1,87 @@
+# Layer 4 — Flow B: Azienda → Campi → CRUD
+# Multi-turn tests for field discovery and management.
+# Verifies: parameter echo, approval communication, tool intent.
+
+# ── Scenario B1: Discovery → Field listing → Field creation ──
+
+- description: "Flow B1 — T1: Scoperta aziende"
+  vars:
+    question: "Le mie aziende, mostrami tutto."
+  metadata:
+    conversationId: flow-b1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should indicate it will retrieve the user's companies.
+        It must NOT fabricate company data.
+
+- description: "Flow B1 — T2: Elenco campi"
+  vars:
+    question: "Quali campi ho in questa azienda?"
+  metadata:
+    conversationId: flow-b1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to see their fields.
+        It should convey intent to retrieve or list fields.
+        It must NOT invent field data.
+
+- description: "Flow B1 — T3: Creazione nuovo campo"
+  vars:
+    question: >
+      Crea un nuovo campo di 2 ettari a vigneto nel comune di Montalcino,
+      foglio 12, particella 45.
+  metadata:
+    conversationId: flow-b1
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand this is a field creation request.
+        It should acknowledge at least some of the parameters provided
+        (2 ettari, Montalcino, foglio 12, particella 45).
+        Indicating intent to proceed (e.g., "procedo con la verifica")
+        is acceptable. It must NOT claim the field has already been
+        successfully created (e.g., "creato con successo").
+    - type: not-icontains
+      value: "creato con successo"
+
+# ── Scenario B2: Discovery → Fields → Production unit creation ──
+
+- description: "Flow B2 — T1: Scoperta aziende"
+  vars:
+    question: "Mostrami le mie aziende."
+  metadata:
+    conversationId: flow-b2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should indicate it will retrieve the user's companies.
+        It must NOT invent company data.
+
+- description: "Flow B2 — T2: Campi con dati catastali"
+  vars:
+    question: "Elenca i campi con tutti i dati catastali."
+  metadata:
+    conversationId: flow-b2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to see fields with
+        cadastral details. It must NOT fabricate cadastral data.
+
+- description: "Flow B2 — T3: Creazione unità produttiva su campo"
+  vars:
+    question: >
+      Crea un'unità produttiva di Sangiovese sul primo campo,
+      superficie 1.5 ettari.
+  metadata:
+    conversationId: flow-b2
+  assert:
+    - type: llm-rubric
+      value: >
+        The agent should understand the user wants to create a production
+        unit with Sangiovese crop. It should mention Sangiovese in its
+        response. It must NOT claim the unit has been created.
+    - type: not-icontains
+      value: "creata con successo"

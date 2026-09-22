@@ -1,0 +1,233 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Seminai Extraction API",
+    "version": "1.0.0",
+    "description": "Public B2B API for extracting structured data from Italian invoices and delivery notes (DDT)."
+  },
+  "servers": [
+    {
+      "url": "https://seminai-be-v2-661301438659.europe-west1.run.app",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:8081",
+      "description": "Local server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Api-Key",
+        "description": "API key for document extraction (sk_live_...)"
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/extract/register": {
+      "post": {
+        "summary": "Register an Extraction API account",
+        "tags": [
+          "Extraction API"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password",
+                  "name",
+                  "inviteCode"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "inviteCode": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account created with trial page quota"
+          }
+        }
+      }
+    },
+    "/api/v1/extract/account": {
+      "get": {
+        "summary": "Get page quota balance",
+        "description": "Returns the Extraction API account quota. Creates a trial account automatically if the authenticated user does not have one yet.",
+        "tags": [
+          "Extraction API"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current quota summary (account auto-provisioned with trial pages when missing)"
+          }
+        }
+      }
+    },
+    "/api/v1/extract/api-keys": {
+      "post": {
+        "summary": "Create a new API key",
+        "tags": [
+          "Extraction API"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "API key created successfully"
+          }
+        }
+      },
+      "get": {
+        "summary": "List API keys",
+        "tags": [
+          "Extraction API"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API keys list"
+          }
+        }
+      }
+    },
+    "/api/v1/extract/api-keys/{id}": {
+      "delete": {
+        "summary": "Revoke an API key",
+        "tags": [
+          "Extraction API"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "API key revoked successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/extract/usage": {
+      "get": {
+        "summary": "List extraction usage history",
+        "tags": [
+          "Extraction API"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Extraction usage history"
+          }
+        }
+      }
+    },
+    "/api/v1/extract/document": {
+      "post": {
+        "summary": "Extract structured data from invoice or DDT",
+        "tags": [
+          "Extraction API"
+        ],
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "documentType": {
+                    "type": "string",
+                    "enum": [
+                      "invoice",
+                      "ddt",
+                      "auto"
+                    ],
+                    "default": "auto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Extraction completed"
+          },
+          "402": {
+            "description": "Insufficient page quota"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Extraction API",
+      "description": "Public document extraction API (invoice, DDT, auto-detect)"
+    }
+  ]
+}

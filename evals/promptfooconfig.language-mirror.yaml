@@ -1,0 +1,32 @@
+# Language Mirroring — Dosage ReAct Agent
+# Validates that the agent mirrors the user's input language (IT/EN) per the
+# soul-prompt's "LINGUA DI RISPOSTA" directive, defaulting to Italian on
+# ambiguous/very short input.
+
+description: "Dosage ReAct Agent — Language Mirroring (IT/EN)"
+
+prompts:
+  - "{{input_prompt}}"
+
+providers:
+  - id: file://./providers/system-prompt.provider.ts
+    label: "GPT-4o + Dosage System Prompt"
+    config:
+      model: gpt-4o
+      temperature: 0
+
+  - id: file://./providers/system-prompt.provider.ts
+    label: "GPT-4o-mini + Dosage System Prompt"
+    config:
+      model: gpt-4o-mini
+      temperature: 0
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+  assert:
+    - type: javascript
+      value: "output.length > 30"
+
+tests:
+  - file://./datasets/language-mirror.yaml

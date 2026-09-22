@@ -1,0 +1,22 @@
+# Layer 2 — Region Matcher: Task-specific prompt evaluation.
+# Tests the address-to-region matching prompt from dosage_agent/flowMatchDosageDisciplinari.ts.
+
+description: "Dosage Agent — Region Matcher Eval (Layer 2)"
+
+prompts:
+  - "unused-prompt-vars-injected-by-provider"
+
+providers:
+  - id: file://./providers/task-prompt.provider.ts
+    label: "GPT-4o-mini — Region Matcher"
+    config:
+      model: gpt-4o-mini
+      temperature: 0
+      maxTokens: 300
+      promptFile: prompts/region-matcher.txt
+
+defaultTest:
+  options:
+    provider: openrouter:openai/gpt-4o-mini
+
+tests: file://./datasets/region-matcher.yaml
