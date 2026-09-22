@@ -21,7 +21,7 @@ services:
       # Mount only source files for hot reload in development
       - ./src:/usr/src/app/src:ro
       - ./prisma:/usr/src/app/prisma:ro
-      - ./key_gcp.json:/usr/src/app/key_gcp.json:ro
+      - ./data:/usr/src/app/data
     depends_on:
       postgres:
         condition: service_healthy
