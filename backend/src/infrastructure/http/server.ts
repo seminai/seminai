@@ -36,6 +36,8 @@ import { logger } from '../services/logger.service';
 import { getAnalyticsService } from '../services/analytics/analytics-service.singleton';
 import { initializeQueuesAndSockets } from './server-queue-runtime';
 import { applyPersistedInstanceSettings } from '../settings/instanceSettingSingleton';
+import { applyLargeJsonBodyParsers } from './jsonBodyLimits';
+import { mountSpaFallback } from './spaStatic';
 
 logger.info('All modules loaded');
 
@@ -75,18 +77,7 @@ const corsOptions = createCorsOptions();
 
 app.use(createCorsMiddleware());
 
-// Increase limit for job-verification-agent endpoints (50MB)
-// This must be before the default json parser to take precedence
-app.use('/job-verification-agent', express.json({ limit: '50mb' }));
-
-// Increase limit for bulk endpoints (5MB)
-app.use('/fields/bulk', express.json({ limit: '5mb' }));
-app.use('/production-units/bulk', express.json({ limit: '5mb' }));
-
-// Increase limit for onboarding bulk-create (5MB)
-app.use('/onboarding', express.json({ limit: '5mb' }));
-
-// Default JSON parser with standard limit (100kb) for all other routes
+applyLargeJsonBodyParsers(app);
 app.use(express.json({ limit: '100kb' }));
 
 // Decompress request bodies for all endpoints (supports gzip Content-Encoding and X-Payload-Compressed)
@@ -110,9 +101,11 @@ app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (_: Request, res: Response) => {
-  return res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+if (!process.env.SPA_DIR) {
+  app.get('/', (_: Request, res: Response) => {
+    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+}
 
 app.get('/health', (_req: Request, res: Response) => {
   return res.json({ status: 'ok' });
@@ -151,6 +144,10 @@ app.get('/developer/dashboard', (_req: Request, res: Response) => {
 });
 
 app.use(router);
+app.use('/api', router);
+if (process.env.SPA_DIR) {
+  mountSpaFallback(app, process.env.SPA_DIR);
+}
 
 app.use(multerErrorHandler);
 app.use(errorHandler);

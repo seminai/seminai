@@ -1,3 +1,5 @@
+# Local backend-only Compose. The supported one-command stack is the root
+# compose.yaml (Node 22 Debian-slim API + worker + SPA).
 version: '1.0'
 services:
   app:

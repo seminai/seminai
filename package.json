@@ -29,7 +29,10 @@
     "test:fixtures:private": "npm run test:int:private:env --workspace @seminai/backend --",
     "privacy:scan": "node scripts/scan-private-data.mjs",
     "privacy:scan:full": "node scripts/scan-private-data.mjs --full",
-    "clean": "npm run clean --workspaces --if-present"
+    "clean": "npm run clean --workspaces --if-present",
+    "compose:config": "docker compose -f compose.yaml config",
+    "compose:smoke": "sh scripts/deploy/compose-smoke.sh",
+    "deploy:install": "sh scripts/deploy/install.sh"
   },
   "devDependencies": {
     "@langchain/core": "1.1.31",
