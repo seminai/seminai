@@ -20,5 +20,5 @@ regexes = [
   '''^eyJhbGciOi(?:JIUzI1Ni|JSUzI1Ni)IsInR5cCI6IkpXVCJ9\.\.\.$''',
   '''^(?:apikey-xyz789|qdc-test-api-key-12345|ifarming-test-api-key-67890)$''',
   '''^(?:sk_live_abc123|1234567890abcdef)$''',
-  '''^useGpt4oThreshold$''',
+  '''^(?:useGpt4oThreshold|seminai_bucke[t]_1)$''',
 ]

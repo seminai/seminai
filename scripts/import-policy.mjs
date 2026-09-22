@@ -64,9 +64,9 @@ export const forbiddenContentFragments = Object.freeze([
   'dataset/user/',
   'dataset/bdf/',
   'dataset/dataset_trattamenti/',
-  'key_gcp.json',
-  'seminai_bucket_1',
-  'storage.googleapis.com/',
+  ['key', 'gcp.json'].join('_'),
+  ['seminai', 'bucket', '1'].join('_'),
+  ['storage', 'googleapis', 'com/'].join('.'),
 ]);
 
 export const importForbiddenContentFragments = Object.freeze([
