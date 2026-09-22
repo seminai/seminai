@@ -39,6 +39,7 @@ const FAST = [
   'extraction-api',
   'manufacture-react-agent-tools',
   'signed-file-storage',
+  'setup-wizard',
 ];
 
 const LLM = [

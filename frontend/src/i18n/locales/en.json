@@ -23,6 +23,8 @@
       "it": "Italian"
     },
     "loading": "Loading...",
+    "next": "Next",
+    "back": "Back",
     "optional": "optional",
     "password": "Password",
     "settings": "Settings",
@@ -251,6 +253,37 @@
       "profile": "User profile",
       "save": "Save",
       "uploading": "Uploading..."
+    }
+  },
+  "setup": {
+    "title": "Set up this instance",
+    "finish": "Finish setup",
+    "failed": "Setup could not be completed.",
+    "adminName": "Admin name",
+    "provider": "Provider",
+    "model": "Model",
+    "baseUrl": "Ollama URL",
+    "apiKey": "API key",
+    "access": "Access",
+    "accessLan": "Local network only",
+    "accessPublic": "Public URL (configure later)",
+    "emailOptional": "Email is optional. Leave empty to skip.",
+    "smtpHost": "SMTP host",
+    "smtpUser": "SMTP user",
+    "ollamaReady": "Ollama is reachable on this machine.",
+    "ollamaMissing": "Ollama was not detected. You can still continue or pick another provider.",
+    "providers": {
+      "ollama": "Ollama",
+      "openrouter": "OpenRouter",
+      "openai": "OpenAI",
+      "anthropic": "Anthropic"
+    },
+    "steps": {
+      "admin": "Create the first administrator",
+      "llm": "Choose an AI provider",
+      "access": "How this instance is reached",
+      "email": "Optional email delivery",
+      "review": "Review and finish"
     }
   }
 }

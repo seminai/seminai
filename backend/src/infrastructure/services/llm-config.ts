@@ -73,7 +73,12 @@ export interface ResolvedVisionConfig extends ResolvedGatewayConfig {
   readonly modelName: string;
 }
 
+function isOllamaGateway(): boolean {
+  return (process.env.LLM_GATEWAY || '').toLowerCase() === 'ollama';
+}
+
 export function resolveChatGateway(): ChatGateway {
+  if (isOllamaGateway()) return 'openai';
   const configuredGateway = (process.env.LLM_GATEWAY || 'openrouter').toLowerCase();
   if (configuredGateway === 'openai') return 'openai';
   return 'openrouter';
@@ -85,6 +90,7 @@ export function hasClaudeApiKey(): boolean {
 
 /** Returns true when chat/vision LLM calls can be made (OpenRouter by default). */
 export function hasChatLlmApiKey(): boolean {
+  if (isOllamaGateway()) return true;
   const gateway = resolveChatGateway();
   if (gateway === 'openrouter') {
     return Boolean(process.env.OPENROUTER_API_KEY);
@@ -147,6 +153,14 @@ export function resolveChatModelProvider(
 }
 
 export function resolveGatewayConfig(): ResolvedGatewayConfig {
+  if (isOllamaGateway()) {
+    const base = (process.env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(/\/$/, '');
+    return {
+      gateway: 'openai',
+      apiKey: process.env.OLLAMA_API_KEY || 'ollama',
+      baseUrl: `${base}/v1`,
+    };
+  }
   const gateway = resolveChatGateway();
   if (gateway === 'openrouter') {
     return {
@@ -228,6 +242,14 @@ export function resolveVisionConfig(modelName?: string): ResolvedVisionConfig {
 }
 
 export function resolveChatModelConfig(modelName?: string): ResolvedChatModelConfig {
+  if (isOllamaGateway()) {
+    const gatewayConfig = resolveGatewayConfig();
+    return {
+      ...gatewayConfig,
+      modelName: resolveChatModelName(modelName, 'openai'),
+      provider: 'openai',
+    };
+  }
   const gateway = resolveChatGateway();
   const resolvedModelName = resolveChatModelName(modelName, gateway);
   if (gateway === 'openrouter') {

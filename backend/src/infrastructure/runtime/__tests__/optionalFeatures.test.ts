@@ -48,6 +48,8 @@ describe('optional local-first features', () => {
       APP_MODE: 'all',
       STORAGE_DRIVER: 'local',
     });
+    expect(config.setupCompleted).toBe(false);
+    expect(config.llmProvider).toBeNull();
     expect(config.features).toEqual({
       qdrant: false,
       ocr: false,

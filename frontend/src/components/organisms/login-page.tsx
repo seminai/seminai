@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Link, useRouter } from '@tanstack/react-router';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { useForm } from 'react-hook-form';
@@ -10,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { ApiError } from '@/lib/api-client';
+import { fetchPublicRuntimeConfig } from '@/lib/public-runtime-config';
 
 function createLoginSchema(t: TFunction) {
   return z.object({
@@ -29,6 +31,11 @@ export function LoginPage({ isPasswordResetSuccess = false }: LoginPageProps) {
   const router = useRouter();
   const { login } = useAuth();
   const loginSchema = useMemo(() => createLoginSchema(t), [t]);
+  const publicConfig = useQuery({
+    queryKey: ['config', 'public'],
+    queryFn: fetchPublicRuntimeConfig,
+    staleTime: 60_000,
+  });
 
   const {
     register,
@@ -65,9 +72,11 @@ export function LoginPage({ isPasswordResetSuccess = false }: LoginPageProps) {
         <Label htmlFor="password">{t('common.password')}</Label>
         <Input id="password" type="password" placeholder={t('auth.placeholders.password')} {...register('password')} />
         {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
-        <Link to="/auth/forgot-password" className="self-end text-sm font-medium text-primary underline">
-          {t('auth.actions.forgotPassword')}
-        </Link>
+        {publicConfig.data?.features.email && (
+          <Link to="/auth/forgot-password" className="self-end text-sm font-medium text-primary underline">
+            {t('auth.actions.forgotPassword')}
+          </Link>
+        )}
       </div>
 
       {isPasswordResetSuccess && (

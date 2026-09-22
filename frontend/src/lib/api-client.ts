@@ -33,7 +33,9 @@ function isAuthEndpoint(path: string): boolean {
     path.startsWith('/auth/login') ||
     path.startsWith('/auth/register') ||
     path.startsWith('/auth/reset-password') ||
-    path === '/auth/me'
+    path === '/auth/me' ||
+    path.startsWith('/setup') ||
+    path === '/config/public'
   );
 }
 

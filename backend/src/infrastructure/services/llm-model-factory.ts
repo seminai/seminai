@@ -43,15 +43,17 @@ export function createChatModel(options: CreateChatModelOptions = {}): CreatedCh
     config.gateway === 'openai' && options.promptCacheKey
       ? { promptCacheKey: options.promptCacheKey }
       : {};
-  const routerOptions =
-    config.gateway === 'openrouter'
-      ? {
-          configuration: {
-            baseURL: config.baseUrl,
-            defaultHeaders: buildOpenRouterHeaders(config.referer, config.title),
-          },
-        }
-      : {};
+  const routerOptions = config.baseUrl
+    ? {
+        configuration: {
+          baseURL: config.baseUrl,
+          defaultHeaders:
+            config.gateway === 'openrouter'
+              ? buildOpenRouterHeaders(config.referer, config.title)
+              : undefined,
+        },
+      }
+    : {};
   return {
     model: new ChatOpenAI({
       modelName: config.modelName,

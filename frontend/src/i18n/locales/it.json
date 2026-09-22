@@ -23,6 +23,8 @@
       "it": "Italiano"
     },
     "loading": "Caricamento...",
+    "next": "Avanti",
+    "back": "Indietro",
     "optional": "opzionale",
     "password": "Password",
     "settings": "Impostazioni",
@@ -251,6 +253,37 @@
       "profile": "Profilo utente",
       "save": "Salva",
       "uploading": "Caricamento..."
+    }
+  },
+  "setup": {
+    "title": "Configura questa istanza",
+    "finish": "Completa setup",
+    "failed": "Impossibile completare il setup.",
+    "adminName": "Nome amministratore",
+    "provider": "Provider",
+    "model": "Modello",
+    "baseUrl": "URL Ollama",
+    "apiKey": "Chiave API",
+    "access": "Accesso",
+    "accessLan": "Solo rete locale",
+    "accessPublic": "URL pubblico (da configurare dopo)",
+    "emailOptional": "Email opzionale. Lascia vuoto per saltare.",
+    "smtpHost": "Host SMTP",
+    "smtpUser": "Utente SMTP",
+    "ollamaReady": "Ollama è raggiungibile su questa macchina.",
+    "ollamaMissing": "Ollama non è stato rilevato. Puoi continuare o scegliere un altro provider.",
+    "providers": {
+      "ollama": "Ollama",
+      "openrouter": "OpenRouter",
+      "openai": "OpenAI",
+      "anthropic": "Anthropic"
+    },
+    "steps": {
+      "admin": "Crea il primo amministratore",
+      "llm": "Scegli un provider AI",
+      "access": "Come si raggiunge questa istanza",
+      "email": "Invio email opzionale",
+      "review": "Riepilogo e conferma"
     }
   }
 }

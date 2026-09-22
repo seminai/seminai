@@ -35,6 +35,7 @@ import { getRedisConnection, closeRedisConnection } from '../queue/redis.connect
 import { logger } from '../services/logger.service';
 import { getAnalyticsService } from '../services/analytics/analytics-service.singleton';
 import { initializeQueuesAndSockets } from './server-queue-runtime';
+import { applyPersistedInstanceSettings } from '../settings/instanceSettingSingleton';
 
 logger.info('All modules loaded');
 
@@ -173,11 +174,12 @@ try {
 
 io.use(socketAuthMiddleware);
 
-httpServer.listen(port, host, () => {
-  logger.info(`Server running on http://${host}:${port}`);
-  logger.info(`Swagger UI available at http://localhost:${port}/api-docs`);
-
-  initializeQueuesAndSockets(io);
+void applyPersistedInstanceSettings().finally(() => {
+  httpServer.listen(port, host, () => {
+    logger.info(`Server running on http://${host}:${port}`);
+    logger.info(`Swagger UI available at http://localhost:${port}/api-docs`);
+    initializeQueuesAndSockets(io);
+  });
 });
 
 // ── Graceful Shutdown ──────────────────────────────────────────────────

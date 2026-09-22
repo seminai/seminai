@@ -75,4 +75,15 @@ describe('llm-config Claude native support', () => {
     expect(created.modelName).toBe('claude-haiku-4-5-20251001');
     expect(created.gateway).toBe('openai');
   });
+
+  it('treats Ollama as a local OpenAI-compatible chat gateway', () => {
+    process.env.LLM_GATEWAY = 'ollama';
+    delete process.env.OPENAI_API_KEY;
+    delete process.env.OPENROUTER_API_KEY;
+    expect(hasChatLlmApiKey()).toBe(true);
+    const config = resolveChatModelConfig('qwen3.5:4b');
+    expect(config.gateway).toBe('openai');
+    expect(config.baseUrl).toContain('11434');
+    expect(config.modelName).toBe('qwen3.5:4b');
+  });
 });

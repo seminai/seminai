@@ -1,4 +1,7 @@
 import 'dotenv/config';
+import { bootstrapInstanceSecrets } from '../runtime/bootstrapSecrets';
+import { validateRuntimeEnv } from '../runtime/validateRuntimeEnv';
+import { applyPersistedInstanceSettings } from '../settings/instanceSettingSingleton';
 import { getAnalyticsService } from '../services/analytics/analytics-service.singleton';
 import { getLabelExtractionQueue } from '../queue/LabelExtractionQueue';
 import { getLabelRefreshQueue } from '../queue/LabelRefreshQueue';
@@ -10,6 +13,10 @@ import { getClientFollowUpQueue } from '../queue/ClientFollowUpQueue';
 import { getQdcSyncQueue } from '../queue/QdcSyncQueue';
 import { getOuterLoopProcessorQueue } from '../queue/OuterLoopProcessorQueue';
 import { getAgentStreamEventCleanupQueue } from '../queue/AgentStreamEventCleanupQueue';
+
+bootstrapInstanceSecrets();
+validateRuntimeEnv();
+void applyPersistedInstanceSettings();
 
 console.log('[WORKER] Starting background workers...');
 console.log('[WORKER] Environment:', process.env.NODE_ENV);

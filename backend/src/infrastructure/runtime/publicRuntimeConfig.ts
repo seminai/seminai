@@ -3,6 +3,9 @@ import { resolveAppMode } from './resolveAppMode';
 export interface PublicRuntimeConfig {
   readonly appMode: 'all' | 'api' | 'worker';
   readonly storageDriver: string;
+  readonly setupCompleted: boolean;
+  readonly llmProvider: string | null;
+  readonly accessMode: string;
   readonly features: {
     readonly qdrant: boolean;
     readonly ocr: boolean;
@@ -20,6 +23,9 @@ export function buildPublicRuntimeConfig(
   return {
     appMode: resolveAppMode(env.APP_MODE),
     storageDriver: env.STORAGE_DRIVER || 'local',
+    setupCompleted: env.SETUP_COMPLETED === 'true',
+    llmProvider: env.LLM_GATEWAY || null,
+    accessMode: env.ACCESS_MODE || 'lan',
     features: {
       qdrant: Boolean(env.QDRANT_URL),
       ocr: Boolean(env.OCR_PROVIDER || env.MISTRAL_API_KEY),

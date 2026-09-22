@@ -286,6 +286,14 @@ model Settings {
   @@index([whatsappInstanceName])
 }
 
+model InstanceSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  valueEnc  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // Cache of Agronomist LLM threshold suggestions for the WeatherAdvisor sub-agent.
 // Key is a sha256 of the canonical context (sorted product SKUs/categories + machine identifier),
 // so the same {prodotti, macchina} combination reuses the cached advice across processes and restarts.

@@ -6,7 +6,13 @@ declare global {
       NODE_ENV: 'development' | 'production' | 'test';
       PORT: string;
       DATABASE_URL: string;
-      JWT_SECRET: string;
+      JWT_SECRET?: string;
+      ENCRYPTION_SECRET?: string;
+      DATA_DIR?: string;
+      SETUP_COMPLETED?: string;
+      LLM_GATEWAY?: string;
+      OLLAMA_BASE_URL?: string;
+      ACCESS_MODE?: string;
       SMTP_HOST: string;
       SMTP_PORT: string;
       FRONTEND_URL: string;
