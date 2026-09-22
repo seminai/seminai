@@ -26,8 +26,8 @@ export async function batchExtractionOrchestratorPrepareSingleExtraction(this: B
       fileName: file.originalname,
     });
     timer.lap('categoryResolveMs');
-    const fileUrl = await this.uploadFileToGcs(file, userId);
-    timer.lap('gcsUploadMs');
+    const fileUrl = await this.uploadFile(file, userId);
+    timer.lap('storageUploadMs');
     const fileRecord = await this.fileRepository.save(
       new FileEntity(uuid(), file.originalname, fileUrl, companyId, 'extractions', file.mimetype, {
         size: file.buffer.length,

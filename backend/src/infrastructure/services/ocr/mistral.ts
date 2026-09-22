@@ -2,6 +2,7 @@
 import axios, { AxiosError } from 'axios';
 import fs from 'fs';
 import path from 'path';
+import { requireConfiguredFeature } from '../../runtime/requireConfiguredFeature';
 
 const MISTRAL_API_KEY: string = process.env['MISTRAL_API_KEY'] ?? '';
 const MISTRAL_OCR_API_URL: string = 'https://api.mistral.ai/v1/ocr';
@@ -28,9 +29,7 @@ export class InvalidPdfError extends Error {
 }
 
 function ensureMistral(): void {
-  if (!MISTRAL_API_KEY) {
-    throw new Error('MISTRAL_API_KEY is not set');
-  }
+  requireConfiguredFeature('OCR', MISTRAL_API_KEY);
 }
 
 /**

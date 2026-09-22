@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "ChatCategory" ADD VALUE 'JOB_VERIFICATION_AGENT';

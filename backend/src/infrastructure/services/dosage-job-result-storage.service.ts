@@ -2,7 +2,7 @@ import { FileService } from './FileService';
 import { MulterFile } from './Multer';
 
 export interface StoredJobResultReference {
-  readonly storage: 'gcs';
+  readonly storage: 'file';
   readonly url: string;
   readonly sizeMb: number;
 }
@@ -18,7 +18,7 @@ export class DosageJobResultStorageService {
   }
 
   /**
-   * Uploads a JSON payload to GCS and returns a lightweight reference.
+   * Stores a JSON payload and returns a lightweight reference.
    */
   public async storeJsonResult(params: {
     readonly userId: string;
@@ -45,7 +45,7 @@ export class DosageJobResultStorageService {
       'json',
     );
     return {
-      storage: 'gcs',
+      storage: 'file',
       url,
       sizeMb: buffer.length / 1024 / 1024,
     };

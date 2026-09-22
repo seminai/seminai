@@ -5,10 +5,9 @@
  *   npx tsx scripts/cleanup/cleanupVectorStores.ts
  *   npx tsx scripts/cleanup/cleanupVectorStores.ts --dry-run
  *
- * Requires Qdrant + MongoDB (local: docker compose up -d qdrant mongodb).
+ * Requires optional Qdrant when vector collections should be removed.
  */
 import 'dotenv/config';
-import { MongoClient } from 'mongodb';
 import { createPrismaClient } from '../../src/infrastructure/repositories/Prisma';
 import {
   buildQdrantHeaders,
@@ -22,8 +21,6 @@ const QDRANT_COLLECTIONS = [
   'crop_phases_scientific_docs',
   'vector_embeddings',
 ] as const;
-
-const MONGO_VECTOR_COLLECTIONS = ['disciplinari_bdf', 'vector_embeddings'] as const;
 
 const dryRun = process.argv.includes('--dry-run');
 
@@ -88,43 +85,6 @@ async function cleanupQdrant(): Promise<void> {
   }
 }
 
-async function cleanupMongoVectorDb(): Promise<void> {
-  const uri = process.env.MONGODB_VECTOR_URI || process.env.MONGO_CONNECTION_URL;
-  const dbName = process.env.MONGODB_VECTOR_DB || 'seminai_be';
-  if (!uri) {
-    console.log('[cleanup] Skipping MongoDB vectors — MONGODB_VECTOR_URI not set');
-    return;
-  }
-
-  const client = new MongoClient(uri);
-  try {
-    await client.connect();
-    const db = client.db(dbName);
-    const existing = (await db.listCollections().toArray()).map((c) => c.name);
-
-    for (const collectionName of MONGO_VECTOR_COLLECTIONS) {
-      if (!existing.includes(collectionName)) {
-        console.log(`[cleanup] MongoDB collection not found: ${dbName}.${collectionName}`);
-        continue;
-      }
-      if (dryRun) {
-        console.log(
-          `[cleanup] [dry-run] Would drop MongoDB collection: ${dbName}.${collectionName}`,
-        );
-        continue;
-      }
-      await db.collection(collectionName).drop();
-      console.log(`[cleanup] Dropped MongoDB collection: ${dbName}.${collectionName}`);
-    }
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.warn(`[cleanup] MongoDB cleanup failed: ${message}`);
-    console.warn('[cleanup] Start local MongoDB: docker compose up -d mongodb');
-  } finally {
-    await client.close().catch(() => undefined);
-  }
-}
-
 async function resetRuleVectorizationState(): Promise<void> {
   const prisma = createPrismaClient();
   try {
@@ -150,7 +110,6 @@ async function resetRuleVectorizationState(): Promise<void> {
 async function main(): Promise<void> {
   console.log(`[cleanup] Starting vector store cleanup${dryRun ? ' (dry-run)' : ''}...`);
   await cleanupQdrant();
-  await cleanupMongoVectorDb();
   await resetRuleVectorizationState();
   console.log('[cleanup] Done. Re-index via API/workers when ready.');
 }

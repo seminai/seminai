@@ -1,0 +1,9 @@
+-- AlterTable
+ALTER TABLE "Product" ADD COLUMN     "boron" DOUBLE PRECISION,
+ADD COLUMN     "calcium" DOUBLE PRECISION,
+ADD COLUMN     "magnesium" DOUBLE PRECISION,
+ADD COLUMN     "nitrogen" DOUBLE PRECISION,
+ADD COLUMN     "phosphorus" DOUBLE PRECISION,
+ADD COLUMN     "potassium" DOUBLE PRECISION,
+ADD COLUMN     "sulfur" DOUBLE PRECISION,
+ADD COLUMN     "unitOfFertilizer" TEXT;

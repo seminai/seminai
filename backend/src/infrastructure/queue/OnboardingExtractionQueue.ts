@@ -1,5 +1,6 @@
 import { Queue, Worker, QueueEvents } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { type ExtractionResult, type ExtractionPhase } from '../../application/use-cases/onboarding/ExtractFromFileUseCase';
 import { QUEUE_NAME, OnboardingExtractionJobData } from './onboarding-extraction-queue.support';
 import type { OnboardingExtractionQueueContext } from './onboarding-extraction-queue.context';
@@ -71,6 +72,6 @@ let queueInstance: OnboardingExtractionQueue | null = null;
 
 export function getOnboardingExtractionQueue(): OnboardingExtractionQueue {
   queueInstance ??= new OnboardingExtractionQueue();
-  queueInstance.startWorker();
+  if (shouldStartQueueWorkers()) queueInstance.startWorker();
   return queueInstance;
 }

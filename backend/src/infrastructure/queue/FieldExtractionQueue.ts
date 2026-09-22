@@ -1,5 +1,6 @@
 import { Queue, Worker, Job } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { FieldCsvAgent } from '../services/agents/file_agent/field_csv_agent';
 import { PianoColturalePdfAgent } from '../services/agents/file_agent/piano_colturale_pdf_agent';
 import { type ExtractionDiagnostics } from '../services/agents/file_agent/utils/csv_parser';
@@ -19,7 +20,6 @@ export interface FieldExtractionJobData {
   originalName?: string;
   mimeType?: string;
 }
-
 export interface FieldExtractionJobField {
   companyId: string;
   name: string;
@@ -294,7 +294,7 @@ let queueInstance: FieldExtractionQueue | null = null;
 export function getFieldExtractionQueue(): FieldExtractionQueue {
   if (!queueInstance) {
     queueInstance = new FieldExtractionQueue();
-    queueInstance.startWorker();
+    if (shouldStartQueueWorkers()) queueInstance.startWorker();
   }
   return queueInstance;
 }

@@ -12,7 +12,7 @@ import { MulterFileInput, StartBatchParams, BatchExtractionDependencies } from '
 import type { BatchExtractionOrchestratorContext } from './batch-extraction-orchestrator.context';
 import { batchExtractionOrchestratorStartBatch } from './batch-extraction-orchestrator.01-start-batch';
 import { batchExtractionOrchestratorPrepareSingleExtraction } from './batch-extraction-orchestrator.02-prepare-single-extraction';
-import { batchExtractionOrchestratorUploadFileToGcs } from './batch-extraction-orchestrator.03-upload-file-to-gcs';
+import { batchExtractionOrchestratorUploadFile } from './batch-extraction-orchestrator.03-upload-file';
 import { batchExtractionOrchestratorRunExtractionsInBackground } from './batch-extraction-orchestrator.04-run-extractions-in-background';
 import { batchExtractionOrchestratorProcessQueuedFile } from './batch-extraction-orchestrator.05-process-queued-file';
 import { batchExtractionOrchestratorMaybeEmitBatchDone } from './batch-extraction-orchestrator.06-maybe-emit-batch-done';
@@ -63,8 +63,8 @@ export class BatchExtractionOrchestrator {
     return batchExtractionOrchestratorPrepareSingleExtraction.call(this as unknown as BatchExtractionOrchestratorContext, args);
   }
 
-  async uploadFileToGcs(file: MulterFileInput, userId: string): Promise<string> {
-    return batchExtractionOrchestratorUploadFileToGcs.call(this as unknown as BatchExtractionOrchestratorContext, file, userId);
+  async uploadFile(file: MulterFileInput, userId: string): Promise<string> {
+    return batchExtractionOrchestratorUploadFile.call(this as unknown as BatchExtractionOrchestratorContext, file, userId);
   }
 
   runExtractionsInBackground(

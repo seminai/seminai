@@ -26,8 +26,8 @@ export interface EmailAttachmentSeed {
   readonly fileName: string;
   readonly mimeType: string;
   readonly sizeBytes: number;
-  readonly gcsUrl: string;
-  readonly gcsPath: string;
+  readonly storageUrl: string;
+  readonly storagePath: string;
 }
 
 export interface FindEmailIngestionsByCompanyQuery {

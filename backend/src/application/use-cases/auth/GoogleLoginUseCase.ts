@@ -21,20 +21,26 @@ interface GoogleLoginResponse {
 }
 
 export class GoogleLoginUseCase {
-  private client: OAuth2Client;
+  private client: OAuth2Client | undefined;
 
-  constructor(private userRepository: IUserRepository) {
-    const clientId = process.env.GOOGLE_CLIENT_ID;
+  constructor(private userRepository: IUserRepository) {}
+
+  private requireClient(): OAuth2Client {
+    const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
     if (!clientId) {
-      throw new Error('GOOGLE_CLIENT_ID environment variable is required');
+      throw AppError.featureNotConfigured('Google login');
     }
-    this.client = new OAuth2Client(clientId);
+    if (!this.client) {
+      this.client = new OAuth2Client(clientId);
+    }
+    return this.client;
   }
 
   async execute({ idToken }: GoogleLoginDTO): Promise<GoogleLoginResponse> {
+    const client = this.requireClient();
     let payload;
     try {
-      const ticket = await this.client.verifyIdToken({
+      const ticket = await client.verifyIdToken({
         idToken,
         audience: process.env.GOOGLE_CLIENT_ID,
       });

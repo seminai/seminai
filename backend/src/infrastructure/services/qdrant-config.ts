@@ -1,3 +1,5 @@
+import { requireConfiguredFeature } from '../runtime/requireConfiguredFeature';
+
 export interface QdrantConnectionConfig {
   readonly url: string;
   readonly apiKey: string;
@@ -22,10 +24,7 @@ export function normalizeQdrantUrl(rawUrl: string): string {
 }
 
 export function resolveQdrantConnectionConfig(): QdrantConnectionConfig {
-  const rawUrl = process.env.QDRANT_URL;
-  if (!rawUrl) {
-    throw new Error('QDRANT_URL environment variable is required');
-  }
+  const rawUrl = requireConfiguredFeature('Qdrant', process.env.QDRANT_URL);
   return {
     url: normalizeQdrantUrl(rawUrl),
     apiKey: process.env.QDRANT_API_KEY ?? '',

@@ -53,7 +53,6 @@ export class FileController {
     // Determine file type (optional, or derived from mimetype)
     const type = request.body.type || request.file.mimetype;
 
-    // Upload to Cloud Storage
     const publicUrl = await fileService.uploadFile(request.file, request.user.id, path, type);
 
     // Create Domain Entity

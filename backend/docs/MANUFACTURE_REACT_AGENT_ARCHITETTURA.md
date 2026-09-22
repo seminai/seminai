@@ -155,7 +155,7 @@ anche su `list_company_products`/`search_company_stock_products` con `companyId`
 | Integration — routing | `integration-test/agent-chat-controller.integration.test.ts`              | Flag on + workspace MANUFACTURING → `ManufactureChatAgent`; missing `workspaceId` → 400; `jobId` → dosage. |
 | Integration — smoke   | `integration-test/manufacture-react-agent.integration.test.ts`            | Stream real-LLM: completa senza errori e **non chiama mai** un tool agronomico.                            |
 
-I test di integrazione richiedono l'infra su (`docker compose up -d redis qdrant mongodb`).
+I test di integrazione richiedono PostgreSQL e Redis; Qdrant è opzionale.
 
 ---
 

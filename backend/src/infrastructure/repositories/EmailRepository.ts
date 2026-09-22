@@ -24,7 +24,7 @@ export class EmailRepository implements IEmailRepository {
   async sendContactEmail({ name, email, body, attachments }: ContactEmailDTO): Promise<void> {
     const targetEmail = process.env.CONTACT_FORM_TARGET_EMAIL;
     if (!targetEmail) {
-      throw new AppError(503, 'Contact email is not configured', 'FEATURE_NOT_CONFIGURED');
+      throw AppError.featureNotConfigured('Contact email');
     }
     const subject = `New contact request from ${name}`;
     const attachmentInfo =

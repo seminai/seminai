@@ -1,5 +1,6 @@
 import { Queue, Worker, Job } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { prisma } from '../repositories/Prisma';
 
 const QUEUE_NAME = 'agent-stream-event-cleanup';
@@ -96,8 +97,10 @@ let instance: AgentStreamEventCleanupQueue | null = null;
 export function getAgentStreamEventCleanupQueue(): AgentStreamEventCleanupQueue {
   if (!instance) {
     instance = new AgentStreamEventCleanupQueue();
-    void instance.scheduleRepeatingJob();
-    instance.startWorker();
+    if (shouldStartQueueWorkers()) {
+      void instance.scheduleRepeatingJob();
+      instance.startWorker();
+    }
   }
   return instance;
 }

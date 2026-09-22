@@ -15,7 +15,7 @@ export interface GpsExtractionResult {
 /**
  * Extracts GPS coordinates and useful EXIF metadata from an image.
  *
- * @param fileUrl - URL of the image file (GCS public URL or file:// for testing)
+ * @param fileUrl - Stable URL of the image file or file:// for testing
  * @returns Structured GPS and EXIF data
  */
 export async function extractGpsFromImage(fileUrl: string): Promise<GpsExtractionResult> {

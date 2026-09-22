@@ -1,5 +1,6 @@
 import { Queue, Worker, QueueEvents } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { ConformityCheckerJobData, ConformityCheckerJobResult, QUEUE_NAME } from './conformity-checker-queue.support';
 import type { ConformityCheckerQueueContext } from './conformity-checker-queue.context';
 export { type ConformityCheckerJobData, type ConformityCheckerJobResult, confirmConformityProposals } from './conformity-checker-queue.support';
@@ -92,6 +93,6 @@ let queueInstance: ConformityCheckerQueue | null = null;
 
 export function getConformityCheckerQueue(): ConformityCheckerQueue {
   queueInstance ??= new ConformityCheckerQueue();
-  queueInstance.startWorker();
+  if (shouldStartQueueWorkers()) queueInstance.startWorker();
   return queueInstance;
 }

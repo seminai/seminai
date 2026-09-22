@@ -70,7 +70,7 @@ curl -X POST http://localhost:3001/webhooks/email/sendgrid \
 Verify in `npx prisma studio`:
 
 - `EmailIngestion` row with `status=DISPATCHED` and a non-null `threadId`.
-- `EmailAttachment` rows with `gcsUrl` populated.
+- `EmailAttachment` rows with `storageUrl` populated.
 - `Chat` row with `threadId=<same>`, `category=DOSAGE_AGENT`,
   `metadata.source='email'`.
 
@@ -101,7 +101,7 @@ master use-case routes to `HandleDisambiguationReplyUseCase` which:
    bare number on a line.
 4. Re-fetches the user's companies (the list order from
    `findManyByUserId` is assumed stable in the short reply window).
-5. Re-downloads the original attachments from GCS and dispatches to the
+5. Re-downloads the original attachments from configured storage and dispatches to the
    agent.
 
 ## Out-of-scope (v1) / known limitations
@@ -114,12 +114,11 @@ master use-case routes to `HandleDisambiguationReplyUseCase` which:
   base address; the sender is treated as unknown.
 - SPF/DKIM pass status is not enforced — only `From == draft.from`
   guard for disambiguation replies.
-- GCS retention (`email-ingest/...`): set a lifecycle policy of ~90
-  days at the bucket level. Out of scope for the application.
+- Storage retention (`email-ingest/...`) follows the operator's backup and cleanup policy.
 - Stale `DISPATCHED` ingestions with no follow-up confirmation are not
   cleaned up automatically (future cron).
 - Working-memory cache has a 30-minute TTL; on late disambiguation
-  replies attachments are re-downloaded from GCS automatically.
+  reply attachments are read from configured storage automatically.
 - Sender list cap: at most `EMAIL_INGEST_MAX_DISAMBIGUATION_COMPANIES`
   entries in the reply. Beyond that the user is told to use the webapp.
 
@@ -129,7 +128,7 @@ New tables (see `prisma/schema.prisma`):
 
 - `EmailIngestion` — one row per inbound email
   (`messageId @unique` for idempotency).
-- `EmailAttachment` — raw attachments stored on GCS; `fileId` populated
+- `EmailAttachment` — raw attachments in configured storage; `fileId` populated
   only after `import_from_file` persists them as `File` rows.
 
 Migration command (run once after pulling):

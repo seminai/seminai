@@ -1,5 +1,6 @@
 import { Queue, Worker, QueueEvents } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { DosageAgentJobData, DosageAgentJobResult, QUEUE_NAME } from './dosage-agent-queue.support';
 import type { DosageAgentQueueContext } from './dosage-agent-queue.context';
 export { type DosageAgentJobData, type DosageAgentJobResult, type ExternalDosageAgentJobResult } from './dosage-agent-queue.support';
@@ -94,6 +95,6 @@ let queueInstance: DosageAgentQueue | null = null;
 
 export function getDosageAgentQueue(): DosageAgentQueue {
   queueInstance ??= new DosageAgentQueue();
-  queueInstance.startWorker();
+  if (shouldStartQueueWorkers()) queueInstance.startWorker();
   return queueInstance;
 }

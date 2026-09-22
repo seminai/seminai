@@ -31,7 +31,7 @@ const BARE_NUMBER_REGEX = /^\s*(\d{1,3})\s*$/m;
 
 /**
  * Handles a reply to a previously sent disambiguation-request email.
- * On success, fetches the original attachments from GCS and dispatches
+ * On success, fetches the original attachments from storage and dispatches
  * to the agent for the user-chosen company.
  */
 export class HandleDisambiguationReplyUseCase {
@@ -106,7 +106,7 @@ export class HandleDisambiguationReplyUseCase {
     }
     const out: Array<{ buffer: Buffer; fileName: string; mimeType: string }> = [];
     for (const row of rows) {
-      const multerFile = await this.fileService.getFileFromUrl(row.gcsUrl);
+      const multerFile = await this.fileService.getFileFromUrl(row.storageUrl);
       out.push({ buffer: multerFile.buffer, fileName: row.fileName, mimeType: row.mimeType });
     }
     return out;

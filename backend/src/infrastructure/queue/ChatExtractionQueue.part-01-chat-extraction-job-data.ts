@@ -1,6 +1,7 @@
 import { DocumentCategory } from '@prisma/client';
 import { Queue, Worker, Job } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { compressIfNeeded, CompressedData, calculateSizeInMB } from '../utils/redis-compression.util';
 import { processChatExtraction } from './ChatExtractionQueue.part-02-process-chat-extraction';
 
@@ -126,7 +127,7 @@ export let queueInstance: ChatExtractionQueue | null = null;
 export function getChatExtractionQueue(): ChatExtractionQueue {
   if (!queueInstance) {
     queueInstance = new ChatExtractionQueue();
-    queueInstance.startWorker();
+    if (shouldStartQueueWorkers()) queueInstance.startWorker();
   }
   return queueInstance;
 }

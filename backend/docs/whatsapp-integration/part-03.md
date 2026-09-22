@@ -35,7 +35,7 @@ Se l'utente collega il suo WhatsApp personale, l'agente riceverà **TUTTI i mess
 
 ⚠️ **Persistenza dati**
 
-Evolution API usa un database file-based. I dati delle sessioni WhatsApp sono persi se il container viene ricreato. Per produzione, considera di usare un database esterno (MongoDB/PostgreSQL).
+Evolution API usa un database file-based. Per dati persistenti, configurare PostgreSQL esterno.
 
 ⚠️ **Cloud Run e sessioni**
 

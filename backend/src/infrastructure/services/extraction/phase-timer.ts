@@ -3,8 +3,8 @@
  *
  * Usage:
  *   const timer = new PhaseTimer();
- *   await uploadToGcs();
- *   timer.lap('gcsUploadMs');
+ *   await uploadToStorage();
+ *   timer.lap('storageUploadMs');
  *   await persistRecord();
  *   timer.lap('dbInitMs');
  *   ...

@@ -1,5 +1,6 @@
 import { Queue, Worker, Job } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { prisma } from '../repositories/Prisma';
 import {
   MatchProductLabelsUseCase,
@@ -125,7 +126,7 @@ let queueInstance: ProductLabelMatchingQueue | null = null;
 export function getProductLabelMatchingQueue(): ProductLabelMatchingQueue {
   if (!queueInstance) {
     queueInstance = new ProductLabelMatchingQueue();
-    queueInstance.startWorker();
+    if (shouldStartQueueWorkers()) queueInstance.startWorker();
     void queueInstance.scheduleRepeatableSweep();
   }
   return queueInstance;

@@ -57,10 +57,12 @@ import { proformaRouter } from './proforma.routes';
 import { salesInvoiceRouter } from './sales-invoice.routes';
 import { commercialRouter } from './commercial.routes';
 import { extractionApiRouter } from './extraction-api.routes';
+import { publicConfigRouter } from './public-config.routes';
 
 export const router = Router();
 
 router.use('/', healthRouter);
+router.use('/', publicConfigRouter);
 router.use('/', toolRouter);
 router.use('/files', fileRouter);
 router.use('/debug', debugRouter);

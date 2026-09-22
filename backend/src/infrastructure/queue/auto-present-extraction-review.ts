@@ -166,7 +166,7 @@ async function uploadFileFromWorkingMemoryIfAvailable(
       mimeType,
     );
   } catch (err) {
-    console.warn('[auto-present-extraction-review] GCS upload failed:', err);
+    console.warn('[auto-present-extraction-review] Storage upload failed:', err);
     return undefined;
   }
 }

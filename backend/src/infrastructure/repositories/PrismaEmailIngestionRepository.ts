@@ -40,8 +40,8 @@ function toAttachment(row: PrismaEmailAttachment): EmailAttachment {
     row.fileName,
     row.mimeType,
     row.sizeBytes,
-    row.gcsUrl,
-    row.gcsPath,
+    row.storageUrl,
+    row.storagePath,
     row.createdAt,
     row.fileId ?? undefined,
   );
@@ -127,8 +127,8 @@ export class PrismaEmailIngestionRepository implements IEmailIngestionRepository
         fileName: seed.fileName,
         mimeType: seed.mimeType,
         sizeBytes: seed.sizeBytes,
-        gcsUrl: seed.gcsUrl,
-        gcsPath: seed.gcsPath,
+        storageUrl: seed.storageUrl,
+        storagePath: seed.storagePath,
       })),
     });
     return this.findAttachmentsByIngestionId(ingestionId);

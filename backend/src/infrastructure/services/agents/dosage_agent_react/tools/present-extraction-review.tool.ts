@@ -144,7 +144,7 @@ NON procedere finche' l'utente non ha risposto.`,
 }
 
 /**
- * Uploads the file currently in working memory (from chat upload) to GCS.
+ * Uploads the file currently in working memory to configured storage.
  * Returns the public URL, or undefined if no file is in WM or upload fails.
  * This is best-effort: a failed upload must not block the review form.
  */
@@ -174,7 +174,7 @@ async function uploadFileFromWorkingMemory(
       mimeType,
     );
   } catch (err) {
-    console.warn('[present-extraction-review] GCS upload failed:', err);
+    console.warn('[present-extraction-review] Storage upload failed:', err);
     return undefined;
   }
 }

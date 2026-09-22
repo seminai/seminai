@@ -29,7 +29,7 @@ const ADDRESS_LIST_SEPARATOR = /[,;]/;
  * Parses a SendGrid Inbound Parse multipart/form-data request into
  * a provider-agnostic ParsedInboundEmailDto.
  *
- * Pure transformation — no side effects, no Prisma, no GCS.
+ * Pure transformation with no side effects, Prisma, or storage access.
  */
 export class SendgridInboundParser {
   parse(request: Request): ParsedInboundEmailDto {

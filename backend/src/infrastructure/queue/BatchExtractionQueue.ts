@@ -1,7 +1,7 @@
 /**
  * BullMQ queue for the /extractions/batch flow.
  *
- * The HTTP handler uploads each file to GCS, persists a FileExtraction
+ * The HTTP handler uploads each file to configured storage, persists a FileExtraction
  * record per file, then enqueues one job per file here. The worker
  * downloads the file from storage, runs OCR/LLM, updates the DB,
  * and streams progress over Socket.IO.
@@ -10,6 +10,7 @@
  */
 import { Queue, Worker, Job } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import {
   compressIfNeeded,
   decompressIfNeeded,
@@ -102,7 +103,7 @@ let queueInstance: BatchExtractionQueue | null = null;
 export function getBatchExtractionQueue(): BatchExtractionQueue {
   if (!queueInstance) {
     queueInstance = new BatchExtractionQueue();
-    queueInstance.startWorker();
+    if (shouldStartQueueWorkers()) queueInstance.startWorker();
   }
   return queueInstance;
 }

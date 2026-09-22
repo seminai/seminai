@@ -38,6 +38,7 @@ const FAST = [
   'workspace-rule-cross-tenant',
   'extraction-api',
   'manufacture-react-agent-tools',
+  'signed-file-storage',
 ];
 
 const LLM = [

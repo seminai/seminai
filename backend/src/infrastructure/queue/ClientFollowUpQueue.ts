@@ -1,5 +1,6 @@
 import { Queue, Worker, Job } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { prisma } from '../repositories/Prisma';
 import { PrismaBusinessPartnerRepository } from '../repositories/PrismaBusinessPartnerRepository';
 import { PrismaCompanyRepository } from '../repositories/PrismaCompanyRepository';
@@ -82,8 +83,10 @@ let instance: ClientFollowUpQueue | null = null;
 export function getClientFollowUpQueue(): ClientFollowUpQueue {
   if (!instance) {
     instance = new ClientFollowUpQueue();
-    instance.scheduleRepeatingJob();
-    instance.startWorker();
+    if (shouldStartQueueWorkers()) {
+      instance.scheduleRepeatingJob();
+      instance.startWorker();
+    }
   }
   return instance;
 }

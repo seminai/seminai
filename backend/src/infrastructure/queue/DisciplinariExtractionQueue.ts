@@ -1,5 +1,6 @@
 import { Queue, Worker } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { DisciplinariExtractionJobData, DisciplinariExtractionJobResult, QUEUE_NAME } from './disciplinari-extraction-queue.support';
 import type { DisciplinariExtractionQueueContext } from './disciplinari-extraction-queue.context';
 export { type DisciplinariExtractionJobData, type DisciplinariExtractionJobResult } from './disciplinari-extraction-queue.support';
@@ -78,6 +79,6 @@ let queueInstance: DisciplinariExtractionQueue | null = null;
 
 export function getDisciplinariExtractionQueue(): DisciplinariExtractionQueue {
   queueInstance ??= new DisciplinariExtractionQueue();
-  queueInstance.startWorker();
+  if (shouldStartQueueWorkers()) queueInstance.startWorker();
   return queueInstance;
 }

@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "LlmJobType" ADD VALUE 'WEATHER_ADVISOR';

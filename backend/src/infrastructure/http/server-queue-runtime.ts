@@ -15,6 +15,7 @@ import { startQueueKeepAliveService } from '../services/queue-keepalive.service'
 import { setGlobalSocketIO } from '../services/agents/dosage_agent_react/socket/chat-socket-emitter';
 import { logger } from '../services/logger.service';
 import { setupSocketHandlers } from './server-socket-handlers';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 
 export function initializeQueuesAndSockets(io: SocketServer): void {
   try {
@@ -34,7 +35,7 @@ export function initializeQueuesAndSockets(io: SocketServer): void {
     getPreclassificationQueue();
 
     const rulePdfQueue = getRulePdfVectorizationQueue();
-    rulePdfQueue.startWorker();
+    if (shouldStartQueueWorkers()) rulePdfQueue.startWorker();
     logger.info('All BullMQ queues initialized');
 
     setupSocketHandlers(io, dosageQueue, conformityQueue, productJobCreationQueue, onboardingQueue);

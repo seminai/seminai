@@ -40,4 +40,12 @@ export class AppError extends Error {
   static internal(message: string, code?: string): AppError {
     return new AppError(500, message, code);
   }
+
+  static serviceUnavailable(message: string, code?: string): AppError {
+    return new AppError(503, message, code);
+  }
+
+  static featureNotConfigured(feature: string): AppError {
+    return AppError.serviceUnavailable(`${feature} is not configured`, 'feature_not_configured');
+  }
 }

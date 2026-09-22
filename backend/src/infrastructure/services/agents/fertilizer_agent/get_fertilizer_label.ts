@@ -4,6 +4,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { convertPdfToTextWithPositionalAnaylsis } from '../../ocr/pdfToText';
+import { requireConfiguredFeature } from '../../../runtime/requireConfiguredFeature';
 
 const TAVILY_BASE_URL: string = 'https://api.tavily.com/search';
 const TAVILY_TIMEOUT_MS: number = 15000;
@@ -62,10 +63,10 @@ export interface FertilizerLabelService {
 }
 
 function createTavilySearchFn(deps: TavilySearchDeps = {}): TavilySearchFn {
-  const apiKey: string = deps.apiKey ?? process.env.TAVILY_API_KEY ?? '';
-  if (!apiKey) {
-    throw new Error('TAVILY_API_KEY is not configured');
-  }
+  const apiKey: string = requireConfiguredFeature(
+    'Tavily',
+    deps.apiKey ?? process.env.TAVILY_API_KEY,
+  );
   const httpClient: AxiosInstance =
     deps.httpClient ?? axios.create({ baseURL: TAVILY_BASE_URL, timeout: TAVILY_TIMEOUT_MS });
   return async (query: string): Promise<ReadonlyArray<TavilySearchResult>> => {

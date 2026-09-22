@@ -57,7 +57,7 @@ export interface BatchPhaseTimingsPayload {
 /**
  * Per-phase timings for a single file in a batch extraction.
  * Logged separately so ops can compute p95 latency by phase
- * (gcsUpload, categoryResolve, extraction, dbUpdate, …) and
+ * (fileUpload, categoryResolve, extraction, dbUpdate, …) and
  * identify the dominant bottleneck per file/category in production.
  */
 export function recordBatchPhaseTimings(payload: BatchPhaseTimingsPayload): void {

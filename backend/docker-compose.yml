@@ -85,24 +85,7 @@ services:
       timeout: 5s
       retries: 10
 
-  mongodb:
-    image: mongo:7
-    platform: linux/arm64
-    ports:
-      - '27017:27017'
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: seminai_local
-    volumes:
-      - mongodb_data:/data/db
-    healthcheck:
-      test: ['CMD', 'mongosh', '--quiet', '--eval', "db.adminCommand('ping').ok"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
 volumes:
   postgres_data:
   redis_data:
   qdrant_data:
-  mongodb_data:

@@ -12,7 +12,7 @@ import { assertWorkspaceAccess } from '../../shared/authorization';
 /**
  * Tool: create_workspace_rule
  * Creates a new rule in a workspace. REQUIRES USER APPROVAL.
- * For DISCIPLINARE rules, reads the uploaded PDF from working memory and uploads it to GCS,
+ * For DISCIPLINARE rules, reads the uploaded PDF from working memory and stores it,
  * then triggers automatic vectorization.
  */
 export function createCreateWorkspaceRuleTool(

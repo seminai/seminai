@@ -29,7 +29,7 @@ export interface BatchExtractionOrchestratorContext {
     companyId: string;
     userId: string;
   }): Promise<FileExtractionRecord>;
-  uploadFileToGcs(file: MulterFileInput, userId: string): Promise<string>;
+  uploadFile(file: MulterFileInput, userId: string): Promise<string>;
   runExtractionsInBackground(files: readonly MulterFileInput[], extractions: FileExtractionRecord[], userCategories: readonly BatchExtractionCategory[], companyId: string, batchId: string): void;
   processQueuedFile(args: {
     fileBuffer: Buffer;

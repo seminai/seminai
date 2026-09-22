@@ -1,5 +1,6 @@
 import { Queue, Worker, QueueEvents } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { QUEUE_NAME, ProductJobCreationJobData, ProductJobCreationJobResult } from './product-job-creation-queue.support';
 import type { ProductJobCreationQueueContext } from './product-job-creation-queue.context';
 export { type ProductJobCreationJobData, type ProductJobCreationJobResult } from './product-job-creation-queue.support';
@@ -82,6 +83,6 @@ let queueInstance: ProductJobCreationQueue | null = null;
 
 export function getProductJobCreationQueue(): ProductJobCreationQueue {
   queueInstance ??= new ProductJobCreationQueue();
-  queueInstance.startWorker();
+  if (shouldStartQueueWorkers()) queueInstance.startWorker();
   return queueInstance;
 }

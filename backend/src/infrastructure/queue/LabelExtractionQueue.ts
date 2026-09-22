@@ -1,5 +1,6 @@
 import { Queue, Worker, Job } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { LlmJobType } from '@prisma/client';
 import { PrismaLabelExtractionRepository } from '../repositories/PrismaLabelExtractionRepository';
 import { prisma } from '../repositories/Prisma';
@@ -243,7 +244,7 @@ let queueInstance: LabelExtractionQueue | null = null;
 export function getLabelExtractionQueue(): LabelExtractionQueue {
   if (!queueInstance) {
     queueInstance = new LabelExtractionQueue();
-    queueInstance.startWorker();
+    if (shouldStartQueueWorkers()) queueInstance.startWorker();
   }
   return queueInstance;
 }

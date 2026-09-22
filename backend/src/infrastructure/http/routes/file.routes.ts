@@ -10,6 +10,9 @@ import { asyncHandler } from '../middlewares/asyncHandler';
 import { upload } from '../../services/Multer';
 import { prisma } from '../../repositories/Prisma';
 import { createResourceAccessGuard } from '../access/create-resource-access-guard';
+import { FileReadController } from '../controllers/FileReadController';
+import { createFileStorage } from '../../services/storage/createFileStorage';
+import { LocalFileStorage } from '../../services/storage/LocalFileStorage';
 
 const fileRouter = Router();
 const fileRepository = new PrismaFileRepository(prisma);
@@ -21,6 +24,12 @@ const controller = new FileController(
   fileRepository,
   deleteFilesBulkUseCase,
   createResourceAccessGuard(prisma),
+);
+const fileStorage = createFileStorage();
+const readController = new FileReadController(
+  createResourceAccessGuard(prisma),
+  fileStorage,
+  fileStorage instanceof LocalFileStorage ? fileStorage : new LocalFileStorage(),
 );
 
 /**
@@ -218,6 +227,17 @@ fileRouter.get(
   ensureAuthenticated,
   ensureCompanyRole([CompanyRole.ADMIN, CompanyRole.EDITOR, CompanyRole.VIEWER], 'companyId'),
   asyncHandler((req, res) => controller.listExpiring(req, res)),
+);
+
+fileRouter.get(
+  '/content',
+  asyncHandler((req, res) => readController.downloadSigned(req, res)),
+);
+
+fileRouter.get(
+  '/:id/read-url',
+  ensureAuthenticated,
+  asyncHandler((req, res) => readController.createReadUrl(req, res)),
 );
 
 fileRouter.get(

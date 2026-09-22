@@ -85,7 +85,7 @@ export class UpdateRuleUseCase {
   }
 
   /**
-   * Deletes the old PDF file from GCS.
+   * Deletes the old PDF file from configured storage.
    */
   private async cleanupOldPdf(pdfFileUrl: string, userId: string): Promise<void> {
     try {

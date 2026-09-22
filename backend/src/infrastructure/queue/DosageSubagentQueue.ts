@@ -1,5 +1,6 @@
 import { Queue, Worker, Job, QueueEvents } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { runFlowsMultiCompany, InputDosageAgent } from '../services/agents/dosage_agent';
 import { updateWorkingMemoryAsync } from '../services/agents/dosage_agent_react/working-memory';
 
@@ -155,7 +156,7 @@ let queueInstance: DosageSubagentQueue | null = null;
 export function getDosageSubagentQueue(): DosageSubagentQueue {
   if (!queueInstance) {
     queueInstance = new DosageSubagentQueue();
-    queueInstance.startWorker();
+    if (shouldStartQueueWorkers()) queueInstance.startWorker();
   }
   return queueInstance;
 }

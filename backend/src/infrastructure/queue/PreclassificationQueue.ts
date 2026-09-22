@@ -10,6 +10,7 @@
  * Concurrency is configurable via PRECLASSIFY_CONCURRENCY (default 4).
  */
 import { Queue, Worker, Job } from 'bullmq';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { getRedisConnection } from './redis.connection';
 import {
   compressIfNeeded,
@@ -110,7 +111,7 @@ let queueInstance: PreclassificationQueue | null = null;
 export function getPreclassificationQueue(): PreclassificationQueue {
   if (!queueInstance) {
     queueInstance = new PreclassificationQueue();
-    queueInstance.startWorker();
+    if (shouldStartQueueWorkers()) queueInstance.startWorker();
   }
   return queueInstance;
 }

@@ -3,7 +3,7 @@ import { FileService } from '../FileService';
 import { MulterFile } from '../Multer';
 
 /**
- * Adapter for uploading files to Google Cloud Storage
+ * Adapter for uploading files through the configured storage driver.
  */
 export class FileUploadAdapter implements IFileUploadService {
   async uploadPdfToStorage(buffer: Buffer, fileName: string, userId: string): Promise<string> {

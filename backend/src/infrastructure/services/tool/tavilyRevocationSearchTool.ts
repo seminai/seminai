@@ -1,6 +1,7 @@
 import { tavily, type TavilySearchResponse } from '@tavily/core';
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import { z } from 'zod';
+import { requireConfiguredFeature } from '../../runtime/requireConfiguredFeature';
 
 /**
  * Result of a revocation search for a phytosanitary product.
@@ -182,10 +183,7 @@ export async function searchRevocationStatus(
  * Can be used in agent workflows.
  */
 export const createTavilyRevocationSearchTool = (apiKey?: string) => {
-  const tavilyApiKey = apiKey || process.env.TAVILY_API_KEY;
-  if (!tavilyApiKey) {
-    throw new Error('TAVILY_API_KEY environment variable is required');
-  }
+  requireConfiguredFeature('Tavily', apiKey || process.env.TAVILY_API_KEY);
 
   return new DynamicStructuredTool({
     name: 'search_product_revocation',

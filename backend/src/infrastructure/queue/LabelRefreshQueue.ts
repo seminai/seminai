@@ -1,5 +1,6 @@
 import { Job, Queue, Worker } from 'bullmq';
 import { prisma } from '../repositories/Prisma';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { getRedisConnection } from './redis.connection';
 import { LabelRefreshProcessor } from './LabelRefreshProcessor';
 import { LabelRefreshJobData, LabelRefreshJobResult, LabelRefreshMode } from './LabelRefreshTypes';
@@ -110,6 +111,6 @@ export function getLabelRefreshQueue(options?: {
   readonly startWorker?: boolean;
 }): LabelRefreshQueue {
   if (!queueInstance) queueInstance = new LabelRefreshQueue();
-  if (options?.startWorker) queueInstance.startWorker();
+  if (options?.startWorker && shouldStartQueueWorkers()) queueInstance.startWorker();
   return queueInstance;
 }

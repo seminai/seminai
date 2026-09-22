@@ -103,7 +103,7 @@ Possibili miglioramenti futuri:
 
 1. **Vector Database per History**
 
-   - Salvare history completa in vector database (Qdrant/MongoDB)
+   - Salvare la history completa nel vector database opzionale Qdrant
    - Inviare solo riferimenti (IDs) nel payload
    - Recuperare history on-demand quando necessario
 

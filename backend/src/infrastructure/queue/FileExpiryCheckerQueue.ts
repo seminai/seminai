@@ -1,5 +1,6 @@
 import { Queue, Worker, Job } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { PrismaFileRepository } from '../repositories/PrismaFileRepository';
 import { prisma } from '../repositories/Prisma';
 import { OuterLoopService } from '../services/agents/dosage_agent_react/outer-loop/outer-loop.service';
@@ -104,8 +105,10 @@ let instance: FileExpiryCheckerQueue | null = null;
 export function getFileExpiryCheckerQueue(): FileExpiryCheckerQueue {
   if (!instance) {
     instance = new FileExpiryCheckerQueue();
-    instance.scheduleRepeatingJob();
-    instance.startWorker();
+    if (shouldStartQueueWorkers()) {
+      instance.scheduleRepeatingJob();
+      instance.startWorker();
+    }
   }
   return instance;
 }

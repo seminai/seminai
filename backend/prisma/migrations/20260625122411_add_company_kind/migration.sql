@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "CompanyKind" AS ENUM ('AGRICULTURAL', 'MANUFACTURING');
+
+-- AlterTable
+ALTER TABLE "Company" ADD COLUMN     "kind" "CompanyKind" NOT NULL DEFAULT 'AGRICULTURAL';

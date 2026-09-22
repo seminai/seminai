@@ -16,7 +16,7 @@ function resolveLimit(envVar: string, fallback: number): number {
  * Multer instance dedicated to the SendGrid Inbound Parse webhook.
  *
  * Differences vs the global `upload`:
- * - in-memory storage (no temp files — buffer is forwarded straight to GCS)
+ * - in-memory storage (no temp files; the buffer goes to configured storage)
  * - higher file count limit (default 20, configurable via EMAIL_INGEST_MAX_ATTACHMENTS)
  * - permissive allowlist (PDFs, images, CSV/XLS, ZIP, octet-stream)
  * - accepts any field name (SendGrid sends `attachment1`, `attachment2`, ...)

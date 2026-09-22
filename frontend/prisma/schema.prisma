@@ -1190,7 +1190,7 @@ model Rule {
   viewCount  Int     @default(0) // Visite alla pagina pubblica /hub/rules/{slug}
 
   // File PDF vettorializzato
-  pdfFileUrl         String? // URL del PDF caricato su GCS
+  pdfFileUrl         String? // Stable URL of the stored PDF
   pdfFileName        String? // Nome originale del file
   pdfFileHash        String? // SHA256 per deduplicazione
   qdrantCollection   String? // Collection Qdrant (sempre "rules_knowledge_base")
@@ -1618,7 +1618,7 @@ model EmailIngestion {
 }
 
 /// Raw attachment received with an inbound email.
-/// Stored on GCS; linked to a File row only after import_from_file persists it.
+/// Stored through the configured file driver; linked to a File row after import.
 model EmailAttachment {
   id          String         @id @default(uuid())
   ingestionId String
@@ -1626,8 +1626,8 @@ model EmailAttachment {
   fileName    String
   mimeType    String
   sizeBytes   Int
-  gcsUrl      String
-  gcsPath     String
+  storageUrl  String
+  storagePath String
   fileId      String?
   file        File?          @relation(fields: [fileId], references: [id])
   createdAt   DateTime       @default(now())
@@ -1789,7 +1789,7 @@ model DeliveryNote {
   deliveryNotesText String? // note consegna
 
   customerSnapshot Json // copia storica dati cliente
-  htmlUrl          String? // documento stampabile (GCS)
+  htmlUrl          String? // printable document in configured storage
 
   sentAt       DateTime? // marcato SENT (consegnato al corriere)
   cancelledAt  DateTime?
@@ -1853,7 +1853,7 @@ model ProformaInvoice {
   deliveryNotesText String?
 
   customerSnapshot Json // copia storica dati cliente
-  htmlUrl          String? // documento stampabile (GCS)
+  htmlUrl          String? // printable document in configured storage
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

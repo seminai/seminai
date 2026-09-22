@@ -3,6 +3,7 @@ import { getRedisConnection } from './redis.connection';
 import { Document } from '@langchain/core/documents';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { prisma } from '../repositories/Prisma';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { HybridPdfParserService } from '../services/ocr/hybrid-pdf-parser';
 import { FileService } from '../services/FileService';
 import { createVectorSearchQdrantService } from '../services/tool/vectorSearchQdrant';
@@ -88,6 +89,7 @@ export class RulePdfVectorizationQueue {
    * Starts the background worker for processing vectorization jobs.
    */
   startWorker(): void {
+    if (!shouldStartQueueWorkers()) return;
     if (this.worker) {
       console.log('[RULE-VECTORIZATION] Worker already running');
       return;
@@ -287,14 +289,9 @@ export class RulePdfVectorizationQueue {
     }
   }
 }
-/** Singleton instance for the vectorization queue */
 let queueInstance: RulePdfVectorizationQueue | null = null;
-/**
- * Gets or creates the singleton instance of the vectorization queue.
- */
+
 export function getRulePdfVectorizationQueue(): RulePdfVectorizationQueue {
-  if (!queueInstance) {
-    queueInstance = new RulePdfVectorizationQueue();
-  }
+  if (!queueInstance) queueInstance = new RulePdfVectorizationQueue();
   return queueInstance;
 }

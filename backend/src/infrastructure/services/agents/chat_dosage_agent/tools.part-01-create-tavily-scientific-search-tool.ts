@@ -2,6 +2,7 @@ import { TavilyResultValidationService, getFieldRegionByJobId, extractKeywordsFr
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { tavily, type TavilySearchResponse } from '@tavily/core';
+import { requireConfiguredFeature } from '../../../runtime/requireConfiguredFeature';
 
 /**
  * Creates a Tavily search tool configured for official sources only.
@@ -13,10 +14,10 @@ import { tavily, type TavilySearchResponse } from '@tavily/core';
  * @param jobId - Optional job ID for geographic and keyword validation
  */
 export const createTavilyScientificSearchTool = (apiKey?: string, jobId?: string) => {
-  const tavilyApiKey = apiKey || process.env.TAVILY_API_KEY;
-  if (!tavilyApiKey) {
-    throw new Error('TAVILY_API_KEY environment variable is required');
-  }
+  const tavilyApiKey = requireConfiguredFeature(
+    'Tavily',
+    apiKey || process.env.TAVILY_API_KEY,
+  );
 
   // Initialize validation service if jobId is provided
   const validationService = jobId ? new TavilyResultValidationService() : null;

@@ -48,7 +48,7 @@ export interface IFileUploadService {
 
 /**
  * Orchestrates bulk label extraction from uploaded PDF files.
- * - Uploads each PDF to GCS bucket
+ * - Uploads each PDF to configured storage
  * - Extracts text from PDF
  * - Extracts name and regNumber from text using LLM
  * - Extracts structured label data

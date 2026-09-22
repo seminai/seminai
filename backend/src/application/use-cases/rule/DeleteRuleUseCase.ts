@@ -41,7 +41,7 @@ export class DeleteRuleUseCase {
       await this.cleanupVectors(ruleId);
     }
 
-    // Cleanup PDF from GCS before deletion
+    // Cleanup the stored PDF before deletion
     if (rule.pdfFileUrl) {
       await this.cleanupPdf(rule.pdfFileUrl, userId);
     }
@@ -70,7 +70,7 @@ export class DeleteRuleUseCase {
   }
 
   /**
-   * Deletes the PDF file from GCS.
+   * Deletes the PDF file from configured storage.
    */
   private async cleanupPdf(pdfFileUrl: string, userId: string): Promise<void> {
     try {

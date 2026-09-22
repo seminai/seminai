@@ -53,7 +53,6 @@ export class UploadLogoAndExtractColorsUseCase {
       throw AppError.badRequest('File must be an image', 'INVALID_FILE_TYPE');
     }
 
-    // Carica il logo su Cloud Storage
     const path = `workspaces/${workspaceId}/logo`;
     const logoUrl = await this.fileService.uploadFile(file, userId, path, 'logo');
 

@@ -1,6 +1,7 @@
 import { Queue, Worker, Job } from 'bullmq';
 import { getRedisConnection } from './redis.connection';
 import { prisma } from '../repositories/Prisma';
+import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { QdcSyncService } from '../services/integrations/qdc_imageline/sync/qdc-sync.service';
 
 const QUEUE_NAME = 'qdc-sync';
@@ -143,7 +144,7 @@ export function getQdcSyncQueue(options?: GetQdcSyncQueueOptions): QdcSyncQueue 
   if (!queueInstance) {
     queueInstance = new QdcSyncQueue();
   }
-  if (options?.startWorker && !queueInstance.worker) {
+  if (options?.startWorker && shouldStartQueueWorkers() && !queueInstance.worker) {
     void queueInstance.scheduleRepeatingJob().catch((error) => {
       console.error('[QDC-SYNC] Failed to schedule repeating job:', error);
     });

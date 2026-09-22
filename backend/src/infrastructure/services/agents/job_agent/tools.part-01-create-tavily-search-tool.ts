@@ -2,6 +2,7 @@ import { DynamicStructuredTool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { tavily, type TavilySearchResponse } from '@tavily/core';
 import { prisma } from '../../../repositories/Prisma';
+import { requireConfiguredFeature } from '../../../runtime/requireConfiguredFeature';
 import { getLabelTextFromPdfUrl } from '../../tool/getLabelDataFromPdfUrl';
 import { extractStructuredTreatmentData } from '../../tool/extractDataFromLabel';
 
@@ -9,10 +10,10 @@ import { extractStructuredTreatmentData } from '../../tool/extractDataFromLabel'
  * Creates a Tavily search tool for general web search.
  */
 export const createTavilySearchTool = (apiKey?: string) => {
-  const tavilyApiKey = apiKey || process.env.TAVILY_API_KEY;
-  if (!tavilyApiKey) {
-    throw new Error('TAVILY_API_KEY environment variable is required');
-  }
+  const tavilyApiKey = requireConfiguredFeature(
+    'Tavily',
+    apiKey || process.env.TAVILY_API_KEY,
+  );
 
   return new DynamicStructuredTool({
     name: 'tavily_search',

@@ -7,7 +7,7 @@ import { type MulterFile } from '../Multer';
 const PATH_SEGMENT_SANITIZER = /[^a-zA-Z0-9._-]/g;
 
 /**
- * Persists raw email attachments to GCS and returns the seeds
+ * Persists raw email attachments through the configured storage driver and returns the seeds
  * needed to create EmailAttachment rows.
  */
 export class EmailIngestionAttachmentStorage {
@@ -41,8 +41,8 @@ export class EmailIngestionAttachmentStorage {
       fileName: input.attachment.fileName,
       mimeType: input.attachment.mimeType,
       sizeBytes: input.attachment.sizeBytes,
-      gcsUrl: url,
-      gcsPath: path,
+      storageUrl: url,
+      storagePath: path,
     };
   }
 

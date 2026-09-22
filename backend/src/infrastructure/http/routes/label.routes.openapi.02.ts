@@ -57,7 +57,7 @@ export {};
  *                             description: Numero registrazione estratto automaticamente dal PDF
  *                           bucketUrl:
  *                             type: string
- *                             description: URL del PDF caricato nel bucket GCS
+ *                             description: Stable URL of the stored PDF
  *                           label:
  *                             $ref: '#/components/schemas/Label'
  *                           error:
