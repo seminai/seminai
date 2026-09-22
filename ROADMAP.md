@@ -25,11 +25,11 @@ its complete gate is green.
 | Phase | State | Gate evidence |
 | --- | --- | --- |
 | Preliminary | DONE | 2026-09-22: 30/30 suites, 220/220 tests, no open handles |
-| 0. Safety bootstrap | DONE | Commit `20e292f`; privacy scan and syntax checks green |
-| 1. Monorepo import | DONE | 2026-09-22, code commit `ec73481`; complete root gate green |
-| 2. Synthetic fixtures | DONE | 2026-09-22, code commit `dcf3431`; complete gate green |
-| 3. Scrub and compliance | IN PROGRESS | Phase 2 gate is green |
-| 4. Self-contained backend | NOT STARTED | Blocked by Phase 3 |
+| 0. Safety bootstrap | DONE | Commit `446298c`; privacy scan and syntax checks green |
+| 1. Monorepo import | DONE | 2026-09-22, code commit `82d1ed8`; complete root gate green |
+| 2. Synthetic fixtures | DONE | 2026-09-22, code commit `f176b66`; complete gate green |
+| 3. Scrub and compliance | DONE | 2026-09-22, tested code commit `7e8e78d`; complete gate green |
+| 4. Self-contained backend | IN PROGRESS | Phase 3 gate is green |
 | 5. Runtime setup wizard | NOT STARTED | Blocked by Phase 4 |
 | 6. One-command install | NOT STARTED | Requires real hardware verification |
 | 7. Remote access and invites | NOT STARTED | Requires a real tunnel account and mobile test |
@@ -83,7 +83,7 @@ an owner separately confirms that any historical credentials are invalid.
 - [x] Gate: clean install, build, lint, type-check, unit tests, public integration tests,
   privacy scans, and repository size below 60 MB.
 
-Evidence (2026-09-22, tested code commit `ec73481`):
+Evidence (2026-09-22, tested code commit `82d1ed8`):
 
 ```text
 npm ci                                      added 2,595 packages from the root lockfile
@@ -110,7 +110,7 @@ TanStack, build, and coverage output remain untracked.
 - [x] Gate: full suite green without external fixtures; optional local suite runnable when the
   directory exists; customer-name and private-data scans clean.
 
-Evidence (2026-09-22, tested code commit `dcf3431`):
+Evidence (2026-09-22, tested code commit `f176b66`):
 
 ```text
 npm ci                                      added 2,595 packages from the root lockfile
@@ -132,13 +132,33 @@ fabricated external file that was removed immediately afterward; no user dataset
 
 ## Phase 3 — scrub, licensing, and structural compliance
 
-- [ ] Remove internal hostnames, personal addresses, cloud URLs, internal references, and
+- [x] Remove internal hostnames, personal addresses, cloud URLs, internal references, and
   dead dependencies.
-- [ ] Add AGPL-3.0, commercial terms, DCO, NOTICE, SECURITY, and local-first README files.
-- [ ] Split every non-generated file over 300 lines, with characterization tests before
+- [x] Add AGPL-3.0, commercial terms, DCO, NOTICE, SECURITY, and local-first README files.
+- [x] Split every non-generated file over 300 lines, with characterization tests before
   complex splits, and remove all TypeScript `any` usage.
-- [ ] Gate: structural checks, gitleaks, trufflehog, and full integration suite green.
-- [ ] Create local tag `v0.1.0-alpha.1`; do not push it.
+- [x] Gate: structural checks, gitleaks, trufflehog, and full integration suite green.
+- [x] Create local tag `v0.1.0-alpha.1`; do not push it.
+
+Evidence (2026-09-22, tested code commit `7e8e78d`):
+
+```text
+npm run codegen / build / type-check / lint green; structural scan: 3,553 files
+npm test                                    BE 1,424 passed + 6 skipped; FE 86; MCP 82
+npm run test:int:fast:env -- --silent --detectOpenHandles
+                                             69 suites, 210 tests, no open handles
+npm run test:int:public:env -- --silent --detectOpenHandles
+                                             95 suites, 290 tests, no open handles
+npm run test:ollama:smoke                   qwen3.5:4b tool call green; remote cost zero
+npm run privacy:scan:full                   passed
+gitleaks filesystem and Git history         no leaks
+trufflehog filesystem and Git history       0 verified, 0 unverified
+```
+
+The direct GCS dependency, credential mount, public bucket URLs, and legacy cloud storage
+implementation were removed. File persistence is now tenant-scoped and local; the formal
+storage port, optional S3 adapter, and signed-read contract remain Phase 4 work. Commit
+metadata and retained examples use neutral project identities. The tag is local only.
 
 ## Phase 4 — self-contained backend
 
