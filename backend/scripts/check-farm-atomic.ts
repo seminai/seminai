@@ -71,6 +71,30 @@ export async function checkFarmAtomic(
   assert.equal(malformed.status, 403);
   assert.equal(await prisma.job.count(), 1);
   assert.equal(await prisma.stock.count(), initialStocks + 1);
+  const persisted = await prisma.farmOperation.findUniqueOrThrow({
+    where: { id: proposed.payload.data.id },
+  });
+  await prisma.farmOperation.createMany({
+    data: Array.from({ length: 101 }, () => ({
+      userId: persisted.userId,
+      companyId,
+      status: 'approved',
+      idempotencyKey: randomUUID(),
+      payload: operation,
+      preview: {},
+    })),
+  });
+  const page = await fetch(`${url}/farm/operations?companyId=${companyId}&offset=100`, {
+    headers: { authorization: `Bearer ${token}` },
+  });
+  assert.equal(page.status, 200);
+  assert.ok((await page.json()).data.length > 0);
+  const pending = await fetch(`${url}/farm/operations?companyId=${companyId}&status=pending`, {
+    headers: { authorization: `Bearer ${token}` },
+  });
+  assert.ok(
+    (await pending.json()).data.every((item: { status: string }) => item.status === 'pending'),
+  );
   console.log(
     'PASS: concurrent approval creates one activity and one linked consumption; invalid batch writes nothing',
   );

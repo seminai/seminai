@@ -5,19 +5,21 @@ import {
   type FarmOperation,
   type OperationInput,
 } from '@/services/farm-api';
-export function useFarmCatalog<T>(companyId: string, kind: string) {
+export function useFarmCatalog<T>(companyId: string, kind: string, page = 0, search = '') {
   return useQuery({
-    queryKey: ['farm', companyId, kind],
-    queryFn: () => getFarmCatalog<T>(companyId, kind),
+    queryKey: ['farm', companyId, kind, page, search],
+    queryFn: () => getFarmCatalog<T>(companyId, kind, page, search),
     enabled: Boolean(companyId),
   });
 }
-export function useFarmOperations(companyId: string) {
+export function useFarmOperations(companyId: string, pending = false, page = 0) {
   return useQuery({
-    queryKey: ['farm', companyId, 'operations'],
+    queryKey: ['farm', companyId, 'operations', pending, page],
     refetchInterval: 5000,
     queryFn: () =>
-      farmRequest<FarmOperation[]>(`/farm/operations?companyId=${encodeURIComponent(companyId)}`),
+      farmRequest<FarmOperation[]>(
+        `/farm/operations?companyId=${encodeURIComponent(companyId)}&offset=${page * 100}${pending ? '&status=pending' : ''}`,
+      ),
     enabled: Boolean(companyId),
   });
 }

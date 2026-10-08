@@ -53,6 +53,7 @@ farmRouter.get(
         String(request.query.companyId || ''),
         String(request.query.kind || ''),
         String(request.query.search || ''),
+        Number(request.query.offset || 0),
       ),
     }),
   ),
@@ -61,11 +62,15 @@ farmRouter.get(
   '/operations',
   asyncHandler(async (request, response) => {
     const companyId = String(request.query.companyId || '');
+    const offset = Number(request.query.offset || 0);
+    if (!Number.isSafeInteger(offset) || offset < 0)
+      throw AppError.badRequest('Pagina non valida', 'INVALID_PAGE');
     await requireFarmMember(prisma, request.user!.id, companyId);
     return response.json({
       data: await prisma.farmOperation.findMany({
-        where: { companyId },
-        orderBy: { createdAt: 'desc' },
+        where: { companyId, ...(request.query.status === 'pending' ? { status: 'pending' } : {}) },
+        skip: offset,
+        orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
         take: 100,
       }),
     });

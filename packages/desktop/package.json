@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "main": "src/main.cjs",
-  "description": "Seminai desktop — quaderno di campagna locale",
+  "description": "Seminai desktop \u2014 quaderno di campagna locale",
   "author": "Seminai contributors",
   "license": "AGPL-3.0-or-later",
   "scripts": {
@@ -78,9 +78,15 @@
         "deb"
       ],
       "category": "Office",
-      "maintainer": "Seminai contributors"
+      "maintainer": "Seminai contributors",
+      "executableName": "seminai",
+      "syncDesktopName": true
     },
     "npmRebuild": false,
-    "icon": "../../frontend/public/logo.png"
-  }
+    "icon": "../../frontend/public/logo.png",
+    "deb": {
+      "packageName": "seminai"
+    }
+  },
+  "desktopName": "seminai.desktop"
 }

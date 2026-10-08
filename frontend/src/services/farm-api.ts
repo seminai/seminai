@@ -68,6 +68,13 @@ export async function farmRequest<T>(url: string, method = 'GET', data?: unknown
   const result = await customFetch<{ data: T }>({ url, method, data });
   return result.data;
 }
-export function getFarmCatalog<T>(companyId: string, kind: string): Promise<T[]> {
-  return farmRequest(`/farm/catalog?companyId=${encodeURIComponent(companyId)}&kind=${kind}`);
+export function getFarmCatalog<T>(
+  companyId: string,
+  kind: string,
+  page = 0,
+  search = '',
+): Promise<T[]> {
+  return farmRequest(
+    `/farm/catalog?companyId=${encodeURIComponent(companyId)}&kind=${kind}&offset=${page * 100}&search=${encodeURIComponent(search)}`,
+  );
 }

@@ -56,6 +56,7 @@ mcpApiRouter.get(
         connection.companyId,
         String(request.query.kind || ''),
         String(request.query.search || ''),
+        Number(request.query.offset || 0),
       ),
     });
   }),

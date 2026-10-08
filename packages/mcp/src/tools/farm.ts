@@ -23,16 +23,17 @@ export const registerFarmTools: ToolRegistrar = (server, { http }) => {
     'seminai_read_farm',
     {
       description:
-        'Read products and their stock, warehouses, fields, production units, journal activities or stock movements in the authorized farm. Results are limited to 100; narrow products by search.',
+        'Read products and their stock, warehouses, fields, production units, journal activities or stock movements in the authorized farm. Read up to 100 results per page; increase offset by 100 for the next page. Narrow products by search.',
       inputSchema: {
         kind: z.enum(['products', 'warehouses', 'fields', 'production-units', 'jobs', 'movements']),
         search: z.string().max(200).optional(),
+        offset: z.number().int().nonnegative().optional(),
       },
       annotations: { readOnlyHint: true },
     },
-    async ({ kind, search }) => {
+    async ({ kind, search, offset }) => {
       try {
-        return jsonContent(await http.get('/mcp-api/catalog', { query: { kind, search } }));
+        return jsonContent(await http.get('/mcp-api/catalog', { query: { kind, search, offset } }));
       } catch (error) {
         return errorContent(error instanceof Error ? error.message : 'Read failed');
       }

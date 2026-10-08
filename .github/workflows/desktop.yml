@@ -12,7 +12,7 @@ on:
         '.github/workflows/desktop.yml',
       ]
   push:
-    tags: ['v1.0.1-rc.*']
+    tags: ['v1.0.1-rc.*', 'v1.0.1']
 permissions:
   contents: read
 concurrency:
@@ -35,10 +35,17 @@ jobs:
     env:
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       NODE_OPTIONS: --max-old-space-size=4096
+      DESKTOP_TARGET: ${{ matrix.target }}
+      CSC_LINK: ${{ github.ref == 'refs/tags/v1.0.1' && (matrix.target == 'win' && secrets.WINDOWS_CSC_LINK || matrix.target == 'mac' && secrets.MAC_CSC_LINK) || '' }}
+      CSC_KEY_PASSWORD: ${{ github.ref == 'refs/tags/v1.0.1' && (matrix.target == 'win' && secrets.WINDOWS_CSC_KEY_PASSWORD || matrix.target == 'mac' && secrets.MAC_CSC_KEY_PASSWORD) || '' }}
+      APPLE_ID: ${{ github.ref == 'refs/tags/v1.0.1' && matrix.target == 'mac' && secrets.APPLE_ID || '' }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ github.ref == 'refs/tags/v1.0.1' && matrix.target == 'mac' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
+      APPLE_TEAM_ID: ${{ github.ref == 'refs/tags/v1.0.1' && matrix.target == 'mac' && secrets.APPLE_TEAM_ID || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '22.23.1', cache: npm }
+      - run: node scripts/release/check-desktop-signing.mjs
       - run: npm ci
       - run: npm run codegen
       - run: npm run build --workspace @seminai/backend
