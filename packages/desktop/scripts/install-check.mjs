@@ -17,8 +17,9 @@ function run(command, args, env = process.env) {
 }
 const extension =
   process.platform === 'win32' ? '.exe' : process.platform === 'darwin' ? '.dmg' : '.deb';
+const artifactArch = extension === '.deb' && process.arch === 'x64' ? 'amd64' : process.arch;
 const asset = (await readdir(release)).find(
-  (name) => name.startsWith('Seminai-') && name.endsWith(`-${process.arch}${extension}`),
+  (name) => name.startsWith('Seminai-') && name.endsWith(`-${artifactArch}${extension}`),
 );
 if (!asset) throw new Error('Installer artifact missing');
 let runtime;

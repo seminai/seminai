@@ -38,6 +38,9 @@ const install = spawnSync(
   { cwd: target, stdio: 'inherit', shell: process.platform === 'win32' },
 );
 if (install.status !== 0) throw new Error('Runtime dependencies installation failed');
+// npm workspace links are not runtime imports and can be absolute junctions on Windows.
+// Never ship a link back to the build checkout.
+await rm(path.join(target, 'node_modules/@seminai'), { recursive: true, force: true });
 const trackedData = spawnSync('git', ['ls-files', 'backend/dataset'], {
   cwd: root,
   encoding: 'utf8',
@@ -61,7 +64,9 @@ for (const file of ['prisma-alias-loader.mjs', 'prisma-alias-register.mjs'])
 await cp(path.join(root, 'packages/desktop/src'), path.join(target, 'desktop'), {
   recursive: true,
 });
-const nodePath = require.resolve(process.platform === 'win32' ? 'node/bin/node.exe' : 'node/bin/node');
+const nodePath = require.resolve(
+  process.platform === 'win32' ? 'node/bin/node.exe' : 'node/bin/node',
+);
 await cp(nodePath, path.join(target, process.platform === 'win32' ? 'node.exe' : 'node'));
 await cp(path.join(root, 'packages/desktop/vendor/tunnel'), path.join(target, 'tunnel'), {
   recursive: true,

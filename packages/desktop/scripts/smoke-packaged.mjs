@@ -12,6 +12,10 @@ const candidates =
       : [`linux${process.arch === 'arm64' ? '-arm64' : ''}-unpacked/resources/runtime`];
 const runtime = candidates.map((name) => path.join(release, name)).find(existsSync);
 if (!runtime) throw new Error('Packaged runtime not found');
+if (!existsSync(path.join(runtime, 'node_modules/embedded-postgres/package.json')))
+  throw new Error(
+    'Packaged runtime dependencies missing; repository dependencies cannot satisfy this check',
+  );
 const node = path.join(runtime, process.platform === 'win32' ? 'node.exe' : 'node');
 const result = spawnSync(node, [path.join(folder, 'scripts/smoke.cjs')], {
   env: { ...process.env, SEMINAI_RUNTIME_DIR: runtime },

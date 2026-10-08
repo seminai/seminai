@@ -1,7 +1,7 @@
 {
   "name": "@seminai/backend",
   "version": "1.0.1-rc.1",
-  "description": "Seminai backend \u2014 AI-assisted agronomic management API (Express + Prisma + AI agents).",
+  "description": "Seminai backend — AI-assisted agronomic management API (Express + Prisma + AI agents).",
   "private": true,
   "type": "module",
   "main": "./src/infrastructure/http/server.ts",
@@ -140,11 +140,13 @@
     "multer": "2.0.2",
     "node-geocoder": "4.4.1",
     "nodemailer": "7.0.11",
+    "p-limit": "3.1.0",
     "pdf-parse": "2.4.5",
     "pdf.js-extract": "0.1.5",
     "pg": "8.20.0",
     "pg-boss": "12.37.1",
     "posthog-node": "5.35.13",
+    "prisma": "7.5.0",
     "proj4": "2.20.3",
     "qrcode": "1.5.3",
     "shapefile": "0.6.6",
@@ -152,14 +154,13 @@
     "speakeasy": "2.0.0",
     "swagger-jsdoc": "6.2.8",
     "swagger-ui-express": "5.0.0",
+    "tsx": "4.21.0",
     "undici": "7.22.0",
     "winston": "3.11.0",
     "xlsx": "0.18.5",
     "xml2js": "0.6.2",
     "yalps": "0.5.7",
-    "yaml": "2.9.0",
-    "prisma": "7.5.0",
-    "tsx": "4.21.0"
+    "yaml": "2.9.0"
   },
   "overrides": {
     "p-retry": "4.6.2"

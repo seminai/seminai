@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { useReviewOperation, useFarmCatalog } from '@/hooks/use-farm';
 import type { FarmOperation, FarmRecord } from '@/services/farm-api';
 import { OperationForm } from './operation-form';
+import { jobCategoryIt } from '@/components/organisms/jobs/job-detail-italian-labels';
 export function OperationReview({
   operation,
   companyId,
@@ -43,7 +44,7 @@ export function OperationReview({
       {operation.payload.job && (
         <div className="rounded-lg bg-muted p-3 text-sm">
           <p>
-            {operation.payload.job.category} ·{' '}
+            {jobCategoryIt(operation.payload.job.category)} ·{' '}
             {units.data?.find((unit) => unit.id === operation.payload.job?.productionUnitId)
               ?.name || operation.payload.job.productionUnitId}
           </p>

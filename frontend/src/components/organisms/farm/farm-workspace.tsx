@@ -8,6 +8,7 @@ import type { FarmRecord, Product } from '@/services/farm-api';
 import { OperationHistory } from './operation-history';
 import { OperationForm } from './operation-form';
 import { OperationReview } from './operation-review';
+import { jobCategoryIt } from '@/components/organisms/jobs/job-detail-italian-labels';
 export function FarmWorkspace() {
   const { companies, isLoading } = useCompanies();
   const [selectedCompany, setSelectedCompany] = useState('');
@@ -205,7 +206,9 @@ export function FarmWorkspace() {
                         record.category}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {record.reason || record.category || ''}{' '}
+                      {record.reason ||
+                        (tab === 'jobs' ? jobCategoryIt(record.category || '') : record.category) ||
+                        ''}{' '}
                       {(record.occurredAt || record.dateOfOpeation) &&
                         `· ${new Date(record.occurredAt || record.dateOfOpeation || '').toLocaleDateString('it-IT')}`}
                     </p>

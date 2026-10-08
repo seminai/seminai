@@ -60,8 +60,7 @@ jobs:
       - run: npm run fetch:tunnel --workspace @seminai/desktop
       - run: npm run stage --workspace @seminai/desktop
       - name: Test bundled runtime without system services
-        shell: bash
-        run: SEMINAI_RUNTIME_DIR="$PWD/packages/desktop/stage" node packages/desktop/scripts/smoke.cjs
+        run: node packages/desktop/scripts/smoke-isolated.mjs
       - run: npm exec --workspace @seminai/desktop -- electron-builder --${{ matrix.target }} --${{ matrix.arch }} --publish never
       - name: Test packaged Node, services and database persistence
         run: node packages/desktop/scripts/smoke-packaged.mjs

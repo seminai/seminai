@@ -43,6 +43,10 @@
         "to": "runtime"
       },
       {
+        "from": "stage/node_modules",
+        "to": "runtime/node_modules"
+      },
+      {
         "from": "../../frontend/public/logo.png",
         "to": "logo.png"
       },

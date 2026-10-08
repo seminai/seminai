@@ -12,6 +12,7 @@ import type {
   Movement,
 } from '@/services/farm-api';
 import { JobCategory } from '@/generated/prisma/enums';
+import { jobCategoryIt } from '@/components/organisms/jobs/job-detail-italian-labels';
 
 interface Props {
   companyId: string;
@@ -127,7 +128,9 @@ export function OperationForm({ companyId, mode, existing, onDone }: Props) {
                 onChange={(event) => setCategory(event.target.value as JobCategory)}
               >
                 {Object.values(JobCategory).map((value) => (
-                  <option key={value}>{value}</option>
+                  <option key={value} value={value}>
+                    {jobCategoryIt(value)}
+                  </option>
                 ))}
               </select>
             </label>
@@ -176,7 +179,9 @@ export function OperationForm({ companyId, mode, existing, onDone }: Props) {
         <Button variant="outline" type="button" onClick={onDone}>
           Annulla
         </Button>
-        <Button disabled={pending}>{pending ? 'Salvataggio…' : 'Controlla riepilogo'}</Button>
+        <Button type="submit" disabled={pending}>
+          {pending ? 'Salvataggio…' : 'Controlla riepilogo'}
+        </Button>
       </div>
     </form>
   );

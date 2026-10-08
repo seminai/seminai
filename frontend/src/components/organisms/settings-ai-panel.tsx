@@ -18,7 +18,7 @@ interface AiSettings {
 export function SettingsAiPanel() {
   const query = useQuery({
     queryKey: ['settings', 'ai'],
-    queryFn: () => farmRequest<AiSettings>('/ai-settings'),
+    queryFn: () => farmRequest<AiSettings>('/settings/ai'),
   });
   if (query.isLoading) return <p role="status">Caricamento configurazione…</p>;
   if (query.error) return <p role="alert">{query.error.message}</p>;
@@ -36,10 +36,14 @@ function AiForm({ initial }: { initial: AiSettings }) {
     audioModel: initial.audioModel,
     embeddingModel: initial.embeddingModel,
   });
-  const [capabilities, setCapabilities] = useState(initial.capabilities);
+  const [capabilities, setCapabilities] = useState({
+    vision: initial.capabilities.vision,
+    audio: initial.capabilities.audio,
+    embeddings: initial.capabilities.embeddings,
+  });
   const save = useMutation({
     mutationFn: () =>
-      farmRequest<AiSettings>('/ai-settings', 'PUT', {
+      farmRequest<AiSettings>('/settings/ai', 'PUT', {
         enabled,
         provider,
         model,
@@ -55,7 +59,7 @@ function AiForm({ initial }: { initial: AiSettings }) {
   });
   const test = useMutation({
     mutationFn: () =>
-      farmRequest<{ reachable: boolean; message: string }>('/ai-settings/test', 'POST'),
+      farmRequest<{ reachable: boolean; message: string }>('/settings/ai/test', 'POST'),
   });
   return (
     <form
