@@ -23,3 +23,11 @@ const result = spawnSync(node, [path.join(folder, 'scripts/smoke.cjs')], {
   timeout: 180000,
 });
 if (result.status !== 0) process.exit(result.status || 1);
+if (process.platform === 'darwin' && process.env.SEMINAI_SIGNING === 'true') {
+  const verification = spawnSync(
+    'codesign',
+    ['--verify', '--deep', '--strict', path.resolve(runtime, '../../..')],
+    { stdio: 'inherit' },
+  );
+  if (verification.status !== 0) throw new Error('Installed application changed during startup');
+}

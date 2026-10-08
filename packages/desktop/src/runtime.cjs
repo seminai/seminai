@@ -5,6 +5,7 @@ const net = require('node:net');
 const { spawn } = require('node:child_process');
 const { randomBytes } = require('node:crypto');
 const { once } = require('node:events');
+const prismaEnvironment = require('./prisma-environment.cjs');
 
 function run(command, args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -107,6 +108,7 @@ class DesktopRuntime {
       ANALYTICS_ENABLED: 'false',
     };
     this.env.DIRECT_URL = this.env.DATABASE_URL;
+    Object.assign(this.env, await prismaEnvironment(this.runtimeDir));
     // A desktop install never inherits cloud credentials or a developer database from its parent shell.
     for (const name of Object.keys(this.env)) {
       if (

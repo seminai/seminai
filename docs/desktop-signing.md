@@ -31,6 +31,17 @@ Lo script verifica i checksum, firma applicazione e runtime nativi, esercita il 
 incluso, invia i DMG ad Apple, controlla `Accepted`, applica i ticket, verifica Gatekeeper
 e genera nuove ZIP, DMG, ricevuta e checksum con suffisso `-signed`. I file pubblicati
 originali non vengono sovrascritti. Un esito di firma da solo non prova la notarizzazione.
+Il checkout deve avere la stessa versione dei pacchetti. È possibile aggiungere `arm64`
+o `x64` come ultimo argomento e firmare le architetture separatamente. La ricevuta della
+richiesta Apple viene salvata: ripetendo il comando si riprende l'attesa soltanto se
+gli hash dell'originale e del DMG inviato coincidono. La ricevuta Apple deve riferirsi
+allo stesso SHA-256. Un pacchetto rifiutato va conservato per diagnostica; la nuova
+build usa una cartella di output distinta.
+
+La RC.2 impedisce a Prisma di sostituire il motore incluso e disabilita la cache Jiti
+nei binari installati. Il collaudo controlla questi file dopo migrazioni e riavvio;
+per le app firmate ricontrolla anche l'intero sigillo con `codesign --verify` prima
+della richiesta di notarizzazione.
 
 ## Windows e CI
 

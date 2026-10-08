@@ -123,7 +123,7 @@ def main():
     if not existing:
         gh('release', 'create', tag, '--repo', repository, '--verify-tag', '--draft',
            '--prerelease', '--latest=false', '--title', f'Seminai {version}',
-           '--notes-file', 'docs/releases/1.0.1-rc.1.md')
+           '--notes-file', f'docs/releases/{version}.md')
     gh('release', 'upload', tag, '--repo', repository, '--clobber',
        *[str(file) for file in sorted(destination.iterdir())])
     release = read_uploaded_release(repository, tag)

@@ -19,7 +19,7 @@ Telefono e tablet usano il browser dell’istanza accesa; non sincronizzano dati
 
 ### App desktop
 
-Gli installer sono nella [release 1.0.1-rc.1](https://github.com/seminai/seminai/releases/tag/v1.0.1-rc.1).
+Gli installer sono nella [release 1.0.1-rc.2](https://github.com/seminai/seminai/releases/tag/v1.0.1-rc.2).
 Controlla nelle note di rilascio quali pacchetti sono firmati/notarizzati e quali
 collaudi restano aperti. I dati rimangono nella cartella dell’utente, separati dai binari.
 
@@ -94,5 +94,5 @@ Seminai is offered under AGPL-3.0-or-later or separately negotiated commercial t
 [`DCO.md`](./DCO.md), and [`SECURITY.md`](./SECURITY.md).
 
 La CI della RC e la matrice installer hanno esecuzioni riuscite. I collaudi manuali
-ancora necessari sono indicati nelle [note della RC](docs/releases/1.0.1-rc.1.md).
+ancora necessari sono indicati nelle [note della RC](docs/releases/1.0.1-rc.2.md).
 La pipeline `web-docker` verifica anche avvio, setup senza AI, magazzino, riavvio e ripristino.
