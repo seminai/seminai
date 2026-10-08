@@ -43,6 +43,11 @@ nei binari installati. Il collaudo controlla questi file dopo migrazioni e riavv
 per le app firmate ricontrolla anche l'intero sigillo con `codesign --verify` prima
 della richiesta di notarizzazione.
 
+Il processo di firma concede `allow-unsigned-executable-memory` soltanto al Node 22
+standalone Intel, che lo richiede per il proprio JIT. Electron, renderer, librerie e
+runtime ARM64 mantengono gli entitlement più restrittivi. Il test degli entitlement
+verifica questa separazione e il collaudo esegue realmente il Node firmato.
+
 ## Windows e CI
 
 Il workflow `desktop-installers` accetta `sign_artifacts=true` per produrre candidati

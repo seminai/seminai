@@ -71,7 +71,7 @@ jobs:
       - run: npm run build --workspace @seminai/frontend
       - run: npm run build --workspace @seminai/mcp-connector
       - run: npm run test --workspace @seminai/desktop
-      - run: node --test scripts/release/desktop-sbom.test.mjs
+      - run: node --test scripts/release/desktop-sbom.test.mjs scripts/release/desktop-signing.test.mjs scripts/release/macos-entitlements.test.mjs
       - run: npm run test:desktop --workspace @seminai/backend
       - name: Test backup restore and abrupt supervisor termination
         run: node packages/desktop/scripts/recovery-check.cjs

@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { createReadStream, openSync, readSync, closeSync, statSync, existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile, symlink } from 'node:fs/promises';
 import path from 'node:path';
+import { signingOptions } from './macos-entitlements.mjs';
 
 const source = path.resolve(process.argv[2] || 'artifacts/signing/rc1/source');
 const destination = path.resolve(process.argv[3] || 'artifacts/signing/rc1/signed');
@@ -94,6 +95,7 @@ for (const arch of architectures) {
       ])
     ).trim();
     if (bundle !== 'it.seminai.desktop') throw new Error('Unexpected app identifier');
+    const runtime = path.join(app, 'Contents/Resources/runtime');
     console.log(`Signing ${arch} application and bundled runtimes…`);
     await signAsync({
       app,
@@ -102,13 +104,9 @@ for (const arch of architectures) {
       type: 'distribution',
       gatekeeperAssess: false,
       ignore: (file) => !isCode(file),
-      optionsForFile: () => ({
-        hardenedRuntime: true,
-        entitlements: ['com.apple.security.cs.allow-jit'],
-      }),
+      optionsForFile: (file) => signingOptions(file, { runtime, arch }),
     });
     await run('codesign', ['--verify', '--deep', '--strict', app]);
-    const runtime = path.join(app, 'Contents/Resources/runtime');
     await run(path.join(runtime, 'node'), [path.resolve('packages/desktop/scripts/smoke.cjs')], {
       env: { ...process.env, SEMINAI_RUNTIME_DIR: runtime },
     });
