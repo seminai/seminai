@@ -15,6 +15,10 @@ on:
     tags: ['v1.0.1-rc.*']
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     strategy:
@@ -40,6 +44,7 @@ jobs:
       - run: npm run build --workspace @seminai/backend
       - run: npm run build --workspace @seminai/frontend
       - run: npm run build --workspace @seminai/mcp-connector
+      - run: npm run test --workspace @seminai/desktop
       - run: npm run test:desktop --workspace @seminai/backend
       - run: npm run package:mcpb --workspace @seminai/mcp-connector
       - run: npm run fetch:tunnel --workspace @seminai/desktop

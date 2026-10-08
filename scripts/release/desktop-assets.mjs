@@ -3,6 +3,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import AdmZip from 'adm-zip';
+import { downloadArtifact } from '@electron/get';
 const directory = path.resolve('packages/desktop/release');
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 // Include build dependencies as well: React is compiled into the renderer and Electron/Node
@@ -44,7 +45,13 @@ for (const location of Object.keys(lock.packages).filter((name) =>
     }
   }
 }
-notices.addLocalFile('node_modules/electron/dist/LICENSES.chromium.html', 'electron');
+const electronArchive = await downloadArtifact({ version: '44.7.0', artifactName: 'electron', platform: process.platform, arch: process.arch, checksums: JSON.parse(await readFile('node_modules/electron/checksums.json', 'utf8')) });
+const electronZip = new AdmZip(electronArchive);
+for (const name of ['LICENSE', 'LICENSES.chromium.html']) {
+  const entry = electronZip.getEntry(name);
+  if (!entry) throw new Error('Electron license missing from official distribution');
+  notices.addFile(`electron/${name}`, entry.getData());
+}
 notices.addLocalFolder('packages/desktop/vendor/tunnel', 'tunnel', (name) =>
   /license|notice|\.json$/i.test(name),
 );

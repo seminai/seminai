@@ -1,13 +1,14 @@
 import { createRequire, builtinModules } from 'node:module';
 import { build } from 'esbuild';
 import AdmZip from 'adm-zip';
-import { readFile, mkdir } from 'node:fs/promises';
+import { readFile, mkdir, readdir, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 await mkdir(path.join(root, 'bundle'), { recursive: true });
 const nodeRequire = createRequire(import.meta.url);
-await build({
+const built = await build({
+  metafile: true,
   plugins: [
     {
       name: 'node-resolution',
@@ -55,5 +56,24 @@ zip.addFile(
   ),
 );
 zip.addFile('LICENSE', await readFile(path.join(root, '../../LICENSE')));
+const packages = new Set();
+for (const input of Object.keys(built.metafile.inputs)) {
+  if (!input.includes('node_modules/')) continue;
+  let folder = path.dirname(path.resolve(input));
+  while (folder !== path.dirname(folder)) {
+    if (await access(path.join(folder, 'package.json')).then(() => true, () => false)) { packages.add(folder); break; }
+    folder = path.dirname(folder);
+  }
+}
+for (const folder of packages) {
+  const metadata = JSON.parse(await readFile(path.join(folder, 'package.json'), 'utf8'));
+  const location = `licenses/${metadata.name}/${metadata.version}`;
+  zip.addFile(`${location}/package.json`, Buffer.from(JSON.stringify(metadata, null, 2)));
+  for (const file of (await readdir(folder)).filter(name => /^(licen[sc]e|notice|copying)(\.|$)/i.test(name))) {
+    try { zip.addFile(`${location}/${file}`, await readFile(path.join(folder, file))); }
+    catch (error) { if (error.code !== 'EISDIR') throw error; }
+  }
+}
+
 await zip.writeZipPromise(path.join(root, 'seminai-mcp-1.0.1.mcpb'));
 console.log('Created seminai-mcp-1.0.1.mcpb');
