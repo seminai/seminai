@@ -122,7 +122,8 @@ async function waitForServices() {
 }
 
 async function up() {
-  compose(['up', '-d', 'postgres', 'redis']);
+  if (process.env.SEMINAI_TEST_EXTERNAL_SERVICES !== 'true')
+    compose(['up', '-d', 'postgres', 'redis']);
   await waitForServices();
 }
 
@@ -228,6 +229,7 @@ Commands:
   status             Show compose service status
 
 Environment:
+  SEMINAI_TEST_EXTERNAL_SERVICES=true uses already provisioned PostgreSQL/Redis
   DATABASE_URL=${databaseUrl}
   REDIS_URL=${redisUrl}`);
 }

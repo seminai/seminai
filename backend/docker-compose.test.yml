@@ -3,7 +3,6 @@ version: '3.9'
 services:
   postgres:
     image: postgres:15.5-alpine
-    platform: linux/arm64
     ports:
       - '${SEMINAI_TEST_DB_PORT:-55432}:5432'
     environment:
@@ -20,7 +19,6 @@ services:
 
   redis:
     image: redis:7-alpine
-    platform: linux/arm64
     ports:
       - '${SEMINAI_TEST_REDIS_PORT:-56379}:6379'
     command: redis-server --appendonly no --save ""
