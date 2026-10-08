@@ -78,3 +78,16 @@ export function getFarmCatalog<T>(
     `/farm/catalog?companyId=${encodeURIComponent(companyId)}&kind=${kind}&offset=${page * 100}&search=${encodeURIComponent(search)}`,
   );
 }
+
+/** Forms must offer records beyond the first server page, including when revising a proposal. */
+export async function getCompleteFarmCatalog<T extends { id: string }>(
+  companyId: string,
+  kind: string,
+): Promise<T[]> {
+  const records = new Map<string, T>();
+  for (let page = 0; ; page += 1) {
+    const batch = await getFarmCatalog<T>(companyId, kind, page);
+    for (const item of batch) records.set(item.id, item);
+    if (batch.length < 100) return [...records.values()];
+  }
+}

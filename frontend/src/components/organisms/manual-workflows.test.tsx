@@ -8,7 +8,7 @@ import { SettingsAiPanel } from './settings-ai-panel';
 
 const { propose, request } = vi.hoisted(() => ({ propose: vi.fn(), request: vi.fn() }));
 vi.mock('@/hooks/use-farm', () => ({
-  useFarmCatalog: () => ({
+  useCompleteFarmCatalog: () => ({
     data: [{ id: 'synthetic-product', name: 'Test product', warehouse: { name: 'Test store' } }],
   }),
   useProposeOperation: () => ({ mutate: propose }),

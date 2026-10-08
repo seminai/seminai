@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useFarmCatalog, useProposeOperation, useReviseOperation } from '@/hooks/use-farm';
+import { useCompleteFarmCatalog, useProposeOperation, useReviseOperation } from '@/hooks/use-farm';
 import type {
   FarmOperation,
   FarmRecord,
@@ -35,8 +35,8 @@ export function OperationForm({ companyId, mode, existing, onDone }: Props) {
   const [productionUnitId, setProductionUnitId] = useState(initial?.job?.productionUnitId ?? '');
   const [category, setCategory] = useState(initial?.job?.category ?? Object.values(JobCategory)[0]);
   const [surface, setSurface] = useState(String(initial?.job?.quantity ?? ''));
-  const products = useFarmCatalog<Product>(companyId, 'products');
-  const units = useFarmCatalog<FarmRecord>(companyId, 'production-units');
+  const products = useCompleteFarmCatalog<Product>(companyId, 'products');
+  const units = useCompleteFarmCatalog<FarmRecord>(companyId, 'production-units');
   const create = useProposeOperation(companyId);
   const revise = useReviseOperation(companyId);
   const pending = create.isPending || revise.isPending;

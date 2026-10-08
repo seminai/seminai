@@ -59,6 +59,11 @@ notices.addLocalFolder('packages/desktop/vendor/tunnel', 'tunnel', (name) =>
 const nodeLicense = await fetch('https://raw.githubusercontent.com/nodejs/node/v22.23.1/LICENSE');
 if (!nodeLicense.ok) throw new Error('Cannot collect bundled Node.js license');
 notices.addFile('node/LICENSE', Buffer.from(await nodeLicense.text()));
+const postgresLicense = await fetch(
+  'https://raw.githubusercontent.com/postgres/postgres/REL_16_14/COPYRIGHT',
+);
+if (!postgresLicense.ok) throw new Error('Cannot collect bundled PostgreSQL license');
+notices.addFile('postgresql/COPYRIGHT', Buffer.from(await postgresLicense.text()));
 notices.addFile('BUILD-DEPENDENCIES.json', Buffer.from(JSON.stringify(lock, null, 2)));
 await notices.writeZipPromise(path.join(directory, 'licenses.zip'));
 await writeFile(

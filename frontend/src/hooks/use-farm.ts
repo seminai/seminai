@@ -2,9 +2,19 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   farmRequest,
   getFarmCatalog,
+  getCompleteFarmCatalog,
   type FarmOperation,
   type OperationInput,
 } from '@/services/farm-api';
+export function useCompleteFarmCatalog<T extends { id: string }>(companyId: string, kind: string) {
+  return useQuery({
+    queryKey: ['farm', companyId, kind, 'complete'],
+    queryFn: () => getCompleteFarmCatalog<T>(companyId, kind),
+    enabled: Boolean(companyId),
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+}
 export function useFarmCatalog<T>(companyId: string, kind: string, page = 0, search = '') {
   return useQuery({
     queryKey: ['farm', companyId, kind, page, search],

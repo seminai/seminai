@@ -10,8 +10,9 @@ if (process.env.GITHUB_ACTIONS !== 'true')
 const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const release = path.join(desktop, 'release');
 const directory = await mkdtemp(path.join(os.tmpdir(), 'seminai-installer-'));
-function run(command, args, env = process.env) {
-  const result = spawnSync(command, args, { stdio: 'inherit', env, timeout: 300000 });
+function run(command, args, env = process.env, timeout = 300000) {
+  console.log(`Running ${path.basename(command)} (timeout ${timeout / 1000}s)`);
+  const result = spawnSync(command, args, { stdio: 'inherit', env, timeout });
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`${path.basename(command)} failed (${result.status})`);
 }
@@ -26,7 +27,9 @@ let runtime;
 let installed = false;
 try {
   if (process.platform === 'win32') {
-    run(path.join(release, asset), ['/S', `/D=${directory}`]);
+    // NSIS extracts the bundled database, Node and runtime packages on a hosted
+    // Windows runner; allow extraction to finish before testing the installed files.
+    run(path.join(release, asset), ['/S', `/D=${directory}`], process.env, 900000);
     runtime = path.join(directory, 'resources/runtime');
   } else if (process.platform === 'darwin') {
     const mount = path.join(directory, 'volume');
