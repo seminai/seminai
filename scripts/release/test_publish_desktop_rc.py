@@ -4,6 +4,7 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 
 spec = importlib.util.spec_from_file_location(
@@ -78,6 +79,15 @@ class ReleaseArtifactsTest(unittest.TestCase):
         self.refresh_manifest(folder)
         with self.assertRaisesRegex(ValueError, 'manifests differ'):
             publisher.assemble(self.source, self.destination, '1.0.1-rc.1')
+
+    def test_reads_draft_assets_by_id_before_publishing(self):
+        with patch.object(publisher, 'gh', side_effect=[
+            '[{"id":42,"tag_name":"v1.0.1-rc.1","draft":true}]',
+            '{"id":42,"assets":[]}',
+        ]) as api:
+            self.assertEqual(publisher.read_uploaded_release('synthetic/repo', 'v1.0.1-rc.1'),
+                             {'id':42, 'assets':[]})
+            self.assertEqual(api.call_args.args, ('api', 'repos/synthetic/repo/releases/42'))
 
     @staticmethod
     def refresh_manifest(folder):

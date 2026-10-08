@@ -30,6 +30,19 @@ def single(files, name):
     return matches[0]
 
 
+def find_release(repository, tag):
+    releases = json.loads(gh('api', f'repos/{repository}/releases?per_page=100'))
+    return next((release for release in releases if release['tag_name'] == tag), None)
+
+
+def read_uploaded_release(repository, tag):
+    # GitHub's /releases/tags endpoint does not expose an unpublished draft.
+    release = find_release(repository, tag)
+    if release is None:
+        raise ValueError('Release draft not found')
+    return json.loads(gh('api', f"repos/{repository}/releases/{release['id']}"))
+
+
 def assemble(source, destination, version):
     destination.mkdir(parents=True, exist_ok=True)
     if list(destination.iterdir()):
@@ -104,8 +117,7 @@ def main():
         raise ValueError('A successful full CI run on this commit is required')
     destination = Path('artifacts/verified-release')
     checksums = assemble(Path(sys.argv[1]), destination, version)
-    releases = json.loads(gh('api', f'repos/{repository}/releases?per_page=100'))
-    existing = next((release for release in releases if release['tag_name'] == tag), None)
+    existing = find_release(repository, tag)
     if existing and not existing['draft']:
         raise ValueError('Published releases are not overwritten')
     if not existing:
@@ -114,7 +126,7 @@ def main():
            '--notes-file', 'docs/releases/1.0.1-rc.1.md')
     gh('release', 'upload', tag, '--repo', repository, '--clobber',
        *[str(file) for file in sorted(destination.iterdir())])
-    release = json.loads(gh('api', f'repos/{repository}/releases/tags/{tag}'))
+    release = read_uploaded_release(repository, tag)
     uploaded = {asset['name']: asset.get('digest') for asset in release['assets']}
     if uploaded != {name: f'sha256:{checksum}' for name, checksum in checksums.items()}:
         raise ValueError('Uploaded assets differ from verified files; release remains draft')
