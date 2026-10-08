@@ -102,11 +102,13 @@ jobs:
     steps:
       - name: Use the native GitHub service containers for integration tests
         run: |
-          echo "TEST_DATABASE_URL=$DATABASE_URL" >> "$GITHUB_ENV"
-          echo "TEST_REDIS_URL=$REDIS_URL" >> "$GITHUB_ENV"
-          echo "SEMINAI_TEST_DB_PORT=5432" >> "$GITHUB_ENV"
-          echo "SEMINAI_TEST_REDIS_PORT=6379" >> "$GITHUB_ENV"
-          echo "SEMINAI_TEST_EXTERNAL_SERVICES=true" >> "$GITHUB_ENV"
+          {
+            echo "TEST_DATABASE_URL=$DATABASE_URL"
+            echo "TEST_REDIS_URL=$REDIS_URL"
+            echo "SEMINAI_TEST_DB_PORT=5432"
+            echo "SEMINAI_TEST_REDIS_PORT=6379"
+            echo "SEMINAI_TEST_EXTERNAL_SERVICES=true"
+          } >> "$GITHUB_ENV"
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -119,6 +121,7 @@ jobs:
       - run: npm run lint
       - run: npm run lint:structure
       - run: python3 -B -m unittest discover -s scripts/release -p 'test_*.py'
+      - run: node --test scripts/release/desktop-signing.test.mjs
       - run: npm run test --workspace @seminai/frontend
       - run: npm run test:unit --workspace @seminai/mcp-connector
       - run: npm run openapi:drift

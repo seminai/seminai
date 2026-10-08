@@ -6,6 +6,11 @@ on:
         description: 'Optional existing RC tag: retry verified publication without rebuilding installers'
         required: false
         type: string
+      sign_artifacts:
+        description: 'Build signed candidates using the desktop-signing environment (no publication)'
+        required: false
+        default: false
+        type: boolean
   pull_request:
     paths:
       [
@@ -37,16 +42,24 @@ jobs:
           - { os: ubuntu-22.04, target: linux, arch: x64 }
           - { os: ubuntu-22.04-arm, target: linux, arch: arm64 }
     runs-on: ${{ matrix.os }}
+    environment: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && 'desktop-signing' || '' }}
+    permissions:
+      contents: read
+      id-token: write
     timeout-minutes: 60
     env:
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       NODE_OPTIONS: --max-old-space-size=4096
       DESKTOP_TARGET: ${{ matrix.target }}
-      CSC_LINK: ${{ github.ref == 'refs/tags/v1.0.1' && (matrix.target == 'win' && secrets.WINDOWS_CSC_LINK || matrix.target == 'mac' && secrets.MAC_CSC_LINK) || '' }}
-      CSC_KEY_PASSWORD: ${{ github.ref == 'refs/tags/v1.0.1' && (matrix.target == 'win' && secrets.WINDOWS_CSC_KEY_PASSWORD || matrix.target == 'mac' && secrets.MAC_CSC_KEY_PASSWORD) || '' }}
-      APPLE_ID: ${{ github.ref == 'refs/tags/v1.0.1' && matrix.target == 'mac' && secrets.APPLE_ID || '' }}
-      APPLE_APP_SPECIFIC_PASSWORD: ${{ github.ref == 'refs/tags/v1.0.1' && matrix.target == 'mac' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
-      APPLE_TEAM_ID: ${{ github.ref == 'refs/tags/v1.0.1' && matrix.target == 'mac' && secrets.APPLE_TEAM_ID || '' }}
+      SEMINAI_SIGNING: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && 'true' || 'false' }}
+      CSC_LINK: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && (matrix.target == 'win' && secrets.WINDOWS_CSC_LINK || matrix.target == 'mac' && secrets.MAC_CSC_LINK) || '' }}
+      CSC_KEY_PASSWORD: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && (matrix.target == 'win' && secrets.WINDOWS_CSC_KEY_PASSWORD || matrix.target == 'mac' && secrets.MAC_CSC_KEY_PASSWORD) || '' }}
+      APPLE_ID: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'mac' && secrets.APPLE_ID || '' }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'mac' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
+      APPLE_TEAM_ID: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'mac' && secrets.APPLE_TEAM_ID || '' }}
+      AZURE_ARTIFACT_SIGNING_ENDPOINT: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'win' && vars.AZURE_ARTIFACT_SIGNING_ENDPOINT || '' }}
+      AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'win' && vars.AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME || '' }}
+      AZURE_ARTIFACT_SIGNING_CERT_PROFILE_NAME: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'win' && vars.AZURE_ARTIFACT_SIGNING_CERT_PROFILE_NAME || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -67,7 +80,14 @@ jobs:
       - run: npm run stage --workspace @seminai/desktop
       - name: Test bundled runtime without system services
         run: node packages/desktop/scripts/smoke-isolated.mjs
-      - run: npm exec --workspace @seminai/desktop -- electron-builder --${{ matrix.target }} --${{ matrix.arch }} --publish never
+      - name: Authenticate to Azure Artifact Signing
+        if: env.SEMINAI_SIGNING == 'true' && matrix.target == 'win' && env.AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME != ''
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - run: npm exec --workspace @seminai/desktop -- electron-builder --config electron-builder.cjs --${{ matrix.target }} --${{ matrix.arch }} --publish never
       - name: Test packaged Node, services and database persistence
         run: node packages/desktop/scripts/smoke-packaged.mjs
       - name: Install artifact and verify services, persistence and recovery
@@ -75,7 +95,7 @@ jobs:
       - run: node scripts/release/desktop-assets.mjs
       - uses: actions/upload-artifact@v4
         with:
-          name: seminai-${{ matrix.target }}-${{ matrix.arch }}
+          name: seminai-${{ env.SEMINAI_SIGNING == 'true' && 'signed-' || '' }}${{ matrix.target }}-${{ matrix.arch }}
           if-no-files-found: error
           path: |
             packages/desktop/release/*.exe

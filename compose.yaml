@@ -5,9 +5,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: seminai:local
+    image: ${SEMINAI_IMAGE:-seminai:local}
+    restart: unless-stopped
+    init: true
+    stop_grace_period: 45s
     ports:
-      - '8081:8081'
+      - '${SEMINAI_BIND_HOST:-127.0.0.1}:${SEMINAI_PORT:-8081}:8081'
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     environment:
@@ -20,19 +23,11 @@ services:
       DATABASE_URL: postgresql://seminai:seminai@postgres:5432/seminai?schema=public&sslmode=disable
       DIRECT_URL: postgresql://seminai:seminai@postgres:5432/seminai?schema=public&sslmode=disable
       REDIS_URL: redis://redis:6379
-      ACCESS_MODE: lan
-      PUBLIC_BASE_URL: http://localhost:8081
-      BACKEND_URL: http://localhost:8081
-      LLM_GATEWAY: ollama
-      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      ACCESS_MODE: ${ACCESS_MODE:-lan}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8081}
+      BACKEND_URL: ${PUBLIC_BASE_URL:-http://localhost:8081}
     volumes:
-      - ./data/app:/data
-    command:
-      [
-        'sh',
-        '-c',
-        'npx prisma migrate deploy && node --import tsx --import ./prisma-alias-register.mjs dist/infrastructure/runtime/main.js',
-      ]
+      - ${SEMINAI_DATA_DIR:-./data}/app:/data
     depends_on:
       postgres:
         condition: service_healthy
@@ -52,12 +47,13 @@ services:
 
   postgres:
     image: postgres:16-bookworm
+    restart: unless-stopped
     environment:
       POSTGRES_USER: seminai
       POSTGRES_PASSWORD: seminai
       POSTGRES_DB: seminai
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - ${SEMINAI_DATA_DIR:-./data}/postgres:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U seminai']
       interval: 5s
@@ -66,14 +62,36 @@ services:
 
   redis:
     image: redis:7-bookworm
+    restart: unless-stopped
     command: redis-server --appendonly yes --dir /data
     volumes:
-      - ./data/redis:/data
+      - ${SEMINAI_DATA_DIR:-./data}/redis:/data
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
       timeout: 3s
       retries: 10
+
+  mcp:
+    profiles: [mcp]
+    image: ${SEMINAI_IMAGE:-seminai:local}
+    restart: unless-stopped
+    init: true
+    command: ['node', '/app/scripts/deploy/server-mcp.cjs']
+    ports:
+      - '${SEMINAI_BIND_HOST:-127.0.0.1}:${SEMINAI_MCP_PORT:-8080}:8080'
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /data
+      MCP_HOST: 0.0.0.0
+      PORT: '8080'
+      SEMINAI_API_BASE_URL: http://app:8081
+      PUBLIC_BASE_URL: ${MCP_PUBLIC_BASE_URL:-http://localhost:8080}
+    volumes:
+      - ${SEMINAI_DATA_DIR:-./data}/app:/data
+    depends_on:
+      app:
+        condition: service_healthy
 
   ollama:
     profiles: [ollama]

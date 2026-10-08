@@ -10,8 +10,8 @@
   "scripts": {
     "start": "electron .",
     "stage": "node scripts/stage.mjs",
-    "package": "npm run stage && electron-builder --publish never",
-    "package:dir": "npm run stage && electron-builder --dir --publish never",
+    "package": "npm run stage && electron-builder --config electron-builder.cjs --publish never",
+    "package:dir": "npm run stage && electron-builder --config electron-builder.cjs --dir --publish never",
     "test": "node --test src/*.test.cjs",
     "fetch:tunnel": "node scripts/fetch-tunnel.mjs"
   },

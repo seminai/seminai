@@ -23,3 +23,13 @@ backend/src/generated
 *.md
 !README.md
 loadtest
+artifacts
+packages/desktop/stage
+packages/desktop/release
+packages/desktop/vendor
+packages/mcp/bundle
+**/*.mcpb
+**/*.p12
+**/*.pfx
+**/*.key
+**/.DS_Store

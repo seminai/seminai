@@ -7,9 +7,9 @@ Redis must be `REDIS_URL=redis://redis:6379`, not Upstash.
 **Setup wizard loops.** `SETUP_COMPLETED` and encrypted `InstanceSetting` rows
 must agree. Secrets in `data/app/secrets` must remain mode `0600`.
 
-**Chat does nothing.** Confirm Ollama with `npm run test:llm:smoke`. The
-gateway must be `ollama` unless a cloud key is configured. Unknown
-`LLM_GATEWAY` values crash boot.
+**Chat is disabled.** New installations start without AI. Configure it in Settings →
+Integrations and verify the connection. In Docker, restart `app` after changing
+provider settings. Manual journal and warehouse functions remain available.
 
 **Invite rejected.** Compare the query `invite` with `DATA_DIR/secrets/invite`
 or rotate it from Settings → Access.
@@ -18,5 +18,5 @@ or rotate it from Settings → Access.
 optional and respond `feature_not_configured` until configured.
 `GET /config/public` lists the flags.
 
-**Hosted CI.** GitHub Actions workflows exist but are explicitly unverified
-until a green hosted run is recorded.
+**Installer and web verification.** See release notes for the exact source commit
+and successful CI runs. Native CI does not replace clean-device acceptance.

@@ -6,32 +6,42 @@ senza modelli AI o account cloud. L’AI e i collegamenti a Claude/ChatGPT sono 
 
 ![Seminai](docs/images/how-it-works.jpg)
 
-## App desktop 1.0.1
+## Scegli come usare Seminai
 
-La distribuzione desktop è in preparazione come **1.0.1-rc.1**: include Node e PostgreSQL,
-con dati nella cartella dell’utente, separati dall’applicazione. Windows, macOS e Linux
-hanno build dedicate. Telefono e tablet accedono dall’istanza accesa, abilitando la LAN.
+| Versione | Per chi | Requisiti |
+| --- | --- | --- |
+| **App desktop** | Vuoi installare e iniziare subito | Installer per Windows, macOS o Linux; servizi inclusi |
+| **Web con Docker** | Preferisci il browser o gestisci un server/NAS | Docker Engine/Desktop e Compose v2 sul computer server |
 
-La [release pubblica 1.0.0](https://github.com/seminai/seminai/releases/tag/v1.0.0)
-contiene la distribuzione Docker e non gli installer desktop. Verifica gli asset e lo
-stato dei collaudi prima di scegliere una versione.
+Entrambe offrono lo stesso quaderno e magazzino. L’AI è disattivata nelle nuove
+installazioni e si configura, se desiderata, in Impostazioni → Integrazioni.
+Telefono e tablet usano il browser dell’istanza accesa; non sincronizzano dati offline.
 
-Leggi la [guida desktop e i requisiti di rilascio](docs/releases/1.0.1.md) per build,
-backup, importazione Docker, AI opzionale e MCP. Ogni proposta di un assistente viene
-registrata solo dopo conferma dentro Seminai.
+### App desktop
 
-## Profilo server Docker
+Gli installer sono nella [release 1.0.1-rc.1](https://github.com/seminai/seminai/releases/tag/v1.0.1-rc.1).
+Controlla nelle note di rilascio quali pacchetti sono firmati/notarizzati e quali
+collaudi restano aperti. I dati rimangono nella cartella dell’utente, separati dai binari.
 
-Il profilo server esistente mantiene PostgreSQL e Redis. Ollama è facoltativo.
+Leggi la [guida desktop](docs/releases/1.0.1.md) per backup, importazione Docker,
+AI e MCP. Ogni proposta di un assistente richiede conferma dentro Seminai.
+
+### Web con Docker
+
+Dalla cartella del repository, su Windows (PowerShell), macOS o Linux:
 
 ```sh
-sh scripts/deploy/install.sh
-docker compose -f compose.yaml build app
-docker compose -f compose.yaml up -d
+docker compose up -d --build --wait
 ```
 
-Apri [Seminai](http://127.0.0.1:8081/setup) e crea l’amministratore locale.
-Puoi configurare l’intelligenza artificiale successivamente nelle integrazioni.
+Apri [Seminai nel browser](http://localhost:8081/setup) e crea l’amministratore.
+Non servono Node, PostgreSQL, Redis o Ollama installati sul computer: i tre servizi
+necessari (`app`, `postgres`, `redis`) sono gestiti da Compose. Il primo download/build
+richiede Internet; il lavoro manuale successivo funziona anche senza connessione.
+
+La configurazione iniziale espone soltanto localhost. Per accesso da altri dispositivi,
+porte, aggiornamenti e backup, segui la [guida web Docker](docs/install.md).
+I dati persistono in `./data`; `docker compose down` ferma i servizi senza eliminarli.
 
 ## Local development
 
@@ -83,5 +93,6 @@ Seminai is offered under AGPL-3.0-or-later or separately negotiated commercial t
 [`LICENSE`](./LICENSE), [`COMMERCIAL-LICENSE.md`](./COMMERCIAL-LICENSE.md),
 [`DCO.md`](./DCO.md), and [`SECURITY.md`](./SECURITY.md).
 
-GitHub Actions workflows exist under `.github/workflows/` and remain **unverified** on the
-hosted runners until a green run is recorded.
+La CI della RC e la matrice installer hanno esecuzioni riuscite. I collaudi manuali
+ancora necessari sono indicati nelle [note della RC](docs/releases/1.0.1-rc.1.md).
+La pipeline `web-docker` verifica anche avvio, setup senza AI, magazzino, riavvio e ripristino.
