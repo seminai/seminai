@@ -76,6 +76,7 @@ class DesktopRuntime {
       port: this.config.pgPort,
       authMethod: 'scram-sha-256',
       persistent: true,
+      initdbFlags: ['--encoding=UTF8', '--locale=C'],
       postgresFlags: ['-h', '127.0.0.1'],
       onLog: () => {},
       onError: () => this.onLog('Database error'),
@@ -86,8 +87,8 @@ class DesktopRuntime {
     if (!isNew && (await exists(path.join(this.dataDir, 'postgres', 'postmaster.pid')))) {
       await this.stopDatabase();
     }
-    await this.pg.start();
-    if (isNew) await this.pg.createDatabase('seminai');
+    await this.startDatabase();
+    if (isNew) await this.createDatabase('seminai');
     this.env = {
       ...process.env,
       NODE_ENV: 'production',
@@ -208,7 +209,7 @@ class DesktopRuntime {
           await fs.readFile(path.join(this.dataDir, 'secrets/jwt'), 'utf8')
         ).trim(),
       },
-      stdio: ['ignore', 'pipe', 'pipe'],
+      stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
     });
     this.mcp.stdout.on('data', (chunk) => this.onLog(String(chunk)));
     this.mcp.stderr.on('data', (chunk) => this.onLog(String(chunk)));
@@ -245,21 +246,20 @@ class DesktopRuntime {
     clearTimeout(timeout);
     this.api = undefined;
   }
+  async createDatabase(name) {
+    const client = this.pg.getPgClient('postgres', '127.0.0.1');
+    await client.connect();
+    try {
+      await client.query(`CREATE DATABASE ${client.escapeIdentifier(name)}`);
+    } finally {
+      await client.end();
+    }
+  }
+  async startDatabase() {
+    return require('./database-process.cjs').startDatabase(this);
+  }
   async stopDatabase() {
-    const control = path.join(
-      path.dirname(this.binaries.postgres),
-      process.platform === 'win32' ? 'pg_ctl.exe' : 'pg_ctl',
-    );
-    const databaseDir = path.join(this.dataDir, 'postgres');
-    const running = await run(control, ['-D', databaseDir, 'status']).then(
-      () => true,
-      (error) => {
-        if (error.exitCode === 3) return false;
-        throw error;
-      },
-    );
-    if (running) await run(control, ['-D', databaseDir, '-m', 'fast', '-w', 'stop']);
-    if (this.pg) this.pg.process = undefined;
+    return require('./database-process.cjs').stopDatabase(this);
   }
   async snapshot(destination) {
     const wasRunning = Boolean(this.api);
@@ -269,7 +269,7 @@ class DesktopRuntime {
       const { saveSnapshot } = require('./snapshots.cjs');
       await saveSnapshot(this.dataDir, destination);
     } finally {
-      await this.pg.start();
+      await this.startDatabase();
       if (wasRunning) await this.startApi();
     }
   }
@@ -286,7 +286,7 @@ class DesktopRuntime {
   }
   async stop() {
     await this.stopApi();
-    if (this.pg?.process) await this.stopDatabase();
+    if (this.databaseRunning) await this.stopDatabase();
   }
 }
 module.exports = { DesktopRuntime, run, freePort };

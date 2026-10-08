@@ -281,6 +281,7 @@ async function gracefulShutdown(signal: string): Promise<void> {
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
+if (process.send) process.once('disconnect', () => void gracefulShutdown('supervisor-disconnected'));
 process.on('message', (message: unknown) => {
   if (message === 'shutdown') void gracefulShutdown('desktop');
 });

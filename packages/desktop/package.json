@@ -88,5 +88,6 @@
       "packageName": "seminai"
     }
   },
-  "desktopName": "seminai.desktop"
+  "desktopName": "seminai.desktop",
+  "homepage": "https://github.com/seminai/seminai"
 }

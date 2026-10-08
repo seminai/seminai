@@ -14,7 +14,7 @@ async function importPortable(runtime, source) {
   const recovery = path.join(runtime.dataDir, 'backups', `files-before-import-${stamp}`);
   let switched = false;
   try {
-    await runtime.pg.createDatabase(temporary);
+    await runtime.createDatabase(temporary);
     const url = new URL(runtime.env.DATABASE_URL);
     url.pathname = `/${temporary}`;
     const backend = path.join(runtime.runtimeDir, 'backend');

@@ -20,3 +20,6 @@ startHttpServer().catch((err) => {
   process.stderr.write(`[seminai-mcp] fatal: ${(err as Error).message}\n`);
   process.exit(1);
 });
+
+// A desktop supervisor disappearing must not leave an orphan listener on its fixed port.
+if (process.send) process.once('disconnect', () => process.exit(0));
