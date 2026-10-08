@@ -1,0 +1,64 @@
+"""Release publication checks run with synthetic artifacts, never a GitHub token."""
+
+import importlib.util
+from pathlib import Path
+import tempfile
+import unittest
+import zipfile
+
+spec = importlib.util.spec_from_file_location(
+    'publish_rc', Path(__file__).with_name('publish-desktop-rc.py'),
+)
+publisher = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(publisher)
+
+
+class ReleaseArtifactsTest(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.source = Path(self.temporary.name) / 'native'
+        self.destination = Path(self.temporary.name) / 'release'
+        for target, extensions in [
+            ('win-x64', ['exe']), ('mac-x64', ['dmg', 'zip']),
+            ('mac-arm64', ['dmg', 'zip']), ('linux-x64', ['AppImage', 'deb']),
+            ('linux-arm64', ['AppImage', 'deb']),
+        ]:
+            folder = self.source / f'seminai-{target}'
+            folder.mkdir(parents=True)
+            for extension in extensions:
+                (folder / f'Seminai-1.0.1-rc.1-{target}.{extension}').write_bytes(b'synthetic')
+            (folder / 'SBOM.cdx.json').write_text('{}')
+            (folder / 'licenses.zip').write_bytes(b'synthetic notices')
+            with zipfile.ZipFile(folder / 'seminai-mcp-1.0.1.mcpb', 'w') as archive:
+                archive.writestr('server/server.cjs', 'synthetic connector')
+                archive.writestr('manifest.json', '{}')
+            (folder / 'SHA256SUMS.txt').write_text(''.join(
+                f'{publisher.digest(file)}  {file.name}\n' for file in folder.iterdir()
+            ))
+
+    def test_assembles_all_native_assets_and_independent_checksums(self):
+        checksums = publisher.assemble(self.source, self.destination, '1.0.1-rc.1')
+        self.assertEqual(len(checksums), 24)
+        self.assertEqual(len(list(self.destination.glob('SBOM-*.cdx.json'))), 5)
+        self.assertEqual(len(list(self.destination.glob('licenses-*.zip'))), 5)
+        for name, expected in checksums.items():
+            self.assertEqual(publisher.digest(self.destination / name), expected)
+
+    def test_rejects_modified_installer_before_publication(self):
+        installer = next(self.source.rglob('*.exe'))
+        installer.write_bytes(b'modified after checksum')
+        with self.assertRaisesRegex(ValueError, 'Checksum mismatch'):
+            publisher.assemble(self.source, self.destination, '1.0.1-rc.1')
+
+    def test_rejects_manifest_that_omits_an_installer(self):
+        manifest = self.source / 'seminai-win-x64/SHA256SUMS.txt'
+        manifest.write_text('\n'.join(
+            line for line in manifest.read_text().splitlines() if not line.endswith('.exe')
+        ))
+        with self.assertRaisesRegex(ValueError, 'omits release files'):
+            publisher.assemble(self.source, self.destination, '1.0.1-rc.1')
+
+
+if __name__ == '__main__':
+    unittest.main()
