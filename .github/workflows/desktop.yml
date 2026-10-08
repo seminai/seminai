@@ -52,7 +52,10 @@ jobs:
       - run: npm run build --workspace @seminai/frontend
       - run: npm run build --workspace @seminai/mcp-connector
       - run: npm run test --workspace @seminai/desktop
+      - run: node --test scripts/release/desktop-sbom.test.mjs
       - run: npm run test:desktop --workspace @seminai/backend
+      - name: Test backup restore and abrupt supervisor termination
+        run: node packages/desktop/scripts/recovery-check.cjs
       - run: npm run package:mcpb --workspace @seminai/mcp-connector
       - run: npm run fetch:tunnel --workspace @seminai/desktop
       - run: npm run stage --workspace @seminai/desktop
@@ -62,6 +65,8 @@ jobs:
       - run: npm exec --workspace @seminai/desktop -- electron-builder --${{ matrix.target }} --${{ matrix.arch }} --publish never
       - name: Test packaged Node, services and database persistence
         run: node packages/desktop/scripts/smoke-packaged.mjs
+      - name: Install artifact and verify services, persistence and recovery
+        run: node packages/desktop/scripts/install-check.mjs
       - run: node scripts/release/desktop-assets.mjs
       - uses: actions/upload-artifact@v4
         with:

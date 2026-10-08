@@ -4,6 +4,7 @@ import { PrismaStockRepository } from '../../repositories/PrismaStockRepository'
 import { StockController } from '../controllers/StockController';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
 import { ensureCompanyRole } from '../middlewares/ensureCompanyRole';
+import { ensureStockScope } from '../middlewares/ensureStockScope';
 import { asyncHandler } from '../middlewares/asyncHandler';
 import { upload } from '../../services/Multer';
 import { prisma } from '../../repositories/Prisma';
@@ -94,6 +95,7 @@ stockRouter.post(
   '/',
   ensureAuthenticated,
   ensureCompanyRole([CompanyRole.ADMIN, CompanyRole.EDITOR], 'companyId'),
+  asyncHandler(ensureStockScope),
   asyncHandler((req, res) => controller.create(req, res)),
 );
 
@@ -174,6 +176,7 @@ stockRouter.patch(
   '/:stockId',
   ensureAuthenticated,
   ensureCompanyRole([CompanyRole.ADMIN, CompanyRole.EDITOR], 'companyId'),
+  asyncHandler(ensureStockScope),
   asyncHandler((req, res) => controller.update(req, res)),
 );
 
@@ -215,6 +218,7 @@ stockRouter.delete(
   '/:stockId',
   ensureAuthenticated,
   ensureCompanyRole([CompanyRole.ADMIN, CompanyRole.EDITOR], 'companyId'),
+  asyncHandler(ensureStockScope),
   asyncHandler((req, res) => controller.delete(req, res)),
 );
 
@@ -262,6 +266,7 @@ stockRouter.post(
   '/:stockId/upload',
   ensureAuthenticated,
   ensureCompanyRole([CompanyRole.ADMIN, CompanyRole.EDITOR], 'companyId'),
+  asyncHandler(ensureStockScope),
   upload.single('file'),
   asyncHandler((req, res) => controller.upload(req, res)),
 );

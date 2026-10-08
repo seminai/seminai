@@ -1,20 +1,15 @@
 import { createHash } from 'node:crypto';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import AdmZip from 'adm-zip';
 import { downloadArtifact } from '@electron/get';
+import { desktopSbom } from './desktop-sbom.mjs';
 const directory = path.resolve('packages/desktop/release');
-const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 // Include build dependencies as well: React is compiled into the renderer and Electron/Node
 // are development dependencies which become distributed binaries in the desktop artifact.
-const result = spawnSync(npm, ['sbom', '--sbom-format', 'cyclonedx'], {
-  encoding: 'utf8',
-  maxBuffer: 64 * 1024 * 1024,
-  shell: process.platform === 'win32',
-});
-if (result.status !== 0) throw new Error(result.stderr || 'SBOM generation failed');
-const sbom = JSON.parse(result.stdout);
+// Inventory actual packages: npm sbom rejects unrelated optional peer-range conflicts
+// in AI/build tools, even though those packages were installed by the committed lockfile.
+const sbom = await desktopSbom(process.cwd());
 for (const [name, version, url] of [
   ['PostgreSQL', '16.14', 'https://www.postgresql.org/about/licence/'],
   ['OpenAI tunnel-client', '0.0.16', 'https://github.com/openai/tunnel-client'],
@@ -45,7 +40,13 @@ for (const location of Object.keys(lock.packages).filter((name) =>
     }
   }
 }
-const electronArchive = await downloadArtifact({ version: '44.7.0', artifactName: 'electron', platform: process.platform, arch: process.arch, checksums: JSON.parse(await readFile('node_modules/electron/checksums.json', 'utf8')) });
+const electronArchive = await downloadArtifact({
+  version: '44.7.0',
+  artifactName: 'electron',
+  platform: process.platform,
+  arch: process.arch,
+  checksums: JSON.parse(await readFile('node_modules/electron/checksums.json', 'utf8')),
+});
 const electronZip = new AdmZip(electronArchive);
 for (const name of ['LICENSE', 'LICENSES.chromium.html']) {
   const entry = electronZip.getEntry(name);

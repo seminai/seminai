@@ -56,6 +56,48 @@ export async function checkFarmAtomic(
   const stock = await prisma.stock.findFirstOrThrow({
     where: { operationId: proposed.payload.data.id },
   });
+  for (const method of ['PATCH', 'DELETE']) {
+    const immutable = await fetch(`${url}/stocks/${stock.id}?companyId=${companyId}`, {
+      method,
+      headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` },
+      body: method === 'PATCH' ? JSON.stringify({ quantity: 999, type: 'IN' }) : undefined,
+    });
+    assert.equal(immutable.status, 409);
+    assert.equal((await immutable.json()).code, 'JOURNAL_MOVEMENT_IMMUTABLE');
+  }
+  const foreign = await prisma.company.create({
+    data: { name: 'Synthetic foreign farm', vatNumber: 'OTHER-TEST', fiscalCode: 'OTHER-TEST' },
+  });
+  const foreignWarehouse = await prisma.warehouse.create({
+    data: {
+      name: 'Synthetic foreign store',
+      companyId: foreign.id,
+      address: 'Test',
+      sezione: '',
+      foglio: '',
+      particella: '',
+    },
+  });
+  const foreignProduct = await prisma.product.create({
+    data: {
+      name: 'Synthetic foreign product',
+      sku: 'FOREIGN',
+      type: 'Test',
+      category: 'OTHER',
+      warehouseId: foreignWarehouse.id,
+    },
+  });
+  const forbiddenStock = await call('/stocks', {
+    companyId,
+    productId: foreignProduct.id,
+    quantity: 1,
+    type: 'IN',
+    unitOfMeasureQuantity: 'kg',
+    price: 0,
+    unitOfMeasurePrice: 'EUR',
+  });
+  assert.equal(forbiddenStock.status, 404);
+  assert.equal(await prisma.stock.count(), initialStocks + 1);
   assert.equal(stock.jobId, first.payload.data.operation.result.jobId);
   assert.equal(stock.quantityConverted, -1);
   const malformed = await call('/farm/operations', {
