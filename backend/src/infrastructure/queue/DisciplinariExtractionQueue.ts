@@ -1,5 +1,5 @@
-import { Queue, Worker } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { DisciplinariExtractionJobData, DisciplinariExtractionJobResult, QUEUE_NAME } from './disciplinari-extraction-queue.support';
 import type { DisciplinariExtractionQueueContext } from './disciplinari-extraction-queue.context';

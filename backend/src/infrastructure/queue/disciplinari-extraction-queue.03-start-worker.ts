@@ -1,5 +1,5 @@
-import { Worker, Job } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Worker, Job } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { prisma } from '../repositories/Prisma';
 import { FileUploadAdapter } from '../services/tool/fileUpload.adapter';
 import { LangChainUsageCollector, UsageAccumulator, CostCalculator, OpenAiPricingRegistry } from '../services/llm_costs/usage';

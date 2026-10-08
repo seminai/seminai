@@ -14,7 +14,7 @@ export interface CompleteSetupPayload {
     readonly email: string;
     readonly password: string;
   };
-  readonly llm: {
+  readonly llm?: {
     readonly provider: SetupLlmProvider;
     readonly baseUrl?: string;
     readonly model?: string;

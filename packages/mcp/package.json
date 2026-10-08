@@ -1,6 +1,6 @@
 {
   "name": "@seminai/mcp-connector",
-  "version": "1.0.0",
+  "version": "1.0.1-rc.1",
   "description": "MCP connector exposing Seminai REST API and QDC Image Line APIs as tools for Claude and ChatGPT",
   "type": "module",
   "main": "./dist/server.js",
@@ -19,7 +19,8 @@
     "test:integration": "jest --config jest.integration.config.cjs --watchman=false --runInBand",
     "test:all": "npm run test:unit && npm run test:integration",
     "lint": "eslint . --ext .ts",
-    "format": "prettier --write \"**/*.{ts,json,md}\""
+    "format": "prettier --write \"**/*.{ts,json,md}\"",
+    "package:mcpb": "node scripts/package-mcpb.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0",

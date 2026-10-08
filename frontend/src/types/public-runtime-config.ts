@@ -1,4 +1,5 @@
 export interface PublicRuntimeConfig {
+  readonly ai?: { readonly enabled: boolean; readonly chat: boolean; readonly vision: boolean; readonly audio: boolean; readonly embeddings: boolean };
   readonly appMode: 'all' | 'api' | 'worker';
   readonly storageDriver: string;
   readonly setupCompleted: boolean;

@@ -35,7 +35,7 @@ export const PINNED_TABS: readonly TabData[] = [
 ] as const;
 
 export const VIEW_PATH_MAP: Record<ViewId, string> = {
-  home: '/home',
+  home: '/quaderno',
   archivio: '/archivio',
   chat: '/chat',
   folders: '/folders',
@@ -43,6 +43,7 @@ export const VIEW_PATH_MAP: Record<ViewId, string> = {
 
 export const PATH_VIEW_MAP: Record<string, ViewId> = {
   '/home': 'home',
+  '/quaderno': 'home',
   '/archivio': 'archivio',
   '/chat': 'chat',
   '/folders': 'folders',

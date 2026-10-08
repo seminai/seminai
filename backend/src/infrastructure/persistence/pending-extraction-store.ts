@@ -1,5 +1,5 @@
 import type { DocumentCategory } from '@prisma/client';
-import { getRedisConnection } from '../queue/redis.connection';
+import { getRuntimeStore as getRedisConnection } from '../desktop/key-value-store';
 
 const KEY_PREFIX = 'pending-extraction:';
 const DEFAULT_TTL_SECONDS = Number(process.env.PENDING_EXTRACTION_TTL_SECONDS ?? 30 * 60);

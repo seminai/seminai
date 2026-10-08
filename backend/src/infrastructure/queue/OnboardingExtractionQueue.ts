@@ -1,5 +1,5 @@
-import { Queue, Worker, QueueEvents } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker, QueueEvents } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { type ExtractionResult, type ExtractionPhase } from '../../application/use-cases/onboarding/ExtractFromFileUseCase';
 import { QUEUE_NAME, OnboardingExtractionJobData } from './onboarding-extraction-queue.support';

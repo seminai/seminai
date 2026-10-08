@@ -1,3 +1,4 @@
+const moduleDirectory = typeof __dirname === 'string' ? __dirname : path.resolve(process.env.BACKEND_ROOT || process.cwd(), 'dist', 'infrastructure/services/agents/dosage_agent');
 import * as fs from 'fs';
 import * as path from 'path';
 import { cleanRegNumber } from './cleanRegNumber';
@@ -89,7 +90,7 @@ function loadFitosanitariDataset(): {
 
   try {
     const datasetPath = path.resolve(
-      __dirname,
+      moduleDirectory,
       '../../../../../dataset/fitosanitari/fts_06062025.json',
     );
     const rawData = fs.readFileSync(datasetPath, 'utf-8');

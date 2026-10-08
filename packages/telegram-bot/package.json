@@ -1,6 +1,6 @@
 {
   "name": "@seminai/telegram-bot",
-  "version": "1.0.0",
+  "version": "1.0.1-rc.1",
   "description": "Telegram bot for SeminAI - Agricultural AI Assistant",
   "main": "dist/index.js",
   "scripts": {

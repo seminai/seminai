@@ -8,8 +8,8 @@
  *
  * Concurrency is configurable via BATCH_EXTRACTION_CONCURRENCY (default 3).
  */
-import { Queue, Worker, Job } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker, Job } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import {
   compressIfNeeded,

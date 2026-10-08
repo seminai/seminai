@@ -1,3 +1,4 @@
+const moduleDirectory = typeof __dirname === 'string' ? __dirname : path.resolve(process.env.BACKEND_ROOT || process.cwd(), 'dist', 'infrastructure/services/llm_costs');
 import * as fs from 'fs';
 import * as path from 'path';
 import { normalizeModelNameForPricing } from './model-name-normalize';
@@ -51,7 +52,7 @@ export class OpenRouterPricingStore {
 
   private static resolveConfigPath(): string | null {
     const candidates = [
-      path.join(__dirname, OPENROUTER_PRICING_FILENAME),
+      path.join(moduleDirectory, OPENROUTER_PRICING_FILENAME),
       path.join(
         process.cwd(),
         'dist',

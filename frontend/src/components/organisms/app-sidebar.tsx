@@ -1,3 +1,4 @@
+import { useAiCapabilities } from '@/hooks/use-ai-capabilities';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { useSidebar } from '@/hooks/use-sidebar';
@@ -18,6 +19,7 @@ import { NAV_ITEMS } from '@/config/navigation';
 import type { WorkspacePlan } from '@/types/workspace';
 
 export function AppSidebar() {
+  const ai = useAiCapabilities();
   const { t } = useTranslation();
   const { isOpen, toggle } = useSidebar();
   const { activeView, activeTabId, tabs, setActiveView } = useTabs();
@@ -111,7 +113,7 @@ export function AppSidebar() {
       <div className="min-h-0 flex flex-1 flex-col overflow-hidden">
         {/* Navigation */}
         <nav className={cn('flex flex-col gap-0.5', collapsed ? 'px-1' : 'px-2')}>
-          {NAV_ITEMS.map((item) => (
+          {NAV_ITEMS.filter(item => item.tabId !== 'chat' || ai?.chat).map((item) => (
             <SidebarNavItem
               key={item.labelKey}
               icon={item.icon}
@@ -133,7 +135,7 @@ export function AppSidebar() {
 
       {/* Bottom section */}
       <div className={cn('flex flex-col gap-2 pb-3', collapsed ? 'px-1' : 'px-3')}>
-        <SidebarPlanCard plan={currentPlan} collapsed={collapsed} />
+        {!window.seminaiDesktop && <SidebarPlanCard plan={currentPlan} collapsed={collapsed} />}
         <SidebarUserMenu collapsed={collapsed} />
       </div>
     </aside>

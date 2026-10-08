@@ -9,6 +9,7 @@ export async function dosageAgentQueueRemoveJob(this: DosageAgentQueueContext, j
       throw new Error(`Job ${jobId} not found`);
     }
     const state = await job.getState();
+    if (process.env.RUNTIME_PROFILE === 'desktop' && state === 'active') throw new Error('Il lavoro è in esecuzione: attendi il completamento prima di rimuoverlo');
     // If job is active (running), we need special handling
     if (state === 'active') {
       if (force) {

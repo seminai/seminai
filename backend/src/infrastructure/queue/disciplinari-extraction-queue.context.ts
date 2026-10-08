@@ -1,4 +1,4 @@
-import { Queue, Worker } from 'bullmq';
+import { Queue, Worker } from './queue-driver';
 import { DisciplinariExtractionJobData, DisciplinariExtractionJobResult } from './disciplinari-extraction-queue.support';
 
 export interface DisciplinariExtractionQueueContext {

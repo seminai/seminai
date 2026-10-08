@@ -1,5 +1,5 @@
-import { Worker, Job } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Worker, Job } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { runFlowsMultiCompany, expandUnitOfProductionWithCycles, groupUnitsByCompany, RawUnitOfProduction } from '../services/agents/dosage_agent';
 import { StockBalanceReport } from '../services/agents/dosage_agent/flowMatchProductionUnitTreatmentDosage';
 import { compressIfNeeded, decompressIfNeeded, CompressedData, calculateSizeInMB } from '../utils/redis-compression.util';

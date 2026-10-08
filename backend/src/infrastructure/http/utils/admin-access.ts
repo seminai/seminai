@@ -16,7 +16,6 @@ interface AdminAccessTokenPayload {
 export function getIsSecureRequest(request: Request): boolean {
   return (
     process.env.ACCESS_MODE === 'public' ||
-    process.env.NODE_ENV === 'production' ||
     request.secure ||
     request.headers?.['x-forwarded-proto'] === 'https'
   );
@@ -41,7 +40,7 @@ function getIsCrossOriginRequest(request: Request): boolean {
 function getSameSiteForRequest(request: Request): CookieOptions['sameSite'] {
   const isSecure = getIsSecureRequest(request);
   const shouldUseCrossSiteCookies =
-    process.env.NODE_ENV === 'production' || getIsCrossOriginRequest(request);
+    getIsCrossOriginRequest(request);
   if (shouldUseCrossSiteCookies && isSecure) {
     return 'none';
   }

@@ -3,6 +3,7 @@ import { SetupController } from '../controllers/SetupController';
 import { GetSetupStatusUseCase } from '../../../application/use-cases/setup/GetSetupStatusUseCase';
 import { CompleteSetupUseCase } from '../../../application/use-cases/setup/CompleteSetupUseCase';
 import { PrismaUserRepository } from '../../repositories/PrismaUserRepository';
+import { PrismaSettingsRepository } from '../../repositories/PrismaSettingsRepository';
 import { getInstanceSettingStore } from '../../settings/instanceSettingSingleton';
 import { prisma } from '../../repositories/Prisma';
 import { asyncHandler } from '../middlewares/asyncHandler';
@@ -12,7 +13,7 @@ const setupRouter = Router();
 const settings = getInstanceSettingStore();
 const controller = new SetupController(
   new GetSetupStatusUseCase(settings),
-  new CompleteSetupUseCase(new PrismaUserRepository(prisma), settings),
+  new CompleteSetupUseCase(new PrismaUserRepository(prisma), settings, new PrismaSettingsRepository(prisma)),
 );
 
 setupRouter.get('/status', asyncHandler((req, res) => controller.status(req, res)));

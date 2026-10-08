@@ -1,4 +1,4 @@
-import { Queue, Worker, QueueEvents } from 'bullmq';
+import { Queue, Worker, QueueEvents } from './queue-driver';
 import { DosageAgentJobData, DosageAgentJobResult } from './dosage-agent-queue.support';
 
 export interface DosageAgentQueueContext {

@@ -1,5 +1,5 @@
-import { Queue, Worker, Job } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker, Job } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { FieldCsvAgent } from '../services/agents/file_agent/field_csv_agent';
 import { PianoColturalePdfAgent } from '../services/agents/file_agent/piano_colturale_pdf_agent';

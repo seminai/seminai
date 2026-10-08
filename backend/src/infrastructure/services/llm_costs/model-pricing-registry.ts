@@ -1,3 +1,4 @@
+const moduleDirectory = typeof __dirname === 'string' ? __dirname : path.resolve(process.env.BACKEND_ROOT || process.cwd(), 'dist', 'infrastructure/services/llm_costs');
 import * as fs from 'fs';
 import * as path from 'path';
 import { normalizeModelNameForPricing } from './model-name-normalize';
@@ -47,11 +48,11 @@ export class ModelPricingRegistry {
     }
     // Try multiple paths to support both development and production builds
     const possiblePaths = [
-      path.join(__dirname, 'llm_cost.json'), // Production (dist/infrastructure/services/llm_costs/)
+      path.join(moduleDirectory, 'llm_cost.json'), // Production (dist/infrastructure/services/llm_costs/)
       path.join(process.cwd(), 'dist', 'infrastructure', 'services', 'llm_costs', 'llm_cost.json'), // Production alternative
       path.join(process.cwd(), 'src', 'infrastructure', 'services', 'llm_costs', 'llm_cost.json'), // Development
       path.join(
-        __dirname,
+        moduleDirectory,
         '..',
         '..',
         '..',

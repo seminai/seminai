@@ -1,4 +1,4 @@
-import { Queue, Worker, QueueEvents } from 'bullmq';
+import { Queue, Worker, QueueEvents } from './queue-driver';
 import { ProductJobCreationJobData, ProductJobCreationJobResult } from './product-job-creation-queue.support';
 
 export interface ProductJobCreationQueueContext {

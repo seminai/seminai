@@ -1,37 +1,37 @@
 # Seminai
 
-Seminai is a local program for a farm or winery. It helps you plan field work,
-keep records, and ask an assistant that runs on **your computer**. Your data
-stays at home. You do not need a cloud account to start.
+Seminai è un quaderno di campagna open source con gestione del magazzino.
+Aziende, appezzamenti, attività, trattamenti, carichi e scarichi si gestiscono manualmente,
+senza modelli AI o account cloud. L’AI e i collegamenti a Claude/ChatGPT sono facoltativi.
 
-![How Seminai works: people and a farm robot in a Mediterranean courtyard](docs/images/how-it-works.jpg)
+![Seminai](docs/images/how-it-works.jpg)
 
-## What it does
+## App desktop 1.0.1
 
-1. You describe the farm in the browser (fields, crops, treatments).
-2. A local assistant (Ollama) answers in the same house as your files.
-3. Optional extras (email, maps, remote access) stay off until you turn them on.
+La distribuzione desktop è in preparazione come **1.0.1-rc.1**: include Node e PostgreSQL,
+con dati nella cartella dell’utente, separati dall’applicazione. Windows, macOS e Linux
+hanno build dedicate. Telefono e tablet accedono dall’istanza accesa, abilitando la LAN.
 
-## Install (no programming needed)
+La [release pubblica 1.0.0](https://github.com/seminai/seminai/releases/tag/v1.0.0)
+contiene la distribuzione Docker e non gli installer desktop. Verifica gli asset e lo
+stato dei collaudi prima di scegliere una versione.
 
-You need [Docker Desktop](https://www.docker.com/products/docker-desktop/) and,
-for the assistant, [Ollama](https://ollama.com/). Then open a terminal in this
-folder and run:
+Leggi la [guida desktop e i requisiti di rilascio](docs/releases/1.0.1.md) per build,
+backup, importazione Docker, AI opzionale e MCP. Ogni proposta di un assistente viene
+registrata solo dopo conferma dentro Seminai.
 
-![Starting Seminai at the farmhouse table](docs/images/how-to-install.jpg)
+## Profilo server Docker
 
-```bash
+Il profilo server esistente mantiene PostgreSQL e Redis. Ollama è facoltativo.
+
+```sh
 sh scripts/deploy/install.sh
 docker compose -f compose.yaml build app
 docker compose -f compose.yaml up -d
 ```
 
-When Docker shows the app as running, open [http://127.0.0.1:8081/setup](http://127.0.0.1:8081/setup)
-in the browser. Create the first administrator, choose **Ollama**, and finish
-the wizard. After that, sign in at [http://127.0.0.1:8081](http://127.0.0.1:8081).
-
-More detail: [`docs/install.md`](docs/install.md). If something fails, see
-[`docs/troubleshooting.md`](docs/troubleshooting.md).
+Apri [Seminai](http://127.0.0.1:8081/setup) e crea l’amministratore locale.
+Puoi configurare l’intelligenza artificiale successivamente nelle integrazioni.
 
 ## Local development
 
@@ -63,7 +63,8 @@ Docker services automatically.
 
 - `backend`: API, workers, agents, queues, Prisma schema, and domain services.
 - `frontend`: React/Vite single-page application.
-- `packages/mcp`: MCP connector.
+- `packages/mcp`: scoped MCP connector.
+- `packages/desktop`: Electron installer, local runtime, backups and tunnel supervisor.
 - `packages/telegram-bot`: optional Telegram connector.
 - `evals`: deterministic evaluation harness.
 - `loadtest`: k6 scenarios.

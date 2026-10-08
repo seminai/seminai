@@ -1,3 +1,4 @@
+import { renderConsent, consentSignature, createScopedGrant } from './consent.js';
 import type { Request, Response, Router } from 'express';
 import { Router as createRouter } from 'express';
 import type { HttpMcpConfig } from '../http-config.js';
@@ -25,9 +26,10 @@ export function createOauthRouter(config: HttpMcpConfig, store: OauthStore): Rou
   router.get('/.well-known/oauth-protected-resource', (_req, res) => {
     res.json(oauthProtectedResourceMetadata(config));
   });
-  router.post('/oauth/register', (req, res) => void handleRegister(req, res, store));
-  router.get('/oauth/authorize', (req, res) => void handleAuthorizeGet(req, res, config, store));
+  router.post('/oauth/register', (req, res, next) => void handleRegister(req, res, store).catch(next));
+  router.get('/oauth/authorize', (req, res, next) => void handleAuthorizeGet(req, res, config, store).catch(next));
   router.post('/oauth/login', (req, res) => void handleLogin(req, res, config, store));
+  router.post('/oauth/consent', (req, res) => void handleConsent(req, res, config, store));
   router.post('/oauth/token', (req, res) => void handleToken(req, res, store));
   return router;
 }
@@ -41,7 +43,12 @@ async function handleRegister(
   const redirectUris = Array.isArray(body.redirect_uris)
     ? body.redirect_uris.filter((item): item is string => typeof item === 'string')
     : [];
-  if (redirectUris.length === 0) {
+  if (redirectUris.length === 0 || redirectUris.length > 10 || redirectUris.some(uri => {
+    try {
+      const url = new URL(uri);
+      return Boolean(url.hash || url.username || url.password) || !(url.protocol === 'https:' || (url.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)));
+    } catch { return true; }
+  })) {
     response.status(400).json({ error: 'invalid_client_metadata' });
     return;
   }
@@ -82,7 +89,7 @@ async function handleAuthorizeGet(
     response.type('html').send(renderLoginPage({ query: request.url.split('?')[1] ?? '' }));
     return;
   }
-  await completeAuthorize(response, store, config, params, session);
+  response.type('html').send(await renderConsent(config, session, loginId!, request.url.split('?')[1] ?? ''));
 }
 
 async function handleLogin(
@@ -108,8 +115,7 @@ async function handleLogin(
     const sessionId = randomToken(16);
     await store.putLoginSession(sessionId, session, LOGIN_TTL_SEC);
     setLoginCookie(response, sessionId, config.oauthSigningKey);
-    const params = Object.fromEntries(new URLSearchParams(returnQuery).entries());
-    await completeAuthorize(response, store, config, params, session);
+    response.type('html').send(await renderConsent(config, session, sessionId, returnQuery));
   } catch (error) {
     response
       .status(401)
@@ -130,6 +136,9 @@ async function completeAuthorize(
   const state = readString(params, 'state');
   const challenge = readString(params, 'code_challenge') ?? '';
   const resource = readString(params, 'resource') ?? config.resourceUrl;
+  if (resource !== config.resourceUrl) throw new Error('Invalid resource');
+  await assertRedirectAllowed(store, clientId, redirectUri);
+  if (!challenge || readString(params, 'code_challenge_method') !== 'S256') throw new Error('PKCE S256 required');
   const seminaiJwt = session.seminaiJwt;
   const code = await issueAuthCode(store, {
     clientId,
@@ -178,4 +187,18 @@ async function handleToken(request: Request, response: Response, store: OauthSto
       .status(400)
       .json({ error: 'invalid_grant', error_description: (error as Error).message });
   }
+}
+
+async function handleConsent(request: Request, response: Response, config: HttpMcpConfig, store: OauthStore): Promise<void> {
+  try {
+    const id = readLoginCookie(request, config.oauthSigningKey);
+    const session = id ? await store.getLoginSession(id) : null;
+    const query = readString(request.body, 'return_query') || '';
+    if (!id || !session || request.body.csrf !== consentSignature(config.oauthSigningKey, id, query)) { response.status(403).end(); return; }
+    const params = Object.fromEntries(new URLSearchParams(query).entries());
+    if (params.resource && params.resource !== config.resourceUrl) throw new Error('Invalid resource');
+    await assertRedirectAllowed(store, params.client_id || '', params.redirect_uri || '');
+    const scoped = await createScopedGrant(config, session, String(request.body.companyId || ''), params.client_id || '');
+    await completeAuthorize(response, store, config, params, scoped);
+  } catch { response.status(400).send('Autorizzazione non riuscita. Torna a Seminai e riprova.'); }
 }

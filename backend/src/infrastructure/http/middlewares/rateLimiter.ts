@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { getRedisConnection } from '../../queue/redis.connection';
+import { getRuntimeStore as getRedisConnection } from '../../desktop/key-value-store';
 
 /**
  * Rate Limiting Configuration (Redis-backed, distributed)

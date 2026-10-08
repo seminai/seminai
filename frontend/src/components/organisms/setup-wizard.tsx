@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { LanguageSwitcher } from '@/components/molecules/language-switcher';
 import { ApiError } from '@/lib/api-client';
-import { completeSetup, detectOllama } from '@/lib/setup-api';
+import { completeSetup } from '@/lib/setup-api';
 import { SetupWizardFields } from '@/components/organisms/setup-wizard-fields';
 import { authQueryOptions } from '@/hooks/use-auth';
 import { INITIAL_SETUP_DRAFT, type SetupDraft } from '@/components/organisms/setup-draft';
 
-const STEPS = ['admin', 'llm', 'access', 'email', 'review'] as const;
+const STEPS = ['admin', 'review'] as const;
 type SetupStep = (typeof STEPS)[number];
 
 export function SetupWizard() {
@@ -22,28 +22,12 @@ export function SetupWizard() {
   const [draft, setDraft] = useState<SetupDraft>(INITIAL_SETUP_DRAFT);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
-  const [ollamaReachable, setOllamaReachable] = useState<boolean | null>(null);
-  const [ollamaModels, setOllamaModels] = useState<readonly string[]>([]);
+  const ollamaReachable = null;
+  const ollamaModels: readonly string[] = [];
   const step: SetupStep = STEPS[stepIndex];
-
-  useEffect(() => {
-    void detectOllama()
-      .then((result) => {
-        setOllamaReachable(result.reachable);
-        setOllamaModels(result.models.map((model) => model.name));
-        const firstModel = result.models[0];
-        if (result.reachable && firstModel && draft.model === INITIAL_SETUP_DRAFT.model) {
-          setDraft((current) => ({ ...current, model: firstModel.name, baseUrl: result.baseUrl }));
-        }
-      })
-      .catch(() => setOllamaReachable(false));
-    // Probe once on mount so the LLM step can show local models.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const canContinue = useMemo(() => {
     if (step === 'admin') return draft.name.trim().length > 0 && draft.email.includes('@') && draft.password.length >= 8;
-    if (step === 'llm') return draft.provider === 'ollama' || draft.apiKey.trim().length > 0;
     return true;
   }, [draft, step]);
 
@@ -53,12 +37,6 @@ export function SetupWizard() {
     try {
       await completeSetup({
         admin: { name: draft.name.trim(), email: draft.email.trim(), password: draft.password },
-        llm: {
-          provider: draft.provider,
-          baseUrl: draft.baseUrl,
-          model: draft.model,
-          apiKey: draft.apiKey || undefined,
-        },
         access: { mode: draft.accessMode },
         email:
           draft.smtpHost || draft.smtpUser
@@ -67,7 +45,7 @@ export function SetupWizard() {
       });
       await queryClient.invalidateQueries({ queryKey: authQueryOptions.queryKey });
       await router.invalidate();
-      await router.navigate({ to: '/' });
+      await router.navigate({ to: '/quaderno' });
     } catch (err) {
       setError(err instanceof ApiError ? err.body.message ?? t('setup.failed') : t('setup.failed'));
     } finally {

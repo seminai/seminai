@@ -1,4 +1,4 @@
-import { Job } from 'bullmq';
+import { Job } from './queue-driver';
 import { DocumentCategory } from '@prisma/client';
 import { writeTempFile, cleanupTempFile } from '../services/agents/dosage_agent_react/tools/temp-file-utils';
 import { DocumentExtractionOrchestrator } from '../services/extraction/document-extraction-orchestrator';

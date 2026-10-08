@@ -1,5 +1,5 @@
-import { Queue, Worker, Job } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker, Job } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { prisma } from '../repositories/Prisma';
 import { OuterLoopService } from '../services/agents/dosage_agent_react/outer-loop/outer-loop.service';

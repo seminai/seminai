@@ -1,4 +1,4 @@
-import { Queue, Worker, QueueEvents } from 'bullmq';
+import { Queue, Worker, QueueEvents } from './queue-driver';
 import { ConformityCheckerJobData, ConformityCheckerJobResult } from './conformity-checker-queue.support';
 
 export interface ConformityCheckerQueueContext {

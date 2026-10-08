@@ -1,3 +1,4 @@
+import { isAiEnabled } from '../runtime/aiCapabilities';
 import { Server as SocketServer } from 'socket.io';
 import { getLabelExtractionQueue } from '../queue/LabelExtractionQueue';
 import { getDosageAgentQueue } from '../queue/DosageAgentQueue';
@@ -18,6 +19,8 @@ import { setupSocketHandlers } from './server-socket-handlers';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 
 export function initializeQueuesAndSockets(io: SocketServer): void {
+  setGlobalSocketIO(io);
+  if (!isAiEnabled()) return;
   try {
     logger.info('Initializing BullMQ queues...');
     getLabelExtractionQueue();

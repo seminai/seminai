@@ -1,5 +1,5 @@
-import { Queue, Worker, Job, QueueEvents } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker, Job, QueueEvents } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { runFlowsMultiCompany, InputDosageAgent } from '../services/agents/dosage_agent';
 import { updateWorkingMemoryAsync } from '../services/agents/dosage_agent_react/working-memory';

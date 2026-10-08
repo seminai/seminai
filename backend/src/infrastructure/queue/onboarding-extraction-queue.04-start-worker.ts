@@ -1,5 +1,5 @@
-import { Worker, Job } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Worker, Job } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { decompressIfNeeded, CompressedData } from '../utils/redis-compression.util';
 import { ExtractFromFileUseCase, type ExtractionPhase } from '../../application/use-cases/onboarding/ExtractFromFileUseCase';
 import { prisma } from '../repositories/Prisma';

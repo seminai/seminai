@@ -1,5 +1,5 @@
-import { Queue, Worker, QueueEvents } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker, QueueEvents } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { ConformityCheckerJobData, ConformityCheckerJobResult, QUEUE_NAME } from './conformity-checker-queue.support';
 import type { ConformityCheckerQueueContext } from './conformity-checker-queue.context';
