@@ -35,7 +35,7 @@ def assemble(source, destination, version):
     if list(destination.iterdir()):
         raise ValueError('Release staging directory must be empty')
     connector = None
-    connector_hash = None
+    manifest_hash = None
     for target in ['win-x64', 'mac-x64', 'mac-arm64', 'linux-x64', 'linux-arm64']:
         files = [file for file in (source / f'seminai-{target}').rglob('*') if file.is_file()]
         manifest = single(files, 'SHA256SUMS.txt').read_text()
@@ -61,14 +61,17 @@ def assemble(source, destination, version):
             ('licenses.zip', f'licenses-{target}.zip'),
         ]:
             shutil.copyfile(single(files, old_name), destination / new_name)
-        connector = single(files, 'seminai-mcp-1.0.1.mcpb')
-        with zipfile.ZipFile(connector) as archive:
-            code_hash = hashlib.sha256(
-                archive.read('server/server.cjs') + archive.read('manifest.json')
-            ).hexdigest()
-        if connector_hash and connector_hash != code_hash:
-            raise ValueError('MCPB code differs across native builds')
-        connector_hash = code_hash
+        candidate = single(files, 'seminai-mcp-1.0.1.mcpb')
+        with zipfile.ZipFile(candidate) as archive:
+            current_manifest = hashlib.sha256(archive.read('manifest.json')).hexdigest()
+        if manifest_hash and manifest_hash != current_manifest:
+            raise ValueError('MCPB manifests differ across native builds')
+        manifest_hash = current_manifest
+        # esbuild's strict-mode/CommonJS interop output differs between Windows and Unix.
+        # All copies retain their verified native-build checksums. Distribute one
+        # canonical, platform-neutral Node bundle, independent of artifact iteration order.
+        if target == 'linux-x64':
+            connector = candidate
         print(f'Verified {target}', flush=True)
     shutil.copyfile(connector, destination / connector.name)
     for name in ['LICENSE', 'NOTICE']:
@@ -88,11 +91,13 @@ def assemble(source, destination, version):
 
 def main():
     repository = os.environ['GITHUB_REPOSITORY']
-    tag = os.environ['GITHUB_REF_NAME']
-    commit = os.environ['GITHUB_SHA']
+    tag = os.environ.get('SEMINAI_RELEASE_TAG', os.environ['GITHUB_REF_NAME'])
+    commit = os.environ.get('SEMINAI_RELEASE_COMMIT', os.environ['GITHUB_SHA'])
     version = json.loads(Path('packages/desktop/package.json').read_text())['version']
     if not re.fullmatch(r'1\.0\.1-rc\.\d+', version) or tag != f'v{version}':
         raise ValueError('Only a matching 1.0.1 release-candidate tag may publish')
+    if json.loads(gh('api', f'repos/{repository}/commits/{tag}'))['sha'] != commit:
+        raise ValueError('The release commit must be the immutable tag target')
     runs = json.loads(gh('run', 'list', '--repo', repository, '--workflow', 'ci.yml',
                          '--commit', commit, '--limit', '10', '--json', 'conclusion,status'))
     if not any(run['status'] == 'completed' and run['conclusion'] == 'success' for run in runs):

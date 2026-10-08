@@ -1,6 +1,11 @@
 name: desktop-installers
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Optional existing RC tag: retry verified publication without rebuilding installers'
+        required: false
+        type: string
   pull_request:
     paths:
       [
@@ -21,7 +26,7 @@ concurrency:
 
 jobs:
   build:
-    if: "!startsWith(github.ref, 'refs/tags/v1.0.1-rc.')"
+    if: "!startsWith(github.ref, 'refs/tags/v1.0.1-rc.') && inputs.release_tag == ''"
     strategy:
       fail-fast: false
       matrix:
@@ -83,12 +88,14 @@ jobs:
             packages/desktop/release/LICENSES.txt
             packages/mcp/seminai-mcp-1.0.1.mcpb
   publish-rc:
-    if: always() && startsWith(github.ref, 'refs/tags/v1.0.1-rc.')
+    if: always() && (startsWith(github.ref, 'refs/tags/v1.0.1-rc.') || (github.event_name == 'workflow_dispatch' && inputs.release_tag != ''))
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
       actions: read
+    env:
+      SEMINAI_RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
       - name: Find successful native acceptance on this exact commit
@@ -96,9 +103,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          native_run_id=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow desktop.yml --commit "$GITHUB_SHA" --event pull_request --status success --limit 5 --json databaseId --jq '.[0].databaseId // empty')
+          [[ "$SEMINAI_RELEASE_TAG" =~ ^v1\.0\.1-rc\.[0-9]+$ ]]
+          release_commit=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SEMINAI_RELEASE_TAG" --jq .sha)
+          native_run_id=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow desktop.yml --commit "$release_commit" --event pull_request --status success --limit 5 --json databaseId --jq '.[0].databaseId // empty')
           test -n "$native_run_id"
           echo "run_id=$native_run_id" >> "$GITHUB_OUTPUT"
+          echo "release_commit=$release_commit" >> "$GITHUB_OUTPUT"
       - uses: actions/download-artifact@v4
         with:
           path: artifacts/native
@@ -107,4 +117,5 @@ jobs:
       - name: Verify artifacts and publish the unsigned prerelease
         env:
           GH_TOKEN: ${{ github.token }}
+          SEMINAI_RELEASE_COMMIT: ${{ steps.native.outputs.release_commit }}
         run: python3 scripts/release/publish-desktop-rc.py artifacts/native

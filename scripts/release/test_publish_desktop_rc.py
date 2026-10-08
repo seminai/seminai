@@ -59,6 +59,33 @@ class ReleaseArtifactsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'omits release files'):
             publisher.assemble(self.source, self.destination, '1.0.1-rc.1')
 
+    def test_publishes_canonical_linux_bundle_despite_host_specific_emission(self):
+        folder = self.source / 'seminai-win-x64'
+        bundle = folder / 'seminai-mcp-1.0.1.mcpb'
+        with zipfile.ZipFile(bundle, 'w') as archive:
+            archive.writestr('server/server.cjs', 'synthetic Windows interop emission')
+            archive.writestr('manifest.json', '{}')
+        self.refresh_manifest(folder)
+        publisher.assemble(self.source, self.destination, '1.0.1-rc.1')
+        with zipfile.ZipFile(self.destination / bundle.name) as archive:
+            self.assertEqual(archive.read('server/server.cjs'), b'synthetic connector')
+
+    def test_rejects_divergent_connector_contracts(self):
+        folder = self.source / 'seminai-mac-x64'
+        with zipfile.ZipFile(folder / 'seminai-mcp-1.0.1.mcpb', 'w') as archive:
+            archive.writestr('server/server.cjs', 'synthetic connector')
+            archive.writestr('manifest.json', '{"version":"different"}')
+        self.refresh_manifest(folder)
+        with self.assertRaisesRegex(ValueError, 'manifests differ'):
+            publisher.assemble(self.source, self.destination, '1.0.1-rc.1')
+
+    @staticmethod
+    def refresh_manifest(folder):
+        (folder / 'SHA256SUMS.txt').write_text(''.join(
+            f'{publisher.digest(file)}  {file.name}\n' for file in folder.iterdir()
+            if file.name != 'SHA256SUMS.txt'
+        ))
+
 
 if __name__ == '__main__':
     unittest.main()
