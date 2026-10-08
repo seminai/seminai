@@ -2,7 +2,12 @@
 set -eu
 ROOT="$(CDPATH= cd -- "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
-# Pause writers before the database dump and attachment snapshot.
-docker compose -f compose.yaml stop app
-trap 'docker compose -f compose.yaml start app >/dev/null' EXIT
+# Pause OAuth state writers too; do not enable an unused MCP profile.
+MCP_RUNNING="$(docker compose -f compose.yaml --profile mcp ps --status running --services mcp)"
+docker compose -f compose.yaml --profile mcp stop app mcp
+resume() {
+  docker compose -f compose.yaml start app >/dev/null
+  if [ -n "$MCP_RUNNING" ]; then docker compose -f compose.yaml --profile mcp start mcp >/dev/null; fi
+}
+trap resume EXIT
 docker compose -f compose.yaml run --rm --no-deps app node /app/scripts/deploy/server-backup.cjs

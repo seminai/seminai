@@ -10,12 +10,14 @@ sono incluse: completa i lavori in corso prima di un ripristino.
 Su qualsiasi sistema, anche PowerShell:
 
 ```sh
-docker compose stop app
+docker compose --profile mcp stop app mcp
 docker compose run --rm --no-deps app node /app/scripts/deploy/server-backup.cjs
 docker compose start app
 ```
 
 Su macOS/Linux è disponibile anche `sh scripts/deploy/backup.sh`.
+Se MCP era acceso, dopo il backup esegui anche `docker compose --profile mcp start mcp`.
+Lo script shell ricorda automaticamente se il connettore era acceso e lo riavvia.
 Il comando stampa il percorso dell’archivio, per esempio
 `/data/backups/seminai-<timestamp>.tar.gz`, corrispondente a `data/app/backups/` sull’host.
 Copialo su un altro dispositivo: include segreti e va conservato privatamente.
@@ -25,7 +27,7 @@ Copialo su un altro dispositivo: include segreti e va conservato privatamente.
 Metti l’archivio in `data/app/backups/`. Arresta i processi che scrivono e usa il nome esatto:
 
 ```sh
-docker compose stop app
+docker compose --profile mcp stop app mcp
 docker compose up -d --wait postgres redis
 docker compose run --rm --no-deps app node /app/scripts/deploy/server-restore.cjs /data/backups/seminai-<timestamp>.tar.gz
 docker compose up -d --wait
@@ -34,6 +36,9 @@ docker compose up -d --wait
 Il ripristino sostituisce i dati correnti, dopo averne salvato una copia di recupero.
 Se il comando fallisce, lascia l’app ferma e conserva il backup di recupero indicato.
 Su macOS/Linux: `sh scripts/deploy/restore.sh /data/backups/seminai-<timestamp>.tar.gz`.
+Se usavi MCP, riavvialo solo dopo il successo con `docker compose --profile mcp start mcp`;
+lo script shell lo fa automaticamente. Il riavvio ricarica le autorizzazioni ripristinate
+ed evita che il processo mantenga in memoria uno stato successivo al backup.
 
 Il nuovo formato contiene `manifest.json`, `database.dump` e `app/`. Gli archivi della
 precedente procedura, che copiava anche le directory PostgreSQL/Redis, non si importano

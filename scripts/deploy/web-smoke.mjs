@@ -25,15 +25,17 @@ const environment = {
   SEMINAI_MCP_PORT: String(mcpPort), MCP_PUBLIC_BASE_URL: `http://127.0.0.1:${mcpPort}`,
 };
 
-async function compose(...args) {
+async function capture(command, args) {
   return await new Promise((resolve, reject) => {
     let output = '';
-    const child = spawn('docker', ['compose', '-f', 'compose.yaml', ...args], { env: environment, stdio: ['ignore', 'pipe', 'inherit'] });
+    const child = spawn(command, args, { env: environment, stdio: ['ignore', 'pipe', 'inherit'] });
     child.stdout.on('data', (data) => { output += data; process.stdout.write(data); });
     child.once('error', reject);
-    child.once('exit', (code) => code === 0 ? resolve(output) : reject(new Error(`Compose failed: ${args.join(' ')}`)));
+    child.once('exit', (code) => code === 0 ? resolve(output) : reject(new Error(`${command} failed: ${args.join(' ')}`)));
   });
 }
+const compose = (...args) => capture('docker', ['compose', '-f', 'compose.yaml', ...args]);
+const maintenance = (script, ...args) => capture('sh', [`scripts/deploy/${script}.sh`, ...args]);
 
 let token;
 async function request(route, method = 'GET', body) {
@@ -84,19 +86,22 @@ try {
   await compose('restart', 'app');
   await compose('up', '-d', '--no-build', '--wait', '--wait-timeout', '240');
   await compose('exec', '-T', 'app', 'node', '-e', "const f=require('fs');const files=f.readdirSync('/data/backups').filter(n=>n.endsWith('.tar.gz'));require('assert').equal(files.length,1);const manifest=JSON.parse(require('child_process').execFileSync('tar',['-xOzf','/data/backups/'+files[0],'manifest.json'],{encoding:'utf8'}));require('assert').equal(manifest.reason,'before-migration');");
-  await compose('stop', 'app');
-  const archive = (await compose('run', '--rm', '--no-deps', 'app', 'node', '/app/scripts/deploy/server-backup.cjs')).trim().split('\n').at(-1);
+  await compose('--profile', 'mcp', 'up', '-d', '--no-build', 'mcp');
+  const archive = (await maintenance('backup')).trim().split('\n').at(-1);
   assert.match(archive, /^\/data\/backups\/seminai-[\w.-]+\.tar\.gz$/);
   await compose('up', '-d', '--no-build', '--wait', '--wait-timeout', '240');
   const later = await request('/farm/operations', 'POST', { operation: proposal.payload, idempotencyKey: randomUUID() });
   await request(`/farm/operations/${later.id}/review`, 'POST', { version: later.version, decision: 'approve' });
   assert.equal((await request(`/farm/operations?companyId=${company.id}`)).length, 2);
-  await compose('stop', 'app');
-  await compose('run', '--rm', '--no-deps', 'app', 'node', '/app/scripts/deploy/server-restore.cjs', archive);
-  await compose('up', '-d', '--no-build', '--wait', '--wait-timeout', '240');
+  const mcpBeforeRestore = JSON.parse(await compose('--profile', 'mcp', 'ps', '--format', 'json', 'mcp')).ID;
+  const startedBeforeRestore = await capture('docker', ['inspect', '--format', '{{.State.StartedAt}}', mcpBeforeRestore]);
+  await maintenance('restore', archive);
   assert.equal((await readOperation()).status, 'approved');
   assert.equal((await request(`/farm/operations?companyId=${company.id}`)).length, 1);
-  await compose('--profile', 'mcp', 'up', '-d', '--no-build', 'mcp');
+  const mcpAfterRestore = JSON.parse(await compose('--profile', 'mcp', 'ps', '--format', 'json', 'mcp'));
+  assert.equal(mcpAfterRestore.ID, mcpBeforeRestore);
+  assert.equal(mcpAfterRestore.State, 'running', 'Restore must restart MCP to reload restored authorization state');
+  assert.notEqual(await capture('docker', ['inspect', '--format', '{{.State.StartedAt}}', mcpBeforeRestore]), startedBeforeRestore);
   let metadata;
   for (let attempt = 0; attempt < 30; attempt++) {
     metadata = await fetch(`http://127.0.0.1:${mcpPort}/.well-known/oauth-authorization-server`).then((r) => r.json()).catch(() => undefined);
