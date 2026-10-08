@@ -20,8 +20,9 @@ Telefono e tablet usano il browser dell’istanza accesa; non sincronizzano dati
 ### App desktop
 
 Gli installer sono nella [release 1.0.1-rc.2](https://github.com/seminai/seminai/releases/tag/v1.0.1-rc.2).
-Controlla nelle note di rilascio quali pacchetti sono firmati/notarizzati e quali
-collaudi restano aperti. I dati rimangono nella cartella dell’utente, separati dai binari.
+Su macOS scegli i file **`-signed`** per Intel o Apple Silicon: sono firmati e notarizzati.
+La firma Windows resta da completare; i collaudi ancora aperti sono nelle note di rilascio.
+I dati rimangono nella cartella dell’utente, separati dai binari.
 
 Leggi la [guida desktop](docs/releases/1.0.1.md) per backup, importazione Docker,
 AI e MCP. Ogni proposta di un assistente richiede conferma dentro Seminai.
