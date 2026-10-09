@@ -1,4 +1,4 @@
-import { Job } from 'bullmq';
+import { Job } from './queue-driver';
 import { decompressIfNeeded, CompressedData } from '../utils/redis-compression.util';
 import { createChatEmitter } from '../services/agents/dosage_agent_react/socket/chat-socket-emitter';
 import { updateWorkingMemory, getWorkingMemory } from '../services/agents/dosage_agent_react/working-memory';

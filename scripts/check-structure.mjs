@@ -24,6 +24,10 @@ const IGNORED_DIRECTORIES = new Set([
   'generated',
   'node_modules',
   'test-results',
+  'stage',
+  'bundle',
+  'vendor',
+  'release',
 ]);
 const IGNORED_FILES = new Set(['routeTree.gen.ts']);
 

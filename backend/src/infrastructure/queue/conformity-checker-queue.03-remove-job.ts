@@ -8,6 +8,7 @@ export async function conformityCheckerQueueRemoveJob(this: ConformityCheckerQue
       throw new Error(`Job ${jobId} not found`);
     }
     const state = await job.getState();
+    if (process.env.RUNTIME_PROFILE === 'desktop' && state === 'active') throw new Error('Il lavoro è in esecuzione: attendi il completamento prima di rimuoverlo');
     if (state === 'active') {
       if (force) {
         const client = await this.queue.client;

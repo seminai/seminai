@@ -54,6 +54,7 @@ export class CheckHealthUseCase {
   }
 
   private async checkRedis(): Promise<ServiceHealth> {
+    if (process.env.RUNTIME_PROFILE === 'desktop') return this.checkDatabase();
     try {
       const { getRedisConnection } = await import('../../../infrastructure/queue/redis.connection');
       const redis = getRedisConnection();

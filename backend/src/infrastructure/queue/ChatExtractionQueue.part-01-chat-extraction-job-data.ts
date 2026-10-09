@@ -1,6 +1,6 @@
 import { DocumentCategory } from '@prisma/client';
-import { Queue, Worker, Job } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker, Job } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { compressIfNeeded, CompressedData, calculateSizeInMB } from '../utils/redis-compression.util';
 import { processChatExtraction } from './ChatExtractionQueue.part-02-process-chat-extraction';

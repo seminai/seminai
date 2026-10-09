@@ -1,7 +1,7 @@
-import { Job, Queue, Worker } from 'bullmq';
+import { Job, Queue, Worker } from './queue-driver';
 import { prisma } from '../repositories/Prisma';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
-import { getRedisConnection } from './redis.connection';
+import { getRedisConnection } from './queue-connection';
 import { LabelRefreshProcessor } from './LabelRefreshProcessor';
 import { LabelRefreshJobData, LabelRefreshJobResult, LabelRefreshMode } from './LabelRefreshTypes';
 

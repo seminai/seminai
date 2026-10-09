@@ -1,3 +1,6 @@
+import { SettingsAiPanel } from './settings-ai-panel';
+import { SettingsDesktopPanel } from './settings-desktop-panel';
+import { SettingsMcpPanel } from './settings-mcp-panel';
 import { useState } from 'react';
 import {
   ChevronDown,
@@ -16,6 +19,9 @@ import { EmailPanel, TelegramPanel, WhatsAppPanel } from './settings-integration
 import { ApiKeyPanel, IFarmingIcon, OpenMeteoPanel, QdcIcon, SalesOrdersPanel } from './settings-integrations-section.part-03-sales-orders-panel';
 
 export type OpenPanel =
+  | 'ai'
+  | 'desktop'
+  | 'mcp'
   | 'whatsapp'
   | 'telegram'
   | 'email'
@@ -35,6 +41,9 @@ export function SettingsIntegrationsSection() {
   return (
     <div className="space-y-4 p-5">
       <h2 className="text-lg font-semibold">Integrazioni</h2>
+      <IntegrationToggle icon={<MessageCircle />} label="Intelligenza artificiale" isOpen={openPanel === 'ai'} onToggle={() => toggle('ai')}><SettingsAiPanel /></IntegrationToggle>
+      <IntegrationToggle icon={<MessageCircle />} label="Claude, ChatGPT e MCP" isOpen={openPanel === 'mcp'} onToggle={() => toggle('mcp')}><SettingsMcpPanel /></IntegrationToggle>
+      <IntegrationToggle icon={<CloudSun />} label="App, dispositivi e backup" isOpen={openPanel === 'desktop'} onToggle={() => toggle('desktop')}><SettingsDesktopPanel /></IntegrationToggle>
 
       <IntegrationToggle
         icon={<MessageCircle className="h-5 w-5 text-green-600" />}

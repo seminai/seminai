@@ -1,3 +1,4 @@
+const moduleDirectory = typeof __dirname === 'string' ? __dirname : path.resolve(process.env.BACKEND_ROOT || process.cwd(), 'dist', 'infrastructure/services/utils');
 import path from 'path';
 import { FitosanitarioProduct, ProductLookupResult } from './product-registration-lookup.support';
 import type { ProductRegistrationLookupServiceContext } from './product-registration-lookup.context';
@@ -34,7 +35,7 @@ export class ProductRegistrationLookupService {
 
   constructor(datasetPath?: string) {
     this.datasetPath =
-      datasetPath ?? path.resolve(__dirname, '../../../../dataset/fitosanitari/fts_06062025.json');
+      datasetPath ?? path.resolve(moduleDirectory, '../../../../dataset/fitosanitari/fts_06062025.json');
   }
 
   /**

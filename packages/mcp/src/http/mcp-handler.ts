@@ -8,6 +8,9 @@ import { wwwAuthenticate } from './cors.js';
 
 interface LiveSession {
   readonly transport: StreamableHTTPServerTransport;
+  readonly userId: string;
+  readonly clientId: string;
+  readonly credential: string;
 }
 
 const sessions = new Map<string, LiveSession>();
@@ -24,7 +27,9 @@ export async function handleMcpRequest(
   }
   const sessionId = headerValue(request, 'mcp-session-id');
   if (sessionId && sessions.has(sessionId)) {
-    await sessions.get(sessionId)?.transport.handleRequest(request, response, request.body);
+    const session = sessions.get(sessionId)!;
+    if (session.userId !== identity.userId || session.clientId !== identity.clientId || session.credential !== identity.seminaiJwt) { response.status(403).end(); return; }
+    await session.transport.handleRequest(request, response, request.body);
     return;
   }
   if (request.method === 'POST' && isInitializeRequest(request.body)) {
@@ -47,7 +52,7 @@ async function startSession(
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: () => randomUUID(),
     onsessioninitialized: (id) => {
-      sessions.set(id, { transport });
+      sessions.set(id, { transport, userId: identity.userId, clientId: identity.clientId, credential: identity.seminaiJwt });
     },
   });
   transport.onclose = () => {
@@ -78,9 +83,17 @@ async function requireAccessToken(
 ): Promise<AccessTokenRecord | null> {
   const header = request.headers.authorization ?? '';
   const token = header.startsWith('Bearer ') ? header.slice('Bearer '.length).trim() : '';
-  const record = token ? await store.getAccessToken(token) : null;
-  if (record) {
-    return record;
+  let record = token ? await store.getAccessToken(token) : null;
+  if (token.startsWith('sem_mcp_')) {
+    const response = await fetch(`${config.apiBaseUrl}/mcp-api/identity`, { headers: { authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(config.httpTimeoutMs) }).catch(() => null);
+    if (response?.ok) {
+      const { data } = await response.json() as { data: { userId: string; id: string } };
+      record = { seminaiJwt: token, userId: data.userId, clientId: data.id, email: '', resource: config.resourceUrl };
+    }
+  }
+  if (record && record.resource === config.resourceUrl) {
+    const verified = await fetch(`${config.apiBaseUrl}/mcp-api/identity`, { headers: { authorization: `Bearer ${record.seminaiJwt}` }, signal: AbortSignal.timeout(config.httpTimeoutMs) }).catch(() => null);
+    if (verified?.ok) return record;
   }
   response.setHeader('WWW-Authenticate', wwwAuthenticate(config));
   response.status(401).json({

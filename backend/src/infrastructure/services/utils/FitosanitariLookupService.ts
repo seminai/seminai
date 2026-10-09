@@ -1,3 +1,4 @@
+const moduleDirectory = typeof __dirname === 'string' ? __dirname : path.resolve(process.env.BACKEND_ROOT || process.cwd(), 'dist', 'infrastructure/services/utils');
 import fs from 'fs';
 import path from 'path';
 
@@ -28,7 +29,7 @@ export class FitosanitariLookupService {
     }
 
     const fitosanitariPath = path.join(
-      __dirname,
+      moduleDirectory,
       '../../../../dataset/fitosanitari/fts_06062025.json',
     );
 

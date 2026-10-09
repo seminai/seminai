@@ -1,3 +1,5 @@
+import { guardAiClient } from '../runtime/guardAiClient';
+import { requireAiEnabled } from '../runtime/aiCapabilities';
 import { ChatAnthropic } from '@langchain/anthropic';
 import type { BaseCallbackHandler } from '@langchain/core/callbacks/base';
 import { ChatOpenAI } from '@langchain/openai';
@@ -22,10 +24,11 @@ export interface CreatedChatModel {
 }
 
 export function createChatModel(options: CreateChatModelOptions = {}): CreatedChatModel {
+  requireAiEnabled();
   const config = resolveChatModelConfig(options.modelName);
   if (config.provider === 'claude') {
     return {
-      model: new ChatAnthropic({
+      model: guardAiClient(new ChatAnthropic({
         model: config.modelName,
         anthropicApiKey: config.apiKey,
         apiKey: config.apiKey,
@@ -33,7 +36,7 @@ export function createChatModel(options: CreateChatModelOptions = {}): CreatedCh
         maxTokens: options.maxTokens,
         streaming: options.streaming,
         callbacks: options.callbacks ? [...options.callbacks] : undefined,
-      }) as unknown as ChatOpenAI,
+      })) as unknown as ChatOpenAI,
       modelName: config.modelName,
       gateway: config.gateway,
       provider: config.provider,
@@ -55,7 +58,7 @@ export function createChatModel(options: CreateChatModelOptions = {}): CreatedCh
       }
     : {};
   return {
-    model: new ChatOpenAI({
+    model: guardAiClient(new ChatOpenAI({
       modelName: config.modelName,
       temperature: options.temperature ?? 0,
       maxTokens: options.maxTokens,
@@ -66,7 +69,7 @@ export function createChatModel(options: CreateChatModelOptions = {}): CreatedCh
       openAIApiKey: config.apiKey,
       ...cacheOptions,
       ...routerOptions,
-    }),
+    })),
     modelName: config.modelName,
     gateway: config.gateway,
     provider: config.provider,

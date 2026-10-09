@@ -1,5 +1,5 @@
-import { Queue, Worker, Job } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker, Job } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { prisma } from '../repositories/Prisma';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { QdcSyncService } from '../services/integrations/qdc_imageline/sync/qdc-sync.service';

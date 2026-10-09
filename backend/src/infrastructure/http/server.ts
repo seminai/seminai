@@ -1,3 +1,6 @@
+import { fileURLToPath } from 'node:url';
+import { closePgBoss } from '../queue/pg-boss-runtime';
+import { closeDesktopPool } from '../desktop/database';
 import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import { createServer } from 'http';
@@ -34,11 +37,12 @@ import { getRedisConnection, closeRedisConnection } from '../queue/redis.connect
 import { logger } from '../services/logger.service';
 import { getAnalyticsService } from '../services/analytics/analytics-service.singleton';
 import { initializeQueuesAndSockets } from './server-queue-runtime';
-import { applyPersistedInstanceSettings } from '../settings/instanceSettingSingleton';
+import { isAiEnabled } from '../runtime/aiCapabilities';
 import { applyLargeJsonBodyParsers } from './jsonBodyLimits';
 import { applyAccessHardening } from './applyAccessHardening';
 import { mountSpaFallback } from './spaStatic';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 logger.info('All modules loaded');
 
 setWorkingMemoryRepository(new PrismaWorkingMemoryRepository(prisma.agentWorkingMemory));
@@ -90,7 +94,7 @@ app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
   return next(err);
 });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { index: !process.env.SPA_DIR }));
 
 if (!process.env.SPA_DIR) {
   app.get('/', (_: Request, res: Response) => {
@@ -151,6 +155,7 @@ const io = new SocketServer(httpServer, {
 });
 
 // Redis adapter for multi-instance Socket.IO (horizontal scaling)
+if (process.env.RUNTIME_PROFILE !== 'desktop') {
 try {
   const pubClient = getRedisConnection();
   const subClient = pubClient.duplicate();
@@ -159,16 +164,17 @@ try {
 } catch (err) {
   logger.warn('Socket.IO Redis adapter failed, falling back to in-memory', { error: String(err) });
 }
+}
 
 io.use(socketAuthMiddleware);
 
-void applyPersistedInstanceSettings().finally(() => {
+{
   httpServer.listen(port, host, () => {
     logger.info(`Server running on http://${host}:${port}`);
     logger.info(`Swagger UI available at http://localhost:${port}/api-docs`);
     initializeQueuesAndSockets(io);
   });
-});
+}
 
 // ── Graceful Shutdown ──────────────────────────────────────────────────
 const SHUTDOWN_TIMEOUT_MS = 30_000;
@@ -189,6 +195,7 @@ async function gracefulShutdown(signal: string): Promise<void> {
     io.close(() => logger.info('Socket.IO closed'));
     // 3. Close BullMQ queues (let in-flight jobs finish)
     const queueClosePromises: Promise<void>[] = [];
+    if (isAiEnabled()) {
     try {
       queueClosePromises.push(getDosageAgentQueue().queue.close());
     } catch {
@@ -244,12 +251,15 @@ async function gracefulShutdown(signal: string): Promise<void> {
     } catch {
       /* not initialized */
     }
+    }
     await Promise.allSettled(queueClosePromises);
     logger.info('BullMQ queues closed');
     // 4. Flush process-local agent working memory before DB disconnect
     await flushAllWorkingMemory();
     logger.info('Agent working memory flushed');
     // 5. Disconnect Prisma
+    await closePgBoss();
+    await closeDesktopPool();
     await prisma.$disconnect();
     logger.info('Prisma disconnected');
     // 6. Close Redis
@@ -270,3 +280,8 @@ async function gracefulShutdown(signal: string): Promise<void> {
 
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+if (process.send) process.once('disconnect', () => void gracefulShutdown('supervisor-disconnected'));
+process.on('message', (message: unknown) => {
+  if (message === 'shutdown') void gracefulShutdown('desktop');
+});

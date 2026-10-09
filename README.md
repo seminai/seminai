@@ -1,37 +1,48 @@
 # Seminai
 
-Seminai is a local program for a farm or winery. It helps you plan field work,
-keep records, and ask an assistant that runs on **your computer**. Your data
-stays at home. You do not need a cloud account to start.
+Seminai è un quaderno di campagna open source con gestione del magazzino.
+Aziende, appezzamenti, attività, trattamenti, carichi e scarichi si gestiscono manualmente,
+senza modelli AI o account cloud. L’AI e i collegamenti a Claude/ChatGPT sono facoltativi.
 
-![How Seminai works: people and a farm robot in a Mediterranean courtyard](docs/images/how-it-works.jpg)
+![Seminai](docs/images/how-it-works.jpg)
 
-## What it does
+## Scegli come usare Seminai
 
-1. You describe the farm in the browser (fields, crops, treatments).
-2. A local assistant (Ollama) answers in the same house as your files.
-3. Optional extras (email, maps, remote access) stay off until you turn them on.
+| Versione | Per chi | Requisiti |
+| --- | --- | --- |
+| **App desktop** | Vuoi installare e iniziare subito | Installer per Windows, macOS o Linux; servizi inclusi |
+| **Web con Docker** | Preferisci il browser o gestisci un server/NAS | Docker Engine/Desktop e Compose v2 sul computer server |
 
-## Install (no programming needed)
+Entrambe offrono lo stesso quaderno e magazzino. L’AI è disattivata nelle nuove
+installazioni e si configura, se desiderata, in Impostazioni → Integrazioni.
+Telefono e tablet usano il browser dell’istanza accesa; non sincronizzano dati offline.
 
-You need [Docker Desktop](https://www.docker.com/products/docker-desktop/) and,
-for the assistant, [Ollama](https://ollama.com/). Then open a terminal in this
-folder and run:
+### App desktop
 
-![Starting Seminai at the farmhouse table](docs/images/how-to-install.jpg)
+Gli installer sono nella [release 1.0.1-rc.2](https://github.com/seminai/seminai/releases/tag/v1.0.1-rc.2).
+Su macOS scegli i file **`-signed`** per Intel o Apple Silicon: sono firmati e notarizzati.
+La firma Windows resta da completare; i collaudi ancora aperti sono nelle note di rilascio.
+I dati rimangono nella cartella dell’utente, separati dai binari.
 
-```bash
-sh scripts/deploy/install.sh
-docker compose -f compose.yaml build app
-docker compose -f compose.yaml up -d
+Leggi la [guida desktop](docs/releases/1.0.1.md) per backup, importazione Docker,
+AI e MCP. Ogni proposta di un assistente richiede conferma dentro Seminai.
+
+### Web con Docker
+
+Dalla cartella del repository, su Windows (PowerShell), macOS o Linux:
+
+```sh
+docker compose up -d --build --wait
 ```
 
-When Docker shows the app as running, open [http://127.0.0.1:8081/setup](http://127.0.0.1:8081/setup)
-in the browser. Create the first administrator, choose **Ollama**, and finish
-the wizard. After that, sign in at [http://127.0.0.1:8081](http://127.0.0.1:8081).
+Apri [Seminai nel browser](http://localhost:8081/setup) e crea l’amministratore.
+Non servono Node, PostgreSQL, Redis o Ollama installati sul computer: i tre servizi
+necessari (`app`, `postgres`, `redis`) sono gestiti da Compose. Il primo download/build
+richiede Internet; il lavoro manuale successivo funziona anche senza connessione.
 
-More detail: [`docs/install.md`](docs/install.md). If something fails, see
-[`docs/troubleshooting.md`](docs/troubleshooting.md).
+La configurazione iniziale espone soltanto localhost. Per accesso da altri dispositivi,
+porte, aggiornamenti e backup, segui la [guida web Docker](docs/install.md).
+I dati persistono in `./data`; `docker compose down` ferma i servizi senza eliminarli.
 
 ## Local development
 
@@ -63,7 +74,8 @@ Docker services automatically.
 
 - `backend`: API, workers, agents, queues, Prisma schema, and domain services.
 - `frontend`: React/Vite single-page application.
-- `packages/mcp`: MCP connector.
+- `packages/mcp`: scoped MCP connector.
+- `packages/desktop`: Electron installer, local runtime, backups and tunnel supervisor.
 - `packages/telegram-bot`: optional Telegram connector.
 - `evals`: deterministic evaluation harness.
 - `loadtest`: k6 scenarios.
@@ -82,5 +94,6 @@ Seminai is offered under AGPL-3.0-or-later or separately negotiated commercial t
 [`LICENSE`](./LICENSE), [`COMMERCIAL-LICENSE.md`](./COMMERCIAL-LICENSE.md),
 [`DCO.md`](./DCO.md), and [`SECURITY.md`](./SECURITY.md).
 
-GitHub Actions workflows exist under `.github/workflows/` and remain **unverified** on the
-hosted runners until a green run is recorded.
+La CI della RC e la matrice installer hanno esecuzioni riuscite. I collaudi manuali
+ancora necessari sono indicati nelle [note della RC](docs/releases/1.0.1-rc.2.md).
+La pipeline `web-docker` verifica anche avvio, setup senza AI, magazzino, riavvio e ripristino.

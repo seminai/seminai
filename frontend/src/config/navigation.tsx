@@ -8,7 +8,7 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: readonly NavItem[] = [
-  { tabId: 'home', path: '/home', icon: <Home className="h-5 w-5" />, labelKey: 'common.home' },
+  { tabId: 'home', path: '/quaderno', icon: <Home className="h-5 w-5" />, labelKey: 'Quaderno' },
   { tabId: 'archivio', path: '/archivio', icon: <Archive className="h-5 w-5" />, labelKey: 'common.archive' },
   { tabId: 'chat', path: '/chat', icon: <MessageSquare className="h-5 w-5" />, labelKey: 'common.chat' },
 ];

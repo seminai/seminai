@@ -1,4 +1,4 @@
-import { getRedisConnection } from '../../queue/redis.connection';
+import { getRuntimeStore as getRedisConnection } from '../../desktop/key-value-store';
 import {
   type PreclassificationResult,
   type StoredPreclassificationItem,

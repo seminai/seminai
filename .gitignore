@@ -18,3 +18,10 @@ backend/dataset/dataset_trattamenti/
 **/private-fixtures/
 **/customer-fixtures/
 **/user-fixtures/
+
+packages/desktop/stage/
+packages/desktop/release/
+packages/desktop/vendor/
+packages/mcp/bundle/
+*.mcpb
+backend/prisma-alias-*.mjs

@@ -7,6 +7,8 @@ import { resolveRuntimeEntry } from './resolveAppMode';
 bootstrapInstanceSecrets();
 bootstrapInviteCode();
 validateRuntimeEnv();
+const { applyPersistedInstanceSettings } = await import('../settings/instanceSettingSingleton');
+await applyPersistedInstanceSettings();
 
 if (resolveRuntimeEntry() === 'worker') {
   await import('../worker/worker');

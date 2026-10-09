@@ -97,10 +97,7 @@ export function SetupWizardFields({
       <dd>{draft.name}</dd>
       <dt className="text-muted-foreground">{t('common.email')}</dt>
       <dd>{draft.email}</dd>
-      <dt className="text-muted-foreground">{t('setup.provider')}</dt>
-      <dd>{t(`setup.providers.${draft.provider}`)}</dd>
-      <dt className="text-muted-foreground">{t('setup.model')}</dt>
-      <dd>{draft.model}</dd>
+      <dt className="text-muted-foreground">Intelligenza artificiale</dt><dd>Disattivata. Configurabile nelle integrazioni.</dd>
       <dt className="text-muted-foreground">{t('setup.access')}</dt>
       <dd>{draft.accessMode === 'lan' ? t('setup.accessLan') : t('setup.accessPublic')}</dd>
     </dl>

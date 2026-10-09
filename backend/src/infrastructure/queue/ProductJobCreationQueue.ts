@@ -1,5 +1,5 @@
-import { Queue, Worker, QueueEvents } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker, QueueEvents } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { QUEUE_NAME, ProductJobCreationJobData, ProductJobCreationJobResult } from './product-job-creation-queue.support';
 import type { ProductJobCreationQueueContext } from './product-job-creation-queue.context';

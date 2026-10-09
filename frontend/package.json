@@ -1,7 +1,7 @@
 {
   "name": "@seminai/frontend",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1-rc.2",
   "type": "module",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Seminai contributors",
@@ -89,12 +89,13 @@
     "eslint-plugin-react-hooks": "7.0.1",
     "eslint-plugin-react-refresh": "0.5.2",
     "globals": "17.4.0",
+    "jsdom": "28.1.0",
     "orval": "8.5.3",
     "prisma": "7.5.0",
+    "rimraf": "^5.0.5",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.57.0",
-    "rimraf": "^5.0.5",
     "vite": "8.0.0",
     "vitest": "4.1.5"
   }

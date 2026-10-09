@@ -1,15 +1,17 @@
 # Seminai local-first release roadmap
 
-Implementation plan and ledger for the private `seminai/seminai` monorepo.
+Historical implementation ledger for the public `seminai/seminai` monorepo.
+The current installer work and release gates are in [1.0.1](docs/releases/1.0.1.md).
 Command transcripts live in [`docs/phase-gate-evidence.md`](docs/phase-gate-evidence.md).
 
 ## Non-negotiable boundaries
 
-- Keep the repository private. Do not publish packages, create GitHub releases, change
-  visibility, or archive the source repositories.
+- The repository is public. Publish an RC before stable installers; stable requires the
+  acceptance and signing gates documented in the 1.0.1 release guide.
 - Never copy user or customer datasets into this repository, Git history, container layers,
   test artifacts, logs, or reports. Real fixtures only via `SEMINAI_FIXTURES_DIR`.
-- Default runtime: Node.js 22, PostgreSQL, Redis, local filesystem, Ollama. Qdrant and
+- Desktop runtime: Node.js 22, PostgreSQL, pg-boss, local filesystem, optional AI.
+  Server profile retains Redis. Qdrant and
   every external integration are optional.
 - GCP/GCS are removed. Legacy credential revocation is owner-side, not from this repo.
 - Generated Prisma, Orval, and TanStack files are untracked.

@@ -9,9 +9,9 @@
  *
  * Concurrency is configurable via PRECLASSIFY_CONCURRENCY (default 4).
  */
-import { Queue, Worker, Job } from 'bullmq';
+import { Queue, Worker, Job } from './queue-driver';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
-import { getRedisConnection } from './redis.connection';
+import { getRedisConnection } from './queue-connection';
 import {
   compressIfNeeded,
   decompressIfNeeded,

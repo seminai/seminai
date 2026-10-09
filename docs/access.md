@@ -1,7 +1,9 @@
 # Access and invitations
 
-Default access mode is `lan`. The instance binds `0.0.0.0:8081` and resolves a
-loopback public URL until `ACCESS_MODE=public` and a tunnel URL are set.
+Default access mode is `lan`. Docker binds inside the container but publishes only
+`127.0.0.1:8081` on the host. Set `SEMINAI_BIND_HOST=0.0.0.0` and the actual
+`PUBLIC_BASE_URL` to enable LAN access. Desktop has its separate LAN toggle.
+Use `ACCESS_MODE=public` only behind a configured HTTPS reverse proxy/tunnel.
 
 Signup is invite-only. The first boot writes `DATA_DIR/secrets/invite`. Admins
 can copy the invite URL and QR from Settings → Access, and rotate the code

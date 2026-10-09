@@ -1,6 +1,6 @@
 {
   "name": "@seminai/backend",
-  "version": "1.0.0",
+  "version": "1.0.1-rc.2",
   "description": "Seminai backend — AI-assisted agronomic management API (Express + Prisma + AI agents).",
   "private": true,
   "type": "module",
@@ -13,7 +13,7 @@
     "kill-port": "lsof -ti:8081 | xargs kill -9 2>/dev/null || true",
     "dev": "npm run kill-port && sleep 1 && tsx watch src/infrastructure/runtime/main.ts",
     "dev:watch": "tsx watch src/infrastructure/runtime/main.ts",
-    "build": "tsc && npm run build:copy-llm-pricing && npm run build:copy-public",
+    "build": "tsc && node scripts/copy-build-assets.mjs",
     "type-check": "tsc --noEmit",
     "build:copy-llm-pricing": "mkdir -p dist/infrastructure/services/llm_costs && cp src/infrastructure/services/llm_costs/llm_cost.json src/infrastructure/services/llm_costs/openrouter_pricing.json dist/infrastructure/services/llm_costs/",
     "build:copy-public": "cp -r src/infrastructure/http/public dist/infrastructure/http/",
@@ -71,7 +71,8 @@
     "cleanup:dosage": "tsx scripts/cleanup/cleanupOrphanDosageAgentJobs.ts",
     "cleanup:dosage:dry": "tsx scripts/cleanup/cleanupOrphanDosageAgentJobs.ts --dry-run",
     "cleanup:all:dry": "npm run cleanup:redis:dry && npm run cleanup:dosage:dry",
-    "cleanup:all": "npm run cleanup:redis && npm run cleanup:dosage"
+    "cleanup:all": "npm run cleanup:redis && npm run cleanup:dosage",
+    "test:desktop": "node --import tsx scripts/desktop-check.ts"
   },
   "engines": {
     "node": ">=22 <23"
@@ -139,10 +140,13 @@
     "multer": "2.0.2",
     "node-geocoder": "4.4.1",
     "nodemailer": "7.0.11",
+    "p-limit": "3.1.0",
     "pdf-parse": "2.4.5",
     "pdf.js-extract": "0.1.5",
     "pg": "8.20.0",
+    "pg-boss": "12.37.1",
     "posthog-node": "5.35.13",
+    "prisma": "7.5.0",
     "proj4": "2.20.3",
     "qrcode": "1.5.3",
     "shapefile": "0.6.6",
@@ -150,6 +154,7 @@
     "speakeasy": "2.0.0",
     "swagger-jsdoc": "6.2.8",
     "swagger-ui-express": "5.0.0",
+    "tsx": "4.21.0",
     "undici": "7.22.0",
     "winston": "3.11.0",
     "xlsx": "0.18.5",
@@ -191,12 +196,10 @@
     "jest-mock-extended": "3.0.5",
     "lint-staged": "15.2.2",
     "prettier": "3.2.5",
-    "prisma": "7.5.0",
     "promptfoo": "0.120.27",
     "rimraf": "5.0.5",
     "ts-jest": "29.1.2",
     "ts-node-dev": "2.0.0",
-    "tsx": "4.21.0",
     "typescript": "5.9.3"
   }
 }

@@ -542,6 +542,10 @@ model Product {
 // }
 
 model Stock {
+  occurredAt DateTime @default(now())
+  reason String?
+  recordedBy String?
+  operationId String?
   id                      String          @id @default(uuid())
   productId               String
   product                 Product         @relation(fields: [productId], references: [id])
@@ -2109,4 +2113,63 @@ model QdcSyncRun {
 
   @@index([status])
   @@index([startedAt])
+}
+
+
+model FarmOperation {
+  id String @id @default(uuid())
+  companyId String
+  userId String
+  connectionId String?
+  idempotencyKey String
+  payload Json
+  preview Json
+  version Int @default(1)
+  status String @default("pending")
+  result Json?
+  reviewedBy String?
+  reviewedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([userId, idempotencyKey])
+  @@index([companyId, status])
+}
+
+model FarmAudit {
+  id String @id @default(uuid())
+  operationId String
+  actorId String
+  action String
+  version Int
+  detail Json
+  createdAt DateTime @default(now())
+  @@index([operationId, createdAt])
+}
+
+model McpConnection {
+  id String @id @default(uuid())
+  userId String
+  companyId String
+  name String
+  tokenHash String @unique
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+  lastUsedAt DateTime?
+  @@index([userId, companyId])
+}
+
+model McpPairing {
+  id String @id @default(uuid())
+  secretHash String
+  name String
+  tokenEnc String?
+  expiresAt DateTime
+  approvedAt DateTime?
+  consumedAt DateTime?
+}
+
+model LocalKeyValue {
+  key String @id
+  value String
+  expiresAt DateTime
 }

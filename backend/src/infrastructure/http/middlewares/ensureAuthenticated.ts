@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { UserRole } from '@prisma/client';
 import { prisma } from '../../repositories/Prisma';
 import { getJwtSecret } from '../../../utils/get-jwt-secret';
-import { getRedisConnection } from '../../queue/redis.connection';
+import { getRuntimeStore as getRedisConnection } from '../../desktop/key-value-store';
 
 const LAST_ACCESS_UPDATE_INTERVAL_MS = 5 * 60 * 1000;
 const USER_CACHE_TTL_SEC = 300; // 5 minutes

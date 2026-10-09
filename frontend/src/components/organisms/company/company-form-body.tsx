@@ -1,3 +1,4 @@
+import { useAiCapabilities } from '@/hooks/use-ai-capabilities';
 import type { UseFormReturn } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
@@ -32,6 +33,7 @@ export function CompanyFormBody({
   onVisuraFile,
   idPrefix = 'c',
 }: CompanyFormBodyProps) {
+  const ai = useAiCapabilities();
   const errors = form.formState.errors;
   const kindLocked = lockedKind !== undefined;
   return (
@@ -70,6 +72,7 @@ export function CompanyFormBody({
         />
       </FormFieldRow>
 
+      {ai?.chat && <>
       <VisuraCameraleUploader
         disabled={disabled}
         isExtracting={isExtractingVisura}
@@ -84,6 +87,7 @@ export function CompanyFormBody({
         <div className="h-px flex-1 bg-border" />
       </div>
 
+      </>}
       <FormFieldRow id={`${idPrefix}-name`} label="Nome *" error={errors.name?.message}>
         <Input id={`${idPrefix}-name`} {...form.register('name')} disabled={disabled} />
       </FormFieldRow>

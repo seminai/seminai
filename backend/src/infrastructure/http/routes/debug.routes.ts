@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { getLabelExtractionQueue } from '../../queue/LabelExtractionQueue';
 import { getDosageAgentQueue } from '../../queue/DosageAgentQueue';
-import { getRedisConnection } from '../../queue/redis.connection';
+import { getRuntimeStore as getRedisConnection } from '../../desktop/key-value-store';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated';
 
 export const debugRouter = Router();

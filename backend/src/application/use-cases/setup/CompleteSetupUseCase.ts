@@ -2,6 +2,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserRole } from '@prisma/client';
 import { User } from '../../../domain/entities/User';
+import { Settings } from '../../../domain/entities/Settings';
+import type { ISettingsRepository } from '../../../domain/repositories/ISettingsRepository';
 import type { IUserRepository } from '../../../domain/repositories/IUserRepository';
 import { AppError } from '../../../domain/errors/AppError';
 import { getJwtSecret } from '../../../utils/get-jwt-secret';
@@ -14,6 +16,7 @@ export class CompleteSetupUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly settings: EncryptedSettingStore,
+    private readonly userSettings?: ISettingsRepository,
   ) {}
 
   async execute(input: CompleteSetupInput): Promise<CompleteSetupResult> {
@@ -46,6 +49,12 @@ export class CompleteSetupUseCase {
       }),
     );
     const admin = await this.userRepository.update(created.id, { emailVerified: true });
+    await this.userSettings?.create(Settings.create({
+      userId: admin.id, language: 'it', qdcApiKey: null, ifarmingApiKey: null,
+      whatsappInstanceName: null, whatsappApiKey: null, whatsappInstanceId: null,
+      whatsappConnected: false, whatsappPhoneNumber: null, whatsappQrCode: null,
+      whatsappLastSync: null, whatsappAllowedNumbers: [],
+    }));
     await this.persistSettings(input);
     await this.settings.applyOverridesToEnv();
 
@@ -62,13 +71,14 @@ export class CompleteSetupUseCase {
   }
 
   private async persistSettings(input: CompleteSetupInput): Promise<void> {
-    await this.settings.set(INSTANCE_SETTING_KEYS.llmProvider, input.llm.provider);
+    await this.settings.set(INSTANCE_SETTING_KEYS.aiEnabled, String(Boolean(input.llm)));
+    await this.settings.set(INSTANCE_SETTING_KEYS.llmProvider, input.llm?.provider || 'ollama');
     await this.settings.set(
       INSTANCE_SETTING_KEYS.llmBaseUrl,
-      input.llm.baseUrl || 'http://127.0.0.1:11434',
+      input.llm?.baseUrl || 'http://127.0.0.1:11434',
     );
-    await this.settings.set(INSTANCE_SETTING_KEYS.llmModel, input.llm.model || 'qwen3.5:4b');
-    await this.settings.set(INSTANCE_SETTING_KEYS.llmApiKey, input.llm.apiKey || '');
+    await this.settings.set(INSTANCE_SETTING_KEYS.llmModel, input.llm?.model || '');
+    await this.settings.set(INSTANCE_SETTING_KEYS.llmApiKey, input.llm?.apiKey || '');
     await this.settings.set(INSTANCE_SETTING_KEYS.accessMode, input.access.mode);
     await this.settings.set(INSTANCE_SETTING_KEYS.emailSmtpHost, input.email?.smtpHost || '');
     await this.settings.set(INSTANCE_SETTING_KEYS.emailUser, input.email?.user || '');

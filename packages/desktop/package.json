@@ -1,0 +1,97 @@
+{
+  "name": "@seminai/desktop",
+  "version": "1.0.1-rc.2",
+  "private": true,
+  "type": "module",
+  "main": "src/main.cjs",
+  "description": "Seminai desktop \u2014 quaderno di campagna locale",
+  "author": "Seminai contributors",
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "start": "electron .",
+    "stage": "node scripts/stage.mjs",
+    "package": "npm run stage && electron-builder --config electron-builder.cjs --publish never",
+    "package:dir": "npm run stage && electron-builder --config electron-builder.cjs --dir --publish never",
+    "test": "node --test src/*.test.cjs",
+    "fetch:tunnel": "node scripts/fetch-tunnel.mjs"
+  },
+  "dependencies": {
+    "embedded-postgres": "16.14.0-beta.17",
+    "adm-zip": "0.5.16"
+  },
+  "devDependencies": {
+    "electron": "44.7.0",
+    "electron-builder": "26.15.3",
+    "node": "22.23.1"
+  },
+  "build": {
+    "appId": "it.seminai.desktop",
+    "productName": "Seminai",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**/*.cjs",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/@embedded-postgres/**"
+    ],
+    "extraResources": [
+      {
+        "from": "stage",
+        "to": "runtime"
+      },
+      {
+        "from": "stage/node_modules",
+        "to": "runtime/node_modules"
+      },
+      {
+        "from": "../../frontend/public/logo.png",
+        "to": "logo.png"
+      },
+      {
+        "from": "../mcp/seminai-mcp-1.0.1.mcpb",
+        "to": "seminai.mcpb"
+      }
+    ],
+    "artifactName": "Seminai-${version}-${os}-${arch}.${ext}",
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.productivity",
+      "minimumSystemVersion": "13.0.0",
+      "hardenedRuntime": true
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Office",
+      "maintainer": "Seminai contributors",
+      "executableName": "seminai",
+      "syncDesktopName": true
+    },
+    "npmRebuild": false,
+    "icon": "../../frontend/public/logo.png",
+    "deb": {
+      "packageName": "seminai"
+    }
+  },
+  "desktopName": "seminai.desktop",
+  "homepage": "https://github.com/seminai/seminai"
+}

@@ -1,0 +1,141 @@
+name: desktop-installers
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Optional existing RC tag: retry verified publication without rebuilding installers'
+        required: false
+        type: string
+      sign_artifacts:
+        description: 'Build signed candidates using the desktop-signing environment (no publication)'
+        required: false
+        default: false
+        type: boolean
+  pull_request:
+    paths:
+      [
+        'backend/**',
+        'frontend/**',
+        'packages/**',
+        'package*.json',
+        'scripts/**',
+        '.github/workflows/desktop.yml',
+      ]
+  push:
+    tags: ['v1.0.1-rc.*', 'v1.0.1']
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: "!startsWith(github.ref, 'refs/tags/v1.0.1-rc.') && inputs.release_tag == ''"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-2025, target: win, arch: x64 }
+          - { os: macos-15-intel, target: mac, arch: x64 }
+          - { os: macos-15, target: mac, arch: arm64 }
+          - { os: ubuntu-22.04, target: linux, arch: x64 }
+          - { os: ubuntu-22.04-arm, target: linux, arch: arm64 }
+    runs-on: ${{ matrix.os }}
+    environment: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && 'desktop-signing' || '' }}
+    permissions:
+      contents: read
+      id-token: write
+    timeout-minutes: 60
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      NODE_OPTIONS: --max-old-space-size=4096
+      DESKTOP_TARGET: ${{ matrix.target }}
+      SEMINAI_SIGNING: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && 'true' || 'false' }}
+      CSC_LINK: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && (matrix.target == 'win' && secrets.WINDOWS_CSC_LINK || matrix.target == 'mac' && secrets.MAC_CSC_LINK) || '' }}
+      CSC_KEY_PASSWORD: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && (matrix.target == 'win' && secrets.WINDOWS_CSC_KEY_PASSWORD || matrix.target == 'mac' && secrets.MAC_CSC_KEY_PASSWORD) || '' }}
+      APPLE_ID: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'mac' && secrets.APPLE_ID || '' }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'mac' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
+      APPLE_TEAM_ID: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'mac' && secrets.APPLE_TEAM_ID || '' }}
+      AZURE_ARTIFACT_SIGNING_ENDPOINT: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'win' && vars.AZURE_ARTIFACT_SIGNING_ENDPOINT || '' }}
+      AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'win' && vars.AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME || '' }}
+      AZURE_ARTIFACT_SIGNING_CERT_PROFILE_NAME: ${{ (inputs.sign_artifacts || github.ref == 'refs/tags/v1.0.1') && matrix.target == 'win' && vars.AZURE_ARTIFACT_SIGNING_CERT_PROFILE_NAME || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22.23.1', cache: npm }
+      - run: node scripts/release/check-desktop-signing.mjs
+      - run: npm ci
+      - run: npm run codegen
+      - run: npm run build --workspace @seminai/backend
+      - run: npm run build --workspace @seminai/frontend
+      - run: npm run build --workspace @seminai/mcp-connector
+      - run: npm run test --workspace @seminai/desktop
+      - run: node --test scripts/release/desktop-sbom.test.mjs scripts/release/desktop-signing.test.mjs scripts/release/macos-entitlements.test.mjs
+      - run: npm run test:desktop --workspace @seminai/backend
+      - name: Test backup restore and abrupt supervisor termination
+        run: node packages/desktop/scripts/recovery-check.cjs
+      - run: npm run package:mcpb --workspace @seminai/mcp-connector
+      - run: npm run fetch:tunnel --workspace @seminai/desktop
+      - run: npm run stage --workspace @seminai/desktop
+      - name: Test bundled runtime without system services
+        run: node packages/desktop/scripts/smoke-isolated.mjs
+      - name: Authenticate to Azure Artifact Signing
+        if: env.SEMINAI_SIGNING == 'true' && matrix.target == 'win' && env.AZURE_ARTIFACT_SIGNING_ACCOUNT_NAME != ''
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - run: npm exec --workspace @seminai/desktop -- electron-builder --config electron-builder.cjs --${{ matrix.target }} --${{ matrix.arch }} --publish never
+      - name: Test packaged Node, services and database persistence
+        run: node packages/desktop/scripts/smoke-packaged.mjs
+      - name: Install artifact and verify services, persistence and recovery
+        run: node packages/desktop/scripts/install-check.mjs
+      - run: node scripts/release/desktop-assets.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seminai-${{ env.SEMINAI_SIGNING == 'true' && 'signed-' || '' }}${{ matrix.target }}-${{ matrix.arch }}
+          if-no-files-found: error
+          path: |
+            packages/desktop/release/*.exe
+            packages/desktop/release/*.dmg
+            packages/desktop/release/*.zip
+            packages/desktop/release/*.AppImage
+            packages/desktop/release/*.deb
+            packages/desktop/release/SHA256SUMS.txt
+            packages/desktop/release/SBOM.cdx.json
+            packages/desktop/release/LICENSES.txt
+            packages/mcp/seminai-mcp-1.0.1.mcpb
+  publish-rc:
+    if: always() && (startsWith(github.ref, 'refs/tags/v1.0.1-rc.') || (github.event_name == 'workflow_dispatch' && inputs.release_tag != ''))
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    env:
+      SEMINAI_RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find successful native acceptance on this exact commit
+        id: native
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [[ "$SEMINAI_RELEASE_TAG" =~ ^v1\.0\.1-rc\.[0-9]+$ ]]
+          release_commit=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SEMINAI_RELEASE_TAG" --jq .sha)
+          native_run_id=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow desktop.yml --commit "$release_commit" --event pull_request --status success --limit 5 --json databaseId --jq '.[0].databaseId // empty')
+          test -n "$native_run_id"
+          echo "run_id=$native_run_id" >> "$GITHUB_OUTPUT"
+          echo "release_commit=$release_commit" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts/native
+          run-id: ${{ steps.native.outputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify artifacts and publish the unsigned prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SEMINAI_RELEASE_COMMIT: ${{ steps.native.outputs.release_commit }}
+        run: python3 scripts/release/publish-desktop-rc.py artifacts/native

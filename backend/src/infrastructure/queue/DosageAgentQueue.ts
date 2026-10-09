@@ -1,5 +1,5 @@
-import { Queue, Worker, QueueEvents } from 'bullmq';
-import { getRedisConnection } from './redis.connection';
+import { Queue, Worker, QueueEvents } from './queue-driver';
+import { getRedisConnection } from './queue-connection';
 import { shouldStartQueueWorkers } from '../runtime/shouldStartQueueWorkers';
 import { DosageAgentJobData, DosageAgentJobResult, QUEUE_NAME } from './dosage-agent-queue.support';
 import type { DosageAgentQueueContext } from './dosage-agent-queue.context';

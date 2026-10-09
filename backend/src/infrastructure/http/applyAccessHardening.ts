@@ -1,3 +1,4 @@
+import { networkInterfaces } from 'node:os';
 import type { Express } from 'express';
 import helmet from 'helmet';
 import { resolveAccessMode } from '../runtime/resolvePublicBaseUrl';
@@ -19,6 +20,14 @@ export function applyAccessHardening(
   app: Express,
   env: Readonly<Record<string, string | undefined>> = process.env,
 ): void {
+  if (env.RUNTIME_PROFILE === 'desktop') {
+    const hosts = new Set(['127.0.0.1', 'localhost', '[::1]', ...Object.values(networkInterfaces()).flat().filter(Boolean).map(item => item!.address)]);
+    app.use((request, response, next) => {
+      const host = (request.headers.host || '').replace(/:\d+$/, '');
+      if (!hosts.has(host)) { response.status(403).json({ code: 'INVALID_HOST', message: 'Host non autorizzato' }); return; }
+      next();
+    });
+  }
   if (shouldTrustProxy(env)) {
     app.set('trust proxy', 1);
   }

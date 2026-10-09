@@ -1,3 +1,4 @@
+import { useAiCapabilities } from '@/hooks/use-ai-capabilities';
 import { useNavigate } from '@tanstack/react-router';
 import { Upload, CalendarClock, PencilLine } from 'lucide-react';
 import { AddDataOptionCard } from '@/components/atoms/add-data-option-card';
@@ -8,6 +9,7 @@ import { isManufacturingWorkspace } from '@/types/workspace';
 
 export function AddDataLanding() {
   const navigate = useNavigate();
+  const ai = useAiCapabilities();
   const { activeWorkspaceKind } = useWorkspace();
   const isManufacturing = isManufacturingWorkspace(activeWorkspaceKind);
 
@@ -26,20 +28,6 @@ export function AddDataLanding() {
         </div>
         <div className="grid w-full max-w-4xl grid-cols-1 gap-6 md:grid-cols-3">
           <AddDataOptionCard
-            icon={Upload}
-            title="Carica file"
-            description="Carica documenti come DDT, fatture, disciplinari e altro"
-            onClick={() => void navigate({ to: '/add-data', search: { type: 'file' } })}
-          />
-          {!isManufacturing && (
-            <AddDataOptionCard
-              icon={CalendarClock}
-              title="Pianifica"
-              description="Crea operazioni manuali o calcola dosaggi automatici"
-              onClick={() => void navigate({ to: '/add-data', search: { type: 'plan' } })}
-            />
-          )}
-          <AddDataOptionCard
             icon={PencilLine}
             title="Aggiungi a mano"
             description={
@@ -49,6 +37,21 @@ export function AddDataLanding() {
             }
             onClick={() => void navigate({ to: '/add-data', search: { type: 'manual' } })}
           />
+          <AddDataOptionCard
+            icon={Upload}
+            title="Carica file"
+            description="Carica documenti come DDT, fatture, disciplinari e altro"
+            onClick={() => void navigate({ to: '/add-data', search: { type: 'file' } })}
+          />
+          {!isManufacturing && ai?.chat && (
+            <AddDataOptionCard
+              icon={CalendarClock}
+              title="Pianifica"
+              description="Crea operazioni manuali o calcola dosaggi automatici"
+              onClick={() => void navigate({ to: '/add-data', search: { type: 'plan' } })}
+            />
+          )}
+
         </div>
       </div>
     </main>

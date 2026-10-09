@@ -1,6 +1,7 @@
+import { requireAiCapability } from '../../runtime/aiCapabilities';
 import { Request, Response } from 'express';
 import { AppError } from '../../../domain/errors/AppError';
-import { createAudioToTextService, AudioToTextService } from '../../services/agents/audio_to_text';
+import { createAudioToTextService } from '../../services/agents/audio_to_text';
 import { MulterFile } from '../../services/Multer';
 
 /**
@@ -8,17 +9,13 @@ import { MulterFile } from '../../services/Multer';
  * Exposes the AudioToTextService via HTTP endpoints.
  */
 export class AudioToTextController {
-  private audioToTextService: AudioToTextService;
-
-  constructor() {
-    this.audioToTextService = createAudioToTextService();
-  }
-
   /**
    * Transcribe an audio file to text.
    * POST /audio-to-text/transcribe
    */
   async transcribe(req: Request, res: Response): Promise<Response> {
+    requireAiCapability('audio');
+    const audioToTextService = createAudioToTextService();
     const file = req.file as MulterFile | undefined;
 
     if (!file) {
@@ -33,11 +30,11 @@ export class AudioToTextController {
 
     try {
       if (postProcess === 'true' || postProcess === '1') {
-        const postProcessPrompt = this.audioToTextService.createStandardItalianPrompt(
+        const postProcessPrompt = audioToTextService.createStandardItalianPrompt(
           'Trascrizione audio per applicazione agricola',
         );
 
-        const result = await this.audioToTextService.convertAudioToTextWithProcessing(
+        const result = await audioToTextService.convertAudioToTextWithProcessing(
           {
             audioFile: file.buffer,
             fileName: file.originalname,
@@ -53,7 +50,7 @@ export class AudioToTextController {
         });
       }
 
-      const result = await this.audioToTextService.convertAudioToText({
+      const result = await audioToTextService.convertAudioToText({
         audioFile: file.buffer,
         fileName: file.originalname,
         prompt,

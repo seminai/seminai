@@ -2,7 +2,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const generatedClient = pathToFileURL(
-  path.resolve('/app/backend/dist/generated/prisma/client.js'),
+  path.resolve(process.env.BACKEND_ROOT || process.cwd(), 'dist/generated/prisma/client.js'),
 ).href;
 
 export async function resolve(specifier, context, nextResolve) {

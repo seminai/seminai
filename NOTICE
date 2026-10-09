@@ -5,3 +5,7 @@ This distribution is offered under AGPL-3.0-or-later or separate commercial term
 LICENSE and COMMERCIAL-LICENSE.md. Third-party packages and datasets retain their own
 copyright and licence terms. The processed phytosanitary data provenance is documented in
 backend/dataset/fitosanitari/PROVENANCE.md.
+
+Desktop distributions include Electron/Chromium, Node.js, PostgreSQL via embedded-postgres,
+and OpenAI tunnel-client (including its distributed notices and SBOM). Their licenses
+and source notices are included in the runtime directories and LICENSES.txt.

@@ -1,4 +1,11 @@
 export const INSTANCE_SETTING_KEYS = {
+  aiEnabled: 'ai.enabled',
+  aiVision: 'ai.vision',
+  aiAudio: 'ai.audio',
+  aiEmbeddings: 'ai.embeddings',
+  visionModel: 'ai.visionModel',
+  audioModel: 'ai.audioModel',
+  embeddingModel: 'ai.embeddingModel',
   setupCompleted: 'setup.completed',
   llmProvider: 'llm.provider',
   llmBaseUrl: 'llm.baseUrl',
@@ -14,6 +21,13 @@ export type InstanceSettingKey =
   (typeof INSTANCE_SETTING_KEYS)[keyof typeof INSTANCE_SETTING_KEYS];
 
 export const INSTANCE_SETTING_DEFAULTS: Readonly<Record<InstanceSettingKey, string>> = {
+  'ai.enabled': 'false',
+  'ai.vision': 'false',
+  'ai.audio': 'false',
+  'ai.embeddings': 'false',
+  'ai.visionModel': '',
+  'ai.audioModel': '',
+  'ai.embeddingModel': '',
   'setup.completed': 'false',
   'llm.provider': 'ollama',
   'llm.baseUrl': 'http://127.0.0.1:11434',
@@ -26,6 +40,13 @@ export const INSTANCE_SETTING_DEFAULTS: Readonly<Record<InstanceSettingKey, stri
 };
 
 export const INSTANCE_SETTING_ENV: Readonly<Record<InstanceSettingKey, string>> = {
+  'ai.enabled': 'AI_ENABLED',
+  'ai.vision': 'AI_VISION_ENABLED',
+  'ai.audio': 'AI_AUDIO_ENABLED',
+  'ai.embeddings': 'AI_EMBEDDINGS_ENABLED',
+  'ai.visionModel': 'LLM_VISION_MODEL',
+  'ai.audioModel': 'LLM_AUDIO_MODEL',
+  'ai.embeddingModel': 'LLM_EMBEDDING_MODEL',
   'setup.completed': 'SETUP_COMPLETED',
   'llm.provider': 'LLM_GATEWAY',
   'llm.baseUrl': 'OLLAMA_BASE_URL',

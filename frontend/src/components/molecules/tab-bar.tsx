@@ -1,3 +1,4 @@
+import { useAiCapabilities } from '@/hooks/use-ai-capabilities';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTabs } from '@/hooks/use-tabs';
@@ -16,6 +17,7 @@ interface TabBarProps {
 
 export function TabBar({ hideAdd }: TabBarProps) {
   const { t } = useTranslation();
+  const ai = useAiCapabilities();
   const { tabs, activeTabId, addTab, setActiveTab, removeTab } = useTabs();
   const { workspaces, activeWorkspaceId } = useWorkspace();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -46,7 +48,7 @@ export function TabBar({ hideAdd }: TabBarProps) {
         ref={scrollRef}
         className="flex h-full flex-1 items-center overflow-x-auto scrollbar-none"
       >
-        {tabs.map((tab) => (
+        {tabs.filter(tab => tab.source !== 'chat' || ai?.chat).map((tab) => (
           <TabItem
             key={tab.id}
             id={tab.id}

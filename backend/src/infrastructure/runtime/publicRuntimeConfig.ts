@@ -1,8 +1,10 @@
+import { getAiCapabilities } from './aiCapabilities';
 import { resolveAppMode } from './resolveAppMode';
 import { resolveAccessMode, resolvePublicBaseUrl } from './resolvePublicBaseUrl';
 import { resolveTunnelHealth } from './tunnelHealth';
 
 export interface PublicRuntimeConfig {
+  readonly ai: ReturnType<typeof getAiCapabilities>;
   readonly appMode: 'all' | 'api' | 'worker';
   readonly storageDriver: string;
   readonly setupCompleted: boolean;
@@ -27,6 +29,7 @@ export function buildPublicRuntimeConfig(
   const hasSmtp = Boolean(env.SMTP_HOST || (env.EMAIL_USER && env.EMAIL_PASSWORD));
   const tunnel = resolveTunnelHealth(env);
   return {
+    ai: getAiCapabilities(env),
     appMode: resolveAppMode(env.APP_MODE),
     storageDriver: env.STORAGE_DRIVER || 'local',
     setupCompleted: env.SETUP_COMPLETED === 'true',

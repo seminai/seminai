@@ -1,3 +1,4 @@
+import { useAiCapabilities } from '@/hooks/use-ai-capabilities';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTabs } from '@/hooks/use-tabs';
@@ -7,13 +8,14 @@ import { Plus } from 'lucide-react';
 import type { ViewId } from '@/hooks/use-tabs';
 
 export function BottomNavBar() {
+  const ai = useAiCapabilities();
   const { t } = useTranslation();
   const { activeView, activeTabId, tabs, setActiveView, addTab } = useTabs();
   const activeTab = activeTabId ? tabs.find((t) => t.id === activeTabId) : null;
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 flex items-center justify-around border-t bg-background pb-[env(safe-area-inset-bottom)]">
-      {NAV_ITEMS.map((item, idx) => {
+      {NAV_ITEMS.filter(item => item.tabId !== 'chat' || ai?.chat).map((item, idx) => {
         const isActive = activeTabId === null && activeView === item.tabId;
         const isSoftActive = activeTab?.source === item.tabId;
 
